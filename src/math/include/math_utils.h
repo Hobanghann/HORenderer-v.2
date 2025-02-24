@@ -27,6 +27,9 @@ class MathUtils {
   static float Sinf(const float radian);
   static float Cosf(const float radian);
   static float Tanf(const float radian);
+  static float Asinf(const float radian);
+  static float Acosf(const float radian);
+  static float Atanf(const float radian);
   static float Maxf(const float f1, const float f2);
   static float Maxf(const float f1, const float f2, const float f3);
   static float Minf(const float f1, const float f2);

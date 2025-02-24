@@ -35,7 +35,9 @@ float MathUtils::Sqrtf(const float f) { return sqrtf(f); }
 float MathUtils::Sinf(const float radian) { return sinf(radian); }
 float MathUtils::Cosf(const float radian) { return cosf(radian); }
 float MathUtils::Tanf(const float radian) { return tanf(radian); }
-
+float MathUtils::Asinf(const float radian) { return asinf(radian); }
+float MathUtils::Acosf(const float radian) { return acosf(radian); }
+float MathUtils::Atanf(const float radian) { return atanf(radian); }
 float MathUtils::Maxf(const float f1, const float f2) {
   return std::max({f1, f2});
 }

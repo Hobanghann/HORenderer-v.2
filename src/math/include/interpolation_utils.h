@@ -1,6 +1,7 @@
 #ifndef _HORENDERER_MATH_INTERPOLATIONUTILS_H_
 #define _HORENDERER_MATH_INTERPOLATIONUTILS_H_
 
+#include "math/include/quaternion.h"
 #include "math/include/vector2.h"
 #include "math/include/vector3.h"
 #include "math/include/vector4.h"
@@ -96,6 +97,15 @@ class InterpolationUtils {
       const Vector2& inv_w, const Vector2& ndc_barycentric);
   static float InterpolateWPerspectiveCorrectTriangle(
       const Vector3& inv_w, const Vector3& ndc_barycentric);
+
+  // Spherical linear interpolation
+  // 1-scalar is used with q1, scalar is used with q2
+  static Quaternion SlerpHalfRotationQuaternionShort(
+      const Quaternion& half_rotation_quaternion1,
+      const Quaternion& half_rotation_quaternion2, const float scalar);
+  static Quaternion SlerpHalfRotationQuaternionLong(
+      const Quaternion& half_rotation_quaternion1,
+      const Quaternion& half_rotation_quaternion2, const float scalar);
 };
 }  // namespace ho_renderer
 #endif  // _HORENDERER_MATH_INTERPOLATIONUTILS_H_

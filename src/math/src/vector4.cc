@@ -5,6 +5,7 @@
 
 #include "app/include/debug.h"
 #include "math/include/math_utils.h"
+#include "math/include/quaternion.h"
 
 namespace ho_renderer {
 const Vector4 Vector4::kUnitX = Vector4(1.f, 0.f, 0.f, 0.f);
@@ -19,6 +20,11 @@ Vector4::Vector4(float x, float y, float z, float w)
 // make vector3 to vector4
 Vector4::Vector4(const Vector3& vector)
     : x_(vector.x()), y_(vector.y()), z_(vector.z()), w_(0.f) {}
+Vector4::Vector4(const Quaternion& quaternion)
+    : x_(quaternion.scalar_part()),
+      y_(quaternion.vector_part().x()),
+      z_(quaternion.vector_part().y()),
+      w_(quaternion.vector_part().z()) {}
 Vector4::Vector4(const Vector4& vector) = default;
 Vector4& Vector4::operator=(const Vector4& vector) = default;
 Vector4::~Vector4() = default;

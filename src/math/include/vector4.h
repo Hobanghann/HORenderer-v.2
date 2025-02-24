@@ -6,6 +6,8 @@
 #include "math/include/vector3.h"
 
 namespace ho_renderer {
+class Quaternion;
+
 class Vector4 {
  public:
   static const Vector4 kUnitX;
@@ -18,8 +20,8 @@ class Vector4 {
   Vector4(float x, float y, float z, float w);
   Vector4(const Vector4&);
   Vector4& operator=(const Vector4&);
-  // make vector3 to vector4
-  explicit Vector4(const Vector3& vector);
+  explicit Vector4(const Vector3& vector);  // make vector3 to vector4
+  explicit Vector4(const Quaternion& quaternion);
   ~Vector4();
   // getter add setter
   float x() const;
@@ -55,6 +57,7 @@ class Vector4 {
   Vector3 ToVector3() const;
 
   std::string ToString() const;
+
  private:
   float x_;
   float y_;

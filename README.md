@@ -126,7 +126,7 @@ Initialize ── Preupdate data ── Update data ── Run rendering pipelin
 -Line Rasterization : Bresenham's Algorithm
 -Triangle Rasterization : Barycentric Algorithm
 -Backface Culling: Triple Product
--Interpolation : Linear / Perspective-Correct Interpolation
+-Interpolation : Linear Interpolation / Perspective-Correct Interpolation / Sphere Linearly Interpolation(Slerp)
 
 
 ## 🎮 Key Guide
