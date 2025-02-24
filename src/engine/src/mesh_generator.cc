@@ -7,10 +7,10 @@
 #include "math/include/vector4.h"
 
 namespace ho_renderer {
-const Mesh* MeshGenerator::GenerateSphere(const int latitude_num,
-                                          const int longitude_num,
-                                          const float radius,
-                                          const std::uint32_t color_bit) {
+Mesh* MeshGenerator::GenerateSphere(const std::string& name,
+                                    const int latitude_num,
+                                    const int longitude_num, const float radius,
+                                    const std::uint32_t color_bit) {
   std::vector<Vertex> vertex_buffer;
   std::vector<unsigned int> index_buffer;
 
@@ -48,12 +48,12 @@ const Mesh* MeshGenerator::GenerateSphere(const int latitude_num,
     }
   }
   std::vector<std::uint32_t> color_buffer(index_buffer.size() / 3.f, color_bit);
-  return new Mesh(vertex_buffer, index_buffer, color_buffer,
+  return new Mesh(name, vertex_buffer, index_buffer, color_buffer,
                   PrimitiveType::kTRIANGLE);
 }
-const Mesh* MeshGenerator::GenerateSphere(
-    const int latitude_num, const int longitude_num, const float radius,
-    const std::vector<std::uint32_t>& color_buffer) {
+Mesh* MeshGenerator::GenerateSphere(
+    const std::string& name, const int latitude_num, const int longitude_num,
+    const float radius, const std::vector<std::uint32_t>& color_buffer) {
   std::vector<Vertex> vertex_buffer;
   std::vector<unsigned int> index_buffer;
 
@@ -90,13 +90,12 @@ const Mesh* MeshGenerator::GenerateSphere(
       index_buffer.push_back(first + 1);
     }
   }
-  return new Mesh(vertex_buffer, index_buffer, color_buffer,
+  return new Mesh(name, vertex_buffer, index_buffer, color_buffer,
                   PrimitiveType::kTRIANGLE);
 }
-const Mesh* MeshGenerator::GenerateBox(const float box_width,
-                                       const float box_depth,
-                                       const float box_height,
-                                       const std::uint32_t color_bit) {
+Mesh* MeshGenerator::GenerateBox(const std::string& name, const float box_width,
+                                 const float box_depth, const float box_height,
+                                 const std::uint32_t color_bit) {
   std::vector<Vertex> vertex_buffer;
   std::vector<unsigned int> index_buffer;
 
@@ -125,12 +124,12 @@ const Mesh* MeshGenerator::GenerateBox(const float box_width,
 
   std::vector<std::uint32_t> color_buffer(index_buffer.size() / 3.f, color_bit);
 
-  return new Mesh(vertex_buffer, index_buffer, color_buffer,
+  return new Mesh(name, vertex_buffer, index_buffer, color_buffer,
                   PrimitiveType::kTRIANGLE);
 }
-const Mesh* MeshGenerator::GenerateBox(
-    const float box_width, const float box_depth, const float box_height,
-    const std::vector<std::uint32_t>& color_buffer) {
+Mesh* MeshGenerator::GenerateBox(
+    const std::string& name, const float box_width, const float box_depth,
+    const float box_height, const std::vector<std::uint32_t>& color_buffer) {
   std::vector<Vertex> vertex_buffer;
   std::vector<unsigned int> index_buffer;
 
@@ -157,12 +156,13 @@ const Mesh* MeshGenerator::GenerateBox(
   index_buffer = {0, 1, 2, 2, 3, 0, 0, 3, 7, 7, 4, 0, 0, 4, 5, 5, 1, 0,
                   1, 5, 6, 6, 2, 1, 2, 6, 7, 7, 3, 2, 4, 7, 6, 6, 5, 4};
 
-  return new Mesh(vertex_buffer, index_buffer, color_buffer,
+  return new Mesh(name, vertex_buffer, index_buffer, color_buffer,
                   PrimitiveType::kTRIANGLE);
 }
-const Mesh* MeshGenerator::GeneratePlane(const float plane_width,
-                                         const float plane_height,
-                                         const std::uint32_t color_bit) {
+Mesh* MeshGenerator::GeneratePlane(const std::string& name,
+                                   const float plane_width,
+                                   const float plane_height,
+                                   const std::uint32_t color_bit) {
   std::vector<Vertex> vertex_buffer;
   std::vector<unsigned int> index_buffer;
 
@@ -178,11 +178,11 @@ const Mesh* MeshGenerator::GeneratePlane(const float plane_width,
 
   std::vector<std::uint32_t> color_buffer(index_buffer.size() / 3.f, color_bit);
 
-  return new Mesh(vertex_buffer, index_buffer, color_buffer,
+  return new Mesh(name, vertex_buffer, index_buffer, color_buffer,
                   PrimitiveType::kTRIANGLE);
 }
-const Mesh* MeshGenerator::GeneratePlane(
-    const float plane_width, const float plane_height,
+Mesh* MeshGenerator::GeneratePlane(
+    const std::string& name, const float plane_width, const float plane_height,
     const std::vector<std::uint32_t>& color_buffer) {
   std::vector<Vertex> vertex_buffer;
   std::vector<unsigned int> index_buffer;
@@ -197,7 +197,7 @@ const Mesh* MeshGenerator::GeneratePlane(
 
   index_buffer = {0, 3, 2, 2, 1, 0};
 
-  return new Mesh(vertex_buffer, index_buffer, color_buffer,
+  return new Mesh(name, vertex_buffer, index_buffer, color_buffer,
                   PrimitiveType::kTRIANGLE);
 }
 }  // namespace ho_renderer

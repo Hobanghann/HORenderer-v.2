@@ -17,6 +17,19 @@ Quaternion::Quaternion(const float scalar1, const float scalar2,
 Quaternion& Quaternion::operator=(const Quaternion&) = default;
 Quaternion::~Quaternion() = default;
 
+Quaternion Quaternion::CreateRotationQuartation(const float angle,
+                                                const Vector3& rotation_axis) {
+  return Quaternion(MathUtils::Cosf(angle),
+                    MathUtils::Sinf(angle) * rotation_axis.GetNormalized());
+}
+
+Quaternion Quaternion::CreateHalfRotationQuartation(
+    const float angle, const Vector3& rotation_axis) {
+  return Quaternion(
+      MathUtils::Cosf(angle * 0.5f),
+      MathUtils::Sinf(angle * 0.5f) * rotation_axis.GetNormalized());
+}
+
 float Quaternion::scalar_part() const { return scalar_part_; }
 const Vector3& Quaternion::vector_part() const { return vector_part_; }
 

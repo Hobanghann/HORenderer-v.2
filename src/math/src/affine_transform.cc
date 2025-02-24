@@ -7,6 +7,7 @@
 #include "math/include/math_utils.h"
 #include "math/include/matrix3x3.h"
 #include "math/include/matrix4x4.h"
+#include "math/include/quaternion_transform.h"
 #include "math/include/vector3.h"
 #include "math/include/vector4.h"
 
@@ -37,8 +38,9 @@ AffineTransform AffineTransform::CreateModelingTransform(
                                         game_object.transform().world_scale())
                                         .ToAffineTransform();
   AffineTransform rotation_transform =
-      LinearTransform::CreateRotateTransform(
-          game_object.transform().world_euler_angle())
+      LinearTransform(QuaternionTransform::CreateRotateTransform(
+                          game_object.transform().world_euler_angle())
+                          .ToMatrix())
           .ToAffineTransform();
   AffineTransform translation_transform =
       AffineTransform::CreateTranslationTransform(
@@ -49,8 +51,9 @@ AffineTransform AffineTransform::CreateModelingTransform(
 AffineTransform AffineTransform::CreateViewTransform(
     const CameraObject& camera_object) {
   AffineTransform inv_rotation_transform =
-      LinearTransform::CreateInverseRotateTransform(
-          camera_object.transform().world_euler_angle())
+      LinearTransform(QuaternionTransform::CreateInverseRotateTransform(
+                          camera_object.transform().world_euler_angle())
+                          .ToMatrix())
           .ToAffineTransform();
   AffineTransform inv_translation_transform =
       AffineTransform::CreateInverseTranslationTransform(

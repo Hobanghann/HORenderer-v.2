@@ -66,12 +66,12 @@ void CameraObject::Update(InputReceiver& input_receiver,
   }
   if (input_receiver.IsPressed(kKEY_LEFT)) {
     transform_.get_world_euler_angle().set_yaw_angle(
-        transform_.get_world_euler_angle().yaw_angle() -
+        transform_.get_world_euler_angle().yaw_angle() +
         rotate_velocity_ * delta_time);
   }
   if (input_receiver.IsPressed(kKEY_RIGHT)) {
     transform_.get_world_euler_angle().set_yaw_angle(
-        transform_.get_world_euler_angle().yaw_angle() +
+        transform_.get_world_euler_angle().yaw_angle() -
         rotate_velocity_ * delta_time);
   }
 }

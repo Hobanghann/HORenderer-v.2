@@ -9,6 +9,7 @@
 #include "asset/include/scene.h"
 #include "asset/include/vertex.h"
 #include "engine/include/srgb.h"
+#include "math/include/quaternion_transform.h"
 #include "rendering_pipeline/pipeline/include/pipeline_settings.h"
 #include "rendering_pipeline/pipeline/include/resources_manager.h"
 

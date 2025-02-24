@@ -17,6 +17,12 @@ class Quaternion {
   Quaternion& operator=(const Quaternion&);
   ~Quaternion();
 
+  static Quaternion CreateRotationQuartation(const float angle,
+                                             const Vector3& rotation_axis);
+
+  static Quaternion CreateHalfRotationQuartation(const float angle,
+                                                 const Vector3& rotation_axis);
+
   float scalar_part() const;
   const Vector3& vector_part() const;
 

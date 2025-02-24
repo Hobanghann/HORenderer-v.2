@@ -2,6 +2,7 @@
 #define _HORENDERER_ASSET_MESH_H_
 
 #include <cstdint>
+#include <string>
 #include <vector>
 
 #include "asset/include/aab_bounding_volume.h"
@@ -13,10 +14,10 @@ namespace ho_renderer {
 class Mesh {
  public:
   Mesh() = delete;
-  Mesh(const std::vector<Vertex>& vertex_buffer,
+  Mesh(const std::string& name, const std::vector<Vertex>& vertex_buffer,
        const std::vector<std::uint32_t>& index_buffer,
        const PrimitiveType ptimitive_type);
-  Mesh(const std::vector<Vertex>& vertex_buffer,
+  Mesh(const std::string& name, const std::vector<Vertex>& vertex_buffer,
        const std::vector<std::uint32_t>& index_buffer,
        const std::vector<std::uint32_t>& primitive_color_buffer,
        const PrimitiveType ptimitive_type);
@@ -24,6 +25,7 @@ class Mesh {
   Mesh& operator=(const Mesh& mesh);
   ~Mesh();
 
+  const std::string& name() const;
   const std::vector<Vertex>& vertex_buffer() const;
   const std::vector<std::uint32_t>& index_buffer() const;
   const std::vector<std::uint32_t>& primitive_color_buffer() const;
@@ -32,6 +34,7 @@ class Mesh {
   const PrimitiveType primitive_type() const;
 
  private:
+  std::string name_;
   std::vector<Vertex> vertex_buffer_;
   std::vector<std::uint32_t> index_buffer_;
   std::vector<std::uint32_t> primitive_color_buffer_;

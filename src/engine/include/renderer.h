@@ -6,6 +6,7 @@
 #include <vector>
 
 #include "asset/include/scene.h"
+#include "engine/include/mesh_manager.h"
 #include "engine/include/renderer_settings.h"
 #include "engine/include/scene_manager.h"
 #include "engine/include/timer.h"
@@ -36,6 +37,7 @@ class Renderer {
 
  private:
   SceneManager scene_manager_;
+  MeshManager mesh_manager_;
   RenderingPipeline rendering_pipeline_;
   RendererSettings renderer_settings_;
   InputManager input_manager_;

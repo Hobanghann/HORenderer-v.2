@@ -25,6 +25,13 @@ Renderer::Renderer(const int screen_width, const int screen_height)
 Renderer::~Renderer() = default;
 
 int Renderer::Initialize() {
+  // create meshes
+  mesh_manager_.AddMesh(MeshGenerator::GeneratePlane("Unit Plane", 1.f, 1.f,
+                                                     SRGB::GetLinearBlack()));
+  mesh_manager_.AddMesh(MeshGenerator::GenerateBox("Unit Box", 1.f, 1.f, 1.f,
+                                                   SRGB::GetLinearBlack()));
+  mesh_manager_.AddMesh(MeshGenerator::GenerateSphere(
+      "Unit Sphere", 10, 10, 1.f, SRGB::GetLinearBlack()));
   // create scene
   Scene* main_scene = new Scene(std::string("Main Scene"));
   // add scene
@@ -66,11 +73,9 @@ int Renderer::Initialize() {
       // explicitly defined so that SRGB's static members are initialized first
       // before kBOX. Solution: Convert SRGB's static members to non-static
       // members.
-      .set_mesh(
-          MeshGenerator::GenerateSphere(10, 10, 1.f, SRGB::GetLinearBlack()))
+      .set_mesh(mesh_manager_.GetMesh("Unit Sphere"))
       .Active();
 
- 
   // add game_object
   main_scene->AddGameObject(main_object);
   /*
@@ -97,15 +102,15 @@ int Renderer::Initialize() {
         .Inactive();
     // add game_object
     main_scene->AddGameObject(object);
-    
+
 }
 */
-// add input listener
-input_manager_.AddInputListener(&renderer_settings_);
-input_manager_.AddInputListener(&rendering_pipeline_.pipeline_settings());
-input_manager_.AddInputListener(main_scene);
-timer_.SetStartTime();
-return 0;
+  // add input listener
+  input_manager_.AddInputListener(&renderer_settings_);
+  input_manager_.AddInputListener(&rendering_pipeline_.pipeline_settings());
+  input_manager_.AddInputListener(main_scene);
+  timer_.SetStartTime();
+  return 0;
 }
 
 int Renderer::PreUpdate() {

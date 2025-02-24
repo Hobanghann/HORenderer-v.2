@@ -10,20 +10,22 @@
 
 namespace ho_renderer {
 
-Mesh::Mesh(const std::vector<Vertex>& vertex_buffer,
+Mesh::Mesh(const std::string& name, const std::vector<Vertex>& vertex_buffer,
            const std::vector<std::uint32_t>& index_buffer,
            const PrimitiveType primitive_type)
-    : vertex_buffer_(vertex_buffer),
+    : name_(name),
+      vertex_buffer_(vertex_buffer),
       index_buffer_(index_buffer),
       sphere_bounding_volume_(*this),
       aab_bounding_volume_(*this),
       primitive_type_(primitive_type) {}
 
-Mesh::Mesh(const std::vector<Vertex>& vertex_buffer,
+Mesh::Mesh(const std::string& name, const std::vector<Vertex>& vertex_buffer,
            const std::vector<std::uint32_t>& index_buffer,
            const std::vector<std::uint32_t>& primitive_color_buffer,
            const PrimitiveType primitive_type)
-    : vertex_buffer_(vertex_buffer),
+    : name_(name),
+      vertex_buffer_(vertex_buffer),
       index_buffer_(index_buffer),
       primitive_color_buffer_(primitive_color_buffer),
       sphere_bounding_volume_(*this),
@@ -33,6 +35,7 @@ Mesh::Mesh(const Mesh& mesh) = default;
 Mesh& Mesh::operator=(const Mesh& mesh) = default;
 Mesh::~Mesh() = default;
 
+const std::string& Mesh::name() const { return name_; }
 const std::vector<Vertex>& Mesh::vertex_buffer() const {
   return vertex_buffer_;
 }

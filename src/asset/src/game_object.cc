@@ -44,12 +44,22 @@ void GameObject::Update(InputReceiver& input_receiver, const float delta_time) {
   }
   if (input_receiver.IsPressed(kKEY_A)) {
     transform_.get_world_euler_angle().set_yaw_angle(
-        transform_.get_world_euler_angle().yaw_angle() -
+        transform_.get_world_euler_angle().yaw_angle() +
         rotate_velocity_ * delta_time);
   }
   if (input_receiver.IsPressed(kKEY_D)) {
     transform_.get_world_euler_angle().set_yaw_angle(
-        transform_.get_world_euler_angle().yaw_angle() +
+        transform_.get_world_euler_angle().yaw_angle() -
+        rotate_velocity_ * delta_time);
+  }
+  if (input_receiver.IsPressed(kKEY_Q)) {
+    transform_.get_world_euler_angle().set_roll_angle(
+        transform_.get_world_euler_angle().roll_angle() -
+        rotate_velocity_ * delta_time);
+  }
+  if (input_receiver.IsPressed(kKEY_E)) {
+    transform_.get_world_euler_angle().set_roll_angle(
+        transform_.get_world_euler_angle().roll_angle() +
         rotate_velocity_ * delta_time);
   }
 }
