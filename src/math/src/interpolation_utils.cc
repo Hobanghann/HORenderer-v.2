@@ -250,7 +250,7 @@ float InterpolationUtils::InterpolateWPerspectiveCorrectTriangle(
           ndc_barycentric.z() * inv_w.z());
 }
 // Spherical linear interpolation
-Quaternion InterpolationUtils::SlerpHalfRotationQuaternionShort(
+Quaternion InterpolationUtils::SlerpHalfRotationQuaternion(
     const Quaternion& half_rotation_quaternion1,
     const Quaternion& half_rotation_quaternion2, const float scalar) {
   const Quaternion& q1 = half_rotation_quaternion1;
