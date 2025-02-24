@@ -12,11 +12,6 @@
 namespace ho_renderer {
 class Mesh {
  public:
-  static const Mesh kBOX;
-  static const Mesh kBLACK_BOX;
-  static const Mesh kLINE;
-  static const Mesh kTRIANGLE;
-  static const Mesh kPLANE;
   Mesh() = delete;
   Mesh(const std::vector<Vertex>& vertex_buffer,
        const std::vector<std::uint32_t>& index_buffer,

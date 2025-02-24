@@ -23,8 +23,8 @@ GameObject& GameObject::set_transform(const Transform& transform) {
   transform_ = transform;
   return *this;
 }
-GameObject& GameObject::set_mesh(const Mesh& mesh) {
-  mesh_ = &mesh;
+GameObject& GameObject::set_mesh(const Mesh* mesh) {
+  mesh_ = mesh;
   return *this;
 }
 

@@ -5,6 +5,7 @@
 
 #include "app/include/debug.h"
 #include "math/include/math_utils.h"
+#include "math/include/quaternion.h"
 #include "math/include/vector4.h"
 
 namespace ho_renderer {
@@ -20,6 +21,10 @@ Vector3::Vector3(const Vector3 &) = default;
 // make vector2 to vector4
 Vector3::Vector3(const Vector2 &vector)
     : x_(vector.x()), y_(vector.y()), z_(0.f) {};
+Vector3::Vector3(const Quaternion &quaternion)
+    : x_(quaternion.vector_part().x()),
+      y_(quaternion.vector_part().y()),
+      z_(quaternion.vector_part().z()) {}
 Vector3 &Vector3::operator=(const Vector3 &) = default;
 Vector3::~Vector3() = default;
 

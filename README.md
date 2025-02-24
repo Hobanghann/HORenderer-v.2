@@ -84,3 +84,6 @@ F3 : Texture mapping mode
 F4 : Sphere bounding volume / Aligned axis box bounding volume
 F5 : Affine interpolation / Perspective correct interpolation
 F6 : On / Off backface culling mode
+F9 : 30 FPS mode
+F10 : 60 FPS mode
+F11 : Variable FPS mode
