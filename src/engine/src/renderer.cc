@@ -5,6 +5,8 @@
 #include <string>
 
 #include "app/include/debug.h"
+#include "engine/include/mesh_generator.h"
+#include "engine/include/srgb.h"
 #include "math/include/math_utils.h"
 
 namespace ho_renderer {
@@ -57,17 +59,21 @@ int Renderer::Initialize() {
                                                      .set_yaw_angle(0.f)
                                                      .set_roll_angle(0.f))
                           .set_world_scale(100.f))
-      // 문제: static 멤버인 kBOX는 SRGB의 static 멤버를 사용하여 초기화됨.
-      // 이때, static 멤버간 초기화 순서는 undefined.
-      // kBOX가 먼저 초기화된 후 SRGB의 static 멤버가 초기화되면 kBOX는 default
-      // initialize됨. SRGB의 staic 멤버가 먼저 초기화된 후, kBOX가 초기화되도록
-      // 순서를 명시해야함 -> SRGB static member를 non static member로
-      .set_mesh(Mesh::kBOX)
+      // Problem: The static member kBOX is initialized using SRGB's static
+      // members. However, the initialization order of static members is
+      // undefined. If kBOX is initialized first before SRGB's static members,
+      // it will be default-initialized. The initialization order must be
+      // explicitly defined so that SRGB's static members are initialized first
+      // before kBOX. Solution: Convert SRGB's static members to non-static
+      // members.
+      .set_mesh(
+          MeshGenerator::GenerateSphere(10, 10, 1.f, SRGB::GetLinearBlack()))
       .Active();
 
+ 
   // add game_object
   main_scene->AddGameObject(main_object);
-
+  /*
   // create sub game object
   std::random_device rd;
   std::mt19937 gen(rd());
@@ -91,15 +97,15 @@ int Renderer::Initialize() {
         .Inactive();
     // add game_object
     main_scene->AddGameObject(object);
-  }
-
-
-  // add input listener
-  input_manager_.AddInputListener(&renderer_settings_);
-  input_manager_.AddInputListener(&rendering_pipeline_.pipeline_settings());
-  input_manager_.AddInputListener(main_scene);
-  timer_.SetStartTime();
-  return 0;
+    
+}
+*/
+// add input listener
+input_manager_.AddInputListener(&renderer_settings_);
+input_manager_.AddInputListener(&rendering_pipeline_.pipeline_settings());
+input_manager_.AddInputListener(main_scene);
+timer_.SetStartTime();
+return 0;
 }
 
 int Renderer::PreUpdate() {

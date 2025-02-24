@@ -35,7 +35,7 @@ std::uint32_t SRGB::GetGammaCorrectedWhite() {
   return GetGammaCorrectedColorBit(255, 255, 255, 255);
 }
 std::uint32_t SRGB::GetLinearBlack() {
-  return GetLinearColorBit(255, 255, 0, 0);
+  return GetLinearColorBit(255, 0, 0, 0);
 }
 std::uint32_t SRGB::GetGammaCorrectedBlack() {
   return GetGammaCorrectedColorBit(255, 0, 0, 0);

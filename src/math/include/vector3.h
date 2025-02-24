@@ -8,6 +8,7 @@
 namespace ho_renderer {
 
 class Vector4;
+class Quaternion;
 
 class Vector3 {
  public:
@@ -21,6 +22,7 @@ class Vector3 {
   Vector3(const Vector3 &);
   // make vector2 to vector4
   explicit Vector3(const Vector2 &vector);
+  explicit Vector3(const Quaternion &quaternion);
   Vector3 &operator=(const Vector3 &);
   ~Vector3();
   // getter and setter
@@ -57,6 +59,7 @@ class Vector3 {
   Vector2 ToVector2() const;
 
   std::string ToString() const;
+
  private:
   float x_;
   float y_;
@@ -64,7 +67,7 @@ class Vector3 {
 };
 
 // scalar multiplication
-inline Vector3 operator*(const float scalar, const Vector3& vector) {
+inline Vector3 operator*(const float scalar, const Vector3 &vector) {
   return Vector3(scalar * vector.x(), scalar * vector.y(), scalar * vector.z());
 }
 }  // namespace ho_renderer

@@ -22,7 +22,7 @@ class GameObject : public InputListener {
   const Mesh& mesh() const;
   GameObject& set_name(const std::string& name);
   GameObject& set_transform(const Transform& transform);
-  GameObject& set_mesh(const Mesh& mesh);
+  GameObject& set_mesh(const Mesh* mesh);
 
   void Update(InputReceiver& input_receiver,
               const float delta_time) override;
