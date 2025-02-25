@@ -18,31 +18,39 @@ class RasterizingShader {
   RasterizingShader& operator=(const RasterizingShader&) = delete;
   ~RasterizingShader();
 
-  std::vector<Fragment>* SplitPoint(
+  std::vector<Fragment>* RasterizePoint(
       const std::vector<Vertex>& vertex_buffer,
       const std::vector<Vector3>& transformed_coordinate_buffer,
       const Point& primitive) const;
-  std::vector<Fragment>* SplitLineWithAffineInterpolation(
+  std::vector<Fragment>* RasterizeLineAffine(
       const std::vector<Vertex>& vertex_buffer,
       const std::vector<Vector3>& transformed_coordinate_buffer,
       const Line& primitive) const;
-  std::vector<Fragment>* SplitTriangleWithAffineInterpolation(
+  std::vector<Fragment>* RasterizeTriangleAffine(
       const std::vector<Vertex>& vertex_buffer,
       const std::vector<Vector3>& transformed_coordinate_buffer,
       const Triangle& primitive) const;
-  std::vector<Fragment>* SplitWireTriangleWithAffineInterpolation(
+  std::vector<Fragment>* EdgeFunctionRasterizeTriangleAffine(
       const std::vector<Vertex>& vertex_buffer,
       const std::vector<Vector3>& transformed_coordinate_buffer,
       const Triangle& primitive) const;
-  std::vector<Fragment>* SplitLineWithPerspectiveInterpolation(
+  std::vector<Fragment>* RasterizeWireTriangleAffine(
+      const std::vector<Vertex>& vertex_buffer,
+      const std::vector<Vector3>& transformed_coordinate_buffer,
+      const Triangle& primitive) const;
+  std::vector<Fragment>* RasterizeLinePerspective(
       const std::vector<Vertex>& vertex_buffer,
       const std::vector<Vector3>& transformed_coordinate_buffer,
       const Line& primitive) const;
-  std::vector<Fragment>* SplitTriangleWithPerspectiveInterpolation(
+  std::vector<Fragment>* RasterizeTrianglePerspective(
       const std::vector<Vertex>& vertex_buffer,
       const std::vector<Vector3>& transformed_coordinate_buffer,
       const Triangle& primitive) const;
-  std::vector<Fragment>* SplitWireTriangleWithPerspectiveInterpolation(
+  std::vector<Fragment>* EdgeFunctionRasterizeTrianglePerspective(
+      const std::vector<Vertex>& vertex_buffer,
+      const std::vector<Vector3>& transformed_coordinate_buffer,
+      const Triangle& primitive) const;
+  std::vector<Fragment>* RasterizeWireTrianglePerspective(
       const std::vector<Vertex>& vertex_buffer,
       const std::vector<Vector3>& transformed_coordinate_buffer,
       const Triangle& primitive) const;

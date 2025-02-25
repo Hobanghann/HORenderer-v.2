@@ -167,6 +167,12 @@ LRESULT CALLBACK WindowsApp::WndProc(HWND hWnd, UINT iMessage, WPARAM wParam,
         case VK_DOWN:
           input_sender_.KeyPressed(ho_renderer::InputKey::kKEY_DOWN);
           break;
+        case VK_DELETE:
+          input_sender_.KeyPressed(ho_renderer::InputKey::kKEY_DELETE);
+          break;
+        case VK_NEXT:
+          input_sender_.KeyPressed(ho_renderer::InputKey::kKEY_PAGEDOWN);
+          break;
         case VK_Q:
           input_sender_.KeyPressed(ho_renderer::InputKey::kKEY_Q);
           break;
@@ -231,6 +237,12 @@ LRESULT CALLBACK WindowsApp::WndProc(HWND hWnd, UINT iMessage, WPARAM wParam,
           break;
         case VK_DOWN:
           input_sender_.KeyReleased(ho_renderer::InputKey::kKEY_DOWN);
+          break;
+        case VK_DELETE:
+          input_sender_.KeyReleased(ho_renderer::InputKey::kKEY_DELETE);
+          break;
+        case VK_NEXT:
+          input_sender_.KeyReleased(ho_renderer::InputKey::kKEY_PAGEDOWN);
           break;
         case VK_Q:
           input_sender_.KeyReleased(ho_renderer::InputKey::kKEY_Q);

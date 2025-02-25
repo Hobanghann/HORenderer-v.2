@@ -83,6 +83,12 @@ enum InputKey {
   kKEY_DOWN,
   kKEY_LEFT,
   kKEY_RIGHT,
+  kKEY_INSERT,
+  kKEY_HOME,
+  kKEY_PAGEUP,
+  kKEY_DELETE,
+  kKEY_END,
+  kKEY_PAGEDOWN,
   LAST_INPUT
 };
 class InputReceiver {

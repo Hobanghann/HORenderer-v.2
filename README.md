@@ -58,7 +58,8 @@ Initialize ── Preupdate data ── Update data ── Run rendering pipelin
 │    │    ├── Line
 │    │    ├── Triangle
 │    │    ├── Fragment
-│    │    └── RenderObjectStates
+│    │    ├── RenderObjectStates
+│    │    └── EdgeFunction
 │    │
 │    ├── /stages
 │    │    ├── VertexSpecification
@@ -124,7 +125,7 @@ Initialize ── Preupdate data ── Update data ── Run rendering pipelin
 
 [🧠 Algorithms]
 -Line Rasterization : Bresenham's Algorithm
--Triangle Rasterization : Barycentric Algorithm
+-Triangle Rasterization : Barycentric Algorithm / Edge function Half-testing, Incremental Approch
 -Backface Culling: Triple Product
 -Interpolation : Linear Interpolation / Perspective-Correct Interpolation / Sphere Linearly Interpolation(Slerp)
 

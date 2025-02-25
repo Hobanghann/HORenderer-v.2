@@ -2,8 +2,8 @@
 #define _HORENDERER_RENDERINGPIPELINE_STAGES_RASTERIZATION_H_
 
 // Rasterization stage receives primitive buffer
-// From primitive buffer, rasterization stage splits each primitive to fragment,
-// and send each fragment to fragment shader
+// From primitive buffer, rasterization stage Rasterizes each primitive to
+// fragment, and send each fragment to fragment shader
 
 #include <memory>
 #include <vector>

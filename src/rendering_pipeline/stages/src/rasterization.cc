@@ -75,21 +75,20 @@ void Rasterization::Rasterize() {
   }
   switch (input_pipeline_settings_->primitive_type()) {
     case kPOINT:
-      output_fragment_buffer_ = rasterizing_shader_->SplitPoint(
+      output_fragment_buffer_ = rasterizing_shader_->RasterizePoint(
           *input_vertex_buffer_, *input_transformed_coordinate_buffer_,
           *(static_cast<const Point*>(input_primitive_)));
       break;
     case kLINE:
       switch (input_pipeline_settings_->interpolation_mode()) {
         case kAFFINE:
-          output_fragment_buffer_ =
-              rasterizing_shader_->SplitLineWithAffineInterpolation(
-                  *input_vertex_buffer_, *input_transformed_coordinate_buffer_,
-                  *(static_cast<const Line*>(input_primitive_)));
+          output_fragment_buffer_ = rasterizing_shader_->RasterizeLineAffine(
+              *input_vertex_buffer_, *input_transformed_coordinate_buffer_,
+              *(static_cast<const Line*>(input_primitive_)));
           break;
         case kPERSPECTIVE_CORRECT:
           output_fragment_buffer_ =
-              rasterizing_shader_->SplitLineWithPerspectiveInterpolation(
+              rasterizing_shader_->RasterizeLinePerspective(
                   *input_vertex_buffer_, *input_transformed_coordinate_buffer_,
                   *(static_cast<const Line*>(input_primitive_)));
           break;
@@ -101,14 +100,14 @@ void Rasterization::Rasterize() {
           switch (input_pipeline_settings_->rendering_mode()) {
             case kWIRE_FRAME:
               output_fragment_buffer_ =
-                  rasterizing_shader_->SplitWireTriangleWithAffineInterpolation(
+                  rasterizing_shader_->RasterizeWireTriangleAffine(
                       *input_vertex_buffer_,
                       *input_transformed_coordinate_buffer_,
                       *(static_cast<const Triangle*>(input_primitive_)));
               break;
             case kFILL:
               output_fragment_buffer_ =
-                  rasterizing_shader_->SplitTriangleWithAffineInterpolation(
+                  rasterizing_shader_->EdgeFunctionRasterizeTriangleAffine(
                       *input_vertex_buffer_,
                       *input_transformed_coordinate_buffer_,
                       *(static_cast<const Triangle*>(input_primitive_)));
@@ -121,19 +120,17 @@ void Rasterization::Rasterize() {
           switch (input_pipeline_settings_->rendering_mode()) {
             case kWIRE_FRAME:
               output_fragment_buffer_ =
-                  rasterizing_shader_
-                      ->SplitWireTriangleWithPerspectiveInterpolation(
-                          *input_vertex_buffer_,
-                          *input_transformed_coordinate_buffer_,
-                          *(static_cast<const Triangle*>(input_primitive_)));
+                  rasterizing_shader_->RasterizeWireTrianglePerspective(
+                      *input_vertex_buffer_,
+                      *input_transformed_coordinate_buffer_,
+                      *(static_cast<const Triangle*>(input_primitive_)));
               break;
             case kFILL:
               output_fragment_buffer_ =
-                  rasterizing_shader_
-                      ->SplitTriangleWithPerspectiveInterpolation(
-                          *input_vertex_buffer_,
-                          *input_transformed_coordinate_buffer_,
-                          *(static_cast<const Triangle*>(input_primitive_)));
+                  rasterizing_shader_->EdgeFunctionRasterizeTrianglePerspective(
+                      *input_vertex_buffer_,
+                      *input_transformed_coordinate_buffer_,
+                      *(static_cast<const Triangle*>(input_primitive_)));
               break;
             case kTEXTURE_MAPPING:
               break;

@@ -100,7 +100,7 @@ class InterpolationUtils {
 
   // Spherical linear interpolation
   // 1-scalar is used with q1, scalar is used with q2
-  static Quaternion SlerpHalfRotationQuaternionShort(
+  static Quaternion SlerpHalfRotationQuaternion(
       const Quaternion& half_rotation_quaternion1,
       const Quaternion& half_rotation_quaternion2, const float scalar);
   static Quaternion SlerpHalfRotationQuaternionLong(

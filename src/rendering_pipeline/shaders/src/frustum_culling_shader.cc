@@ -1,5 +1,7 @@
 #include "rendering_pipeline/shaders/include/frustum_culling_shader.h"
 
+#include <array>
+
 #include "app/include/debug.h"
 #include "asset/include/aab_bounding_volume.h"
 #include "asset/include/sphere_bounding_volume.h"
@@ -12,7 +14,41 @@ namespace ho_renderer {
 FrustumCullingShader::FrustumCullingShader() = default;
 FrustumCullingShader::~FrustumCullingShader() = default;
 
-FrustumCullingResult FrustumCullingShader::CheckSphereCulling(
+FrustumCullingResult FrustumCullingShader::CullPointAgainstFrustum(
+    const Vertex& v, const Frustum& frustum) const {
+  for (auto plane_itr = frustum.planes().cbegin();
+       plane_itr != frustum.planes().cend(); plane_itr++) {
+    if (plane_itr->EvaluatePoint(v.coordinate().ToVector3()) > 0.f) {
+      return FrustumCullingResult::kOUTSIDE;
+    }
+  }
+  return FrustumCullingResult::kINSIDE;
+}
+FrustumCullingResult FrustumCullingShader::CullLineAgainstFrustum(
+    const Vertex& v1, const Vertex& v2, const Frustum& frustum) const {
+  // flags mean point is outside plane(Left, Right, Bottom, Top, Near, Far)
+  std::array<std::uint32_t, 6> flags = {0b100000, 0b010000, 0b001000,
+                                        0b000100, 0b000010, 0b000001};
+  std::uint32_t v1_flag = 0;
+  std::uint32_t v2_flag = 0;
+  for (int i = 0; i < frustum.planes().size(); i++) {
+    const Plane& p = frustum.planes()[i];
+    if (p.EvaluatePoint(v1.coordinate().ToVector3()) > 0.f) {
+      v1_flag |= flags[i];
+    }
+    if (p.EvaluatePoint(v2.coordinate().ToVector3()) > 0.f) {
+      v2_flag |= flags[i];
+    }
+  }
+  if (v1_flag == 0 && v2_flag == 0) {
+    return kINSIDE;
+  }
+  if ((v1_flag & v2_flag) != 0) {
+    return kOUTSIDE;
+  }
+  return kINTERSECT;
+}
+FrustumCullingResult FrustumCullingShader::CullSphereAgainstFrustum(
     const SphereBoundingVolume& bounding_volume, const Frustum& frustum) const {
   for (auto plane_itr = frustum.planes().cbegin();
        plane_itr != frustum.planes().cend(); plane_itr++) {
@@ -29,7 +65,7 @@ FrustumCullingResult FrustumCullingShader::CheckSphereCulling(
   return FrustumCullingResult::kINSIDE;
 }
 
-FrustumCullingResult FrustumCullingShader::CheckAABBCulling(
+FrustumCullingResult FrustumCullingShader::CullAABBAgainstFrustum(
     const AABBoundingVolume& bounding_volume, const Frustum& frustum) const {
   bool is_intersected = false;
   for (auto plane_itr = frustum.planes().cbegin();

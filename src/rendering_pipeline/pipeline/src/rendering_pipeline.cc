@@ -64,8 +64,9 @@ void RenderingPipeline::Run(const Scene& scene) {
       AffineTransform::CreateViewTransform(main_camera)
           .ComposeWith(AffineTransform::CreateProjectionTransform(main_camera));
 
-  for (int i = 0; i < scene.GetGameObjectNum(); i++) {
+  for (int i = 0; i < scene.GetGameObjectNum(); i++) {    
     const GameObject& game_object = scene.GetGameObject(i);
+    printf("current rendered object : %s\n", game_object.name().c_str());
     AffineTransform modeling_transform =
         AffineTransform::CreateModelingTransform(game_object);
     // compose modeling-view-projection matrix

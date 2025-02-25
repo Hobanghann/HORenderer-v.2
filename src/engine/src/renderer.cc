@@ -32,6 +32,12 @@ int Renderer::Initialize() {
                                                    SRGB::GetLinearBlack()));
   mesh_manager_.AddMesh(MeshGenerator::GenerateSphere(
       "Unit Sphere", 10, 10, 1.f, SRGB::GetLinearBlack()));
+  mesh_manager_.AddMesh(
+      MeshGenerator::GenerateLine("X axis", 1000.f, SRGB::GetLinearRed()));
+  mesh_manager_.AddMesh(
+      MeshGenerator::GenerateLine("Y axis", 1000.f, SRGB::GetLinearGreen()));
+  mesh_manager_.AddMesh(
+      MeshGenerator::GenerateLine("Z axis", 1000.f, SRGB::GetLinearBlue()));
   // create scene
   Scene* main_scene = new Scene(std::string("Main Scene"));
   // add scene
@@ -45,7 +51,7 @@ int Renderer::Initialize() {
                          renderer_settings_.screen_height())
       .set_transform(
           Transform()
-              .set_world_coordinate(Vector3(0.f, 0.f, 500.f))
+              .set_world_coordinate(Vector3(0.f, 500.f, 500.f))
               .set_world_euler_angle(EulerAngle()
                                          .set_pitch_angle(0.f)
                                          .set_yaw_angle(MathUtils::kPI)
@@ -73,12 +79,12 @@ int Renderer::Initialize() {
       // explicitly defined so that SRGB's static members are initialized first
       // before kBOX. Solution: Convert SRGB's static members to non-static
       // members.
-      .set_mesh(mesh_manager_.GetMesh("Unit Sphere"))
+      .set_mesh(mesh_manager_.GetMesh("Unit Box"))
       .Active();
 
   // add game_object
   main_scene->AddGameObject(main_object);
-  /*
+
   // create sub game object
   std::random_device rd;
   std::mt19937 gen(rd());
@@ -98,13 +104,53 @@ int Renderer::Initialize() {
                                            .set_yaw_angle(angle_dist(gen))
                                            .set_roll_angle(angle_dist(gen)))
                 .set_world_scale(100.f))
-        .set_mesh(Mesh::kBLACK_BOX)
+        .set_mesh(mesh_manager_.GetMesh("Unit Box"))
         .Inactive();
-    // add game_object
+    // add sub game_object
     main_scene->AddGameObject(object);
+  }
 
-}
-*/
+  // create axis
+  GameObject* x_axis = new GameObject("X axis");
+  x_axis
+      ->set_transform(Transform()
+                          .set_world_coordinate(Vector3::kZero)
+                          .set_world_euler_angle(EulerAngle()
+                                                     .set_pitch_angle(0.f)
+                                                     .set_yaw_angle(0.f)
+                                                     .set_roll_angle(0.f))
+                          .set_world_scale(10.f))
+      .set_mesh(mesh_manager_.GetMesh("X axis"))
+      .Inactive();
+  GameObject* y_axis = new GameObject("Y axis");
+  y_axis
+      ->set_transform(
+          Transform()
+              .set_world_coordinate(Vector3::kZero)
+              .set_world_euler_angle(EulerAngle()
+                                         .set_pitch_angle(0.f)
+                                         .set_yaw_angle(MathUtils::kPI * 0.5f)
+                                         .set_roll_angle(0.f))
+              .set_world_scale(10.f))
+      .set_mesh(mesh_manager_.GetMesh("Y axis"))
+      .Inactive();
+  GameObject* z_axis = new GameObject("Z axis");
+  z_axis
+      ->set_transform(
+          Transform()
+              .set_world_coordinate(Vector3::kZero)
+              .set_world_euler_angle(EulerAngle()
+                                         .set_pitch_angle(0.f)
+                                         .set_yaw_angle(0.f)
+                                         .set_roll_angle(MathUtils::kPI * 0.5f))
+              .set_world_scale(10.f))
+      .set_mesh(mesh_manager_.GetMesh("Z axis"))
+      .Inactive();
+
+  // add axis
+  main_scene->AddGameObject(x_axis);
+  main_scene->AddGameObject(y_axis);
+  main_scene->AddGameObject(z_axis);
   // add input listener
   input_manager_.AddInputListener(&renderer_settings_);
   input_manager_.AddInputListener(&rendering_pipeline_.pipeline_settings());

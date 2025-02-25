@@ -53,7 +53,6 @@ void ho_renderer::ClippingShader::ClipPointAgainstFrustum(
 void ho_renderer::ClippingShader::ClipLineAgainstFrustum(
     std::vector<Vertex>& clip_coordinate_buffer,
     std::vector<Primitive*>& primitive_buffer) const {
-  printf("<Clipping Start>\n");
   std::array<Frustum::PlanePosition, 6> plane_positions = {
       Frustum::PlanePosition::kLEFT,       Frustum::PlanePosition::kRIGHT,
       Frustum::PlanePosition::kBOTTOM,     Frustum::PlanePosition::kTOP,
@@ -81,7 +80,6 @@ void ho_renderer::ClippingShader::ClipLineAgainstFrustum(
         // line is totally outside
         case 0:
           line.set_is_outof_frustum(true);
-          printf("line is totally outside\n");
           break;
         case 1:
           ShrinkLine(clip_coordinate_buffer, primitive_buffer, index_states,
@@ -175,7 +173,13 @@ void ho_renderer::ClippingShader::ShrinkLine(
   // calculate scalar
   float intersection_scalar =
       CalculateScalar(inside_coordinate, outside_coordinate, position);
-
+  // if intersect_coordinate == outside_coordinate
+  if (MathUtils::IsEqual(intersection_scalar, 1.f)) {
+    intersection_scalar = 1.f - MathUtils::kEPSILON;
+  }
+  if (MathUtils::IsEqual(intersection_scalar, 0.f)) {
+    intersection_scalar = MathUtils::kEPSILON;
+  }
   // calculate intersected coordinate
   Vector4 intersected_coordinate = AffineCombination(
       inside_coordinate, outside_coordinate, intersection_scalar);
@@ -184,7 +188,7 @@ void ho_renderer::ClippingShader::ShrinkLine(
   // add coordinate to buffer
   clip_coordinate_buffer.push_back(intersected_coordinate);
   // add new line to buffer
-  Line new_line = {inside_index, intersect_index, primitive_color};
+  Line new_line = {intersect_index, inside_index, primitive_color};
   new_line.set_is_outof_frustum(false);
   primitive_buffer.emplace_back(new Line(new_line));
 }
@@ -211,8 +215,22 @@ void ho_renderer::ClippingShader::ShrinkTriangle(
   // calculate scalar
   float intersection_scalar1 =
       CalculateScalar(inside_coordinate, outside_coordinate1, position);
+  // if intersect_coordinate == outside_coordinate
+  if (MathUtils::IsEqual(intersection_scalar1, 1.f)) {
+    intersection_scalar1 = 1.f - MathUtils::kEPSILON;
+  }
+  if (MathUtils::IsEqual(intersection_scalar1, 0.f)) {
+    intersection_scalar1 = MathUtils::kEPSILON;
+  }
   float intersection_scalar2 =
       CalculateScalar(inside_coordinate, outside_coordinate2, position);
+  // if intersect_coordinate == outside_coordinate
+  if (MathUtils::IsEqual(intersection_scalar2, 1.f)) {
+    intersection_scalar2 = 1.f - MathUtils::kEPSILON;
+  }
+  if (MathUtils::IsEqual(intersection_scalar2, 0.f)) {
+    intersection_scalar2 = MathUtils::kEPSILON;
+  }
   // shrank triangle by updating coordinate
   Vector4 intersected_coordinate1 = AffineCombination(
       inside_coordinate, outside_coordinate1, intersection_scalar1);
@@ -252,8 +270,22 @@ void ho_renderer::ClippingShader::DivideTriangle(
 
   float intersection_scalar1 =
       CalculateScalar(outside_coordinate, inside_coordinate1, position);
+  // if intersect_coordinate == outside_coordinate
+  if (MathUtils::IsEqual(intersection_scalar1, 1.f)) {
+    intersection_scalar1 = 1.f - MathUtils::kEPSILON;
+  }
+  if (MathUtils::IsEqual(intersection_scalar1, 0.f)) {
+    intersection_scalar1 = MathUtils::kEPSILON;
+  }
   float intersection_scalar2 =
       CalculateScalar(outside_coordinate, inside_coordinate2, position);
+  // if intersect_coordinate == outside_coordinate
+  if (MathUtils::IsEqual(intersection_scalar2, 1.f)) {
+    intersection_scalar2 = 1.f - MathUtils::kEPSILON;
+  }
+  if (MathUtils::IsEqual(intersection_scalar2, 0.f)) {
+    intersection_scalar2 = MathUtils::kEPSILON;
+  }
   Vector4 intersected_coordinate1 = AffineCombination(
       outside_coordinate, inside_coordinate1, intersection_scalar1);
   Vector4 intersected_coordinate2 = AffineCombination(

@@ -17,8 +17,12 @@ class MathUtils {
   MathUtils(const MathUtils&) = delete;
   MathUtils& operator=(const MathUtils&) = delete;
   ~MathUtils() = delete;
-  static bool IsEqual(const float f1, const float f2);
-  static bool IsNotEqual(const float f1, const float f2);
+  static bool IsEqual(const float f1, const float f2);         // ==
+  static bool IsNotEqual(const float f1, const float f2);      // !=
+  static bool IsGreater(const float f1, const float f2);       // >
+  static bool IsGreaterEqual(const float f1, const float f2);  // >=
+  static bool IsLess(const float f1, const float f2);          // <
+  static bool IsLessEqual(const float f1, const float f2);     // <=
   static float Abs(const float f);
   static int Abs(const int i);
   static float Pow(float base, float exp);

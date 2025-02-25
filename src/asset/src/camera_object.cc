@@ -74,5 +74,15 @@ void CameraObject::Update(InputReceiver& input_receiver,
         transform_.get_world_euler_angle().yaw_angle() -
         rotate_velocity_ * delta_time);
   }
+  if (input_receiver.IsPressed(kKEY_DELETE)) {
+    transform_.get_world_euler_angle().set_roll_angle(
+        transform_.get_world_euler_angle().roll_angle() -
+        rotate_velocity_ * delta_time);
+  }
+  if (input_receiver.IsPressed(kKEY_PAGEDOWN)) {
+    transform_.get_world_euler_angle().set_roll_angle(
+        transform_.get_world_euler_angle().roll_angle() +
+        rotate_velocity_ * delta_time);
+  }
 }
 }  // namespace ho_renderer

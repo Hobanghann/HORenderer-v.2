@@ -28,6 +28,8 @@ class MeshGenerator {
   static Mesh* GeneratePlane(const std::string& name, const float plane_width,
                              const float plane_height,
                              const std::vector<std::uint32_t>& color_buffer);
+  static Mesh* GenerateLine(const std::string& name, const float length,
+                            const std::uint32_t color_bit);
 
  private:
 };

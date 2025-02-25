@@ -200,4 +200,20 @@ Mesh* MeshGenerator::GeneratePlane(
   return new Mesh(name, vertex_buffer, index_buffer, color_buffer,
                   PrimitiveType::kTRIANGLE);
 }
+
+Mesh* MeshGenerator::GenerateLine(const std::string& name, const float length,
+                                  const std::uint32_t color_bit) {
+  std::vector<Vertex> vertex_buffer;
+  std::vector<unsigned int> index_buffer;
+
+  vertex_buffer.emplace_back(Vector4(length * 0.5f, 0.f, 0.f, 1.f));
+  vertex_buffer.emplace_back(Vector4(-length * 0.5f, 0.f, 0.f, 1.f));
+
+  index_buffer = {0, 1};
+
+  std::vector<std::uint32_t> color_buffer(index_buffer.size() / 2.f, color_bit);
+
+  return new Mesh(name, vertex_buffer, index_buffer, color_buffer,
+                  PrimitiveType::kLINE);
+}
 }  // namespace ho_renderer

@@ -116,29 +116,41 @@ void VertexPostProcessing::Process() {
 #endif
   }
   output_render_object_states_ = ResourcesManager::AllocateRenderObjectState();
-  switch (input_pipeline_settings_->bounding_volume_mode()) {
-    case kSPHERE:
-      output_render_object_states_->set_object_culling_state(
-          frustum_culling_shader_->CheckSphereCulling(
-              input_game_object_->mesh().sphere_bounding_volume(),
-              *input_frustum_));
+  switch (input_pipeline_settings_->primitive_type()) {
+    // If primitive type is point or line, culling is performed after primitive
+    // assembly.
+    // because object don't have bounding volume
+    case kPOINT:
+      output_render_object_states_->set_object_culling_state(kINTERSECT);
       break;
-    case kAABB:
-      output_render_object_states_->set_object_culling_state(
-          frustum_culling_shader_->CheckAABBCulling(
-              input_game_object_->mesh().aab_bounding_volume(),
-              *input_frustum_));
+    case kLINE:
+      output_render_object_states_->set_object_culling_state(kINTERSECT);
       break;
-  }
+    case kTRIANGLE:
+      switch (input_pipeline_settings_->bounding_volume_mode()) {
+        case kSPHERE:
+          output_render_object_states_->set_object_culling_state(
+              frustum_culling_shader_->CullSphereAgainstFrustum(
+                  input_game_object_->mesh().sphere_bounding_volume(),
+                  *input_frustum_));
+          break;
+        case kAABB:
+          output_render_object_states_->set_object_culling_state(
+              frustum_culling_shader_->CullAABBAgainstFrustum(
+                  input_game_object_->mesh().aab_bounding_volume(),
+                  *input_frustum_));
+          break;
+      }
 
-  // result : relation between object and frustum in
-  // output_render_object_states->object_culling_state
+      // result : relation between object and frustum in
+      // output_render_object_states->object_culling_state
 
-  // If object is totally outside of frustum, quit rendering pipeline
-  // immediately
-  if (output_render_object_states_->object_culling_state() ==
-      FrustumCullingResult::kOUTSIDE) {
-    return;
+      // If object is totally outside of frustum, quit rendering pipeline
+      // immediately
+      if (output_render_object_states_->object_culling_state() ==
+          FrustumCullingResult::kOUTSIDE) {
+        return;
+      }
   }
   /////////////////////////////////////////////////////////////////////
   // primitive assembly
@@ -221,7 +233,6 @@ void VertexPostProcessing::Process() {
          *vertex_itr, *input_projection_transform_);
    }
    */
-
   /////////////////////////////////////////////////////////////////////
   // frustum clipping
   /////////////////////////////////////////////////////////////////////

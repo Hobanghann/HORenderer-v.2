@@ -16,7 +16,7 @@ namespace ho_renderer {
 const float MathUtils::kFLOAT_MAX = std::numeric_limits<float>::max();
 const float MathUtils::kFLOAT_MIN = std::numeric_limits<float>::lowest();
 const float MathUtils::kPI = M_PI;
-const float MathUtils::kEPSILON = std::numeric_limits<float>::epsilon();
+const float MathUtils::kEPSILON = 1e-5f;
 const float MathUtils::kFLOAT_NAN = std::numeric_limits<float>::quiet_NaN();
 const float MathUtils::kDEGREE1_IN_RADIAN = kPI / 180.f;
 
@@ -26,7 +26,18 @@ bool MathUtils::IsEqual(const float f1, const float f2) {
 bool MathUtils::IsNotEqual(const float f1, const float f2) {
   return !(IsEqual(f1, f2));
 }
-
+bool MathUtils::IsGreater(const float f1, const float f2) {
+  return (f1 - f2) > kEPSILON;
+}
+bool MathUtils::IsGreaterEqual(const float f1, const float f2) {
+  return (f1 - f2) >= -kEPSILON;
+}
+bool MathUtils::IsLess(const float f1, const float f2) {
+  return (f2 - f1) > kEPSILON;
+}
+bool MathUtils::IsLessEqual(const float f1, const float f2) {
+  return (f2 - f1) >= -kEPSILON;
+}
 float MathUtils::Abs(const float f) { return std::abs(f); }
 int MathUtils::Abs(const int i) { return std::abs(i); }
 bool MathUtils::IsFloatNaN(const float f) { return isnan(f); }
