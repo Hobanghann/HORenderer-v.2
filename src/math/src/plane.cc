@@ -27,12 +27,12 @@ Vector3 Plane::normalized_normal_vector() const {
 }
 
 float Plane::GetDistanceFromPoint(const Vector3& point) const {
-  float normal_magnitude = normal_vector_.GetMagnitude();
+  float inv_mag = MathUtils::InvSqrtf(normal_vector_.GetSqrdMagnitude());
   // if normal vector is zero vector -- plane can't define
-  if (MathUtils::IsEqual(normal_magnitude, 0.f)) {
+  if (MathUtils::IsFloatNaN(inv_mag)) {
     assert(false);
   }
-  return MathUtils::Abs(EvaluatePoint(point)) / normal_magnitude;
+  return MathUtils::Abs(EvaluatePoint(point)) * inv_mag;
 }
 float Plane::EvaluatePoint(const Vector3& point) const {
   return normal_vector_.Dot(point) - normal_dot_point_;

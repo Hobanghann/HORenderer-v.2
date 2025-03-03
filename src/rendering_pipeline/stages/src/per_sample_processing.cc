@@ -74,13 +74,14 @@ void ho_renderer::PerSampleProcessing::Process() {
     // discard this fragment
     return;
   }
-
-  // depth test
-  if (depth_testing_shader_->IsDeeper(
-          *input_fragment_, input_output_frame_buffer_->GetDepthBuffer())) {
-    // discard this fragment
-    return;
-  }
+  /* Early epth testing performed in rasterization
+    // depth test
+    if (depth_testing_shader_->IsDeeper(
+            *input_fragment_, input_output_frame_buffer_->GetDepthBuffer())) {
+      // discard this fragment
+      return;
+    }
+      */
   // writing in frame buffer
   frame_writing_shader_->WriteFragmentToFrameBuffer(
       *input_fragment_, *input_output_frame_buffer_);

@@ -1,6 +1,9 @@
 #ifndef _HORENDERER_MATH_MATRIX2X2_H_
 #define _HORENDERER_MATH_MATRIX2X2_H_
 
+#include <string>
+#include <vector>
+
 #include "math/include/vector2.h"
 
 namespace ho_renderer {
@@ -31,6 +34,8 @@ class Matrix2x2 {
   Vector2 operator*(const Vector2& InVector) const;
   // Transpose
   Matrix2x2 Transpose() const;
+
+  std::vector<std::string> ToStrings() const;
 
  private:
   Vector2 col1_;

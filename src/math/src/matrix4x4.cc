@@ -67,25 +67,32 @@ Matrix4x4& Matrix4x4::operator+=(const Matrix4x4& matrix) {
 }
 // matrix multiplication
 Matrix4x4 Matrix4x4::operator*(const Matrix4x4& matrix) const {
-  return Matrix4x4(
-      Vector4(GetRow1().Dot(matrix.col1_), GetRow2().Dot(matrix.col1_),
-              GetRow3().Dot(matrix.col1_), GetRow4().Dot(matrix.col1_)),
-      Vector4(GetRow1().Dot(matrix.col2_), GetRow2().Dot(matrix.col2_),
-              GetRow3().Dot(matrix.col2_), GetRow4().Dot(matrix.col2_)),
-      Vector4(GetRow1().Dot(matrix.col3_), GetRow2().Dot(matrix.col3_),
-              GetRow3().Dot(matrix.col3_), GetRow4().Dot(matrix.col3_)),
-      Vector4(GetRow1().Dot(matrix.col4_), GetRow2().Dot(matrix.col4_),
-              GetRow3().Dot(matrix.col4_), GetRow4().Dot(matrix.col4_)));
+  Vector4 row1 = GetRow1();
+  Vector4 row2 = GetRow2();
+  Vector4 row3 = GetRow3();
+  Vector4 row4 = GetRow4();
+  return Matrix4x4(Vector4(row1.Dot(matrix.col1_), row2.Dot(matrix.col1_),
+                           row3.Dot(matrix.col1_), row4.Dot(matrix.col1_)),
+                   Vector4(row1.Dot(matrix.col2_), row2.Dot(matrix.col2_),
+                           row3.Dot(matrix.col2_), row4.Dot(matrix.col2_)),
+                   Vector4(row1.Dot(matrix.col3_), row2.Dot(matrix.col3_),
+                           row3.Dot(matrix.col3_), row4.Dot(matrix.col3_)),
+                   Vector4(row1.Dot(matrix.col4_), row2.Dot(matrix.col4_),
+                           row3.Dot(matrix.col4_), row4.Dot(matrix.col4_)));
 }
 Matrix4x4& ho_renderer::Matrix4x4::operator*=(const Matrix4x4& matrix) {
-  col1_ = Vector4(GetRow1().Dot(matrix.col1_), GetRow2().Dot(matrix.col1_),
-                  GetRow3().Dot(matrix.col1_), GetRow4().Dot(matrix.col1_));
-  col2_ = Vector4(GetRow1().Dot(matrix.col2_), GetRow2().Dot(matrix.col2_),
-                  GetRow3().Dot(matrix.col2_), GetRow4().Dot(matrix.col2_));
-  col3_ = Vector4(GetRow1().Dot(matrix.col3_), GetRow2().Dot(matrix.col3_),
-                  GetRow3().Dot(matrix.col3_), GetRow4().Dot(matrix.col3_));
-  col4_ = Vector4(GetRow1().Dot(matrix.col4_), GetRow2().Dot(matrix.col4_),
-                  GetRow3().Dot(matrix.col4_), GetRow4().Dot(matrix.col4_));
+  Vector4 row1 = GetRow1();
+  Vector4 row2 = GetRow2();
+  Vector4 row3 = GetRow3();
+  Vector4 row4 = GetRow4();
+  col1_ = Vector4(row1.Dot(matrix.col1_), row2.Dot(matrix.col1_),
+                  row3.Dot(matrix.col1_), row4.Dot(matrix.col1_));
+  col2_ = Vector4(row1.Dot(matrix.col2_), row2.Dot(matrix.col2_),
+                  row3.Dot(matrix.col2_), row4.Dot(matrix.col2_));
+  col3_ = Vector4(row1.Dot(matrix.col3_), row2.Dot(matrix.col3_),
+                  row3.Dot(matrix.col3_), row4.Dot(matrix.col3_));
+  col4_ = Vector4(row1.Dot(matrix.col4_), row2.Dot(matrix.col4_),
+                  row3.Dot(matrix.col4_), row4.Dot(matrix.col4_));
   return *this;
 }
 Vector4 ho_renderer::Matrix4x4::operator*(const Vector4& vector) const {
@@ -98,24 +105,23 @@ ho_renderer::Matrix4x4 ho_renderer::Matrix4x4::Transpose() const {
 }
 
 std::vector<std::string> Matrix4x4::ToStrings() const {
+  Vector4 row1 = GetRow1();
+  Vector4 row2 = GetRow2();
+  Vector4 row3 = GetRow3();
+  Vector4 row4 = GetRow4();
   std::vector<std::string> result;
-
   char row[64];
-  std::snprintf(row, sizeof(row), "| %.3f , %.3f , %.3f, %.3f |",
-                this->GetRow1().x(), this->GetRow1().y(), this->GetRow1().z(),
-                this->GetRow1().w());
+  std::snprintf(row, sizeof(row), "| %.3f , %.3f , %.3f, %.3f |", row1.x(),
+                row1.y(), row1.z(), row1.w());
   result.emplace_back(row);
-  std::snprintf(row, sizeof(row), "| %.3f , %.3f , %.3f, %.3f |",
-                this->GetRow2().x(), this->GetRow2().y(), this->GetRow2().z(),
-                this->GetRow2().w());
+  std::snprintf(row, sizeof(row), "| %.3f , %.3f , %.3f, %.3f |", row2.x(),
+                row2.y(), row2.z(), row2.w());
   result.emplace_back(row);
-  std::snprintf(row, sizeof(row), "| %.3f , %.3f , %.3f, %.3f |",
-                this->GetRow3().x(), this->GetRow3().y(), this->GetRow3().z(),
-                this->GetRow3().w());
+  std::snprintf(row, sizeof(row), "| %.3f , %.3f , %.3f, %.3f |", row3.x(),
+                row3.y(), row3.z(), row3.w());
   result.emplace_back(row);
-  std::snprintf(row, sizeof(row), "| %.3f , %.3f , %.3f, %.3f |",
-                this->GetRow4().x(), this->GetRow4().y(), this->GetRow4().z(),
-                this->GetRow4().w());
+  std::snprintf(row, sizeof(row), "| %.3f , %.3f , %.3f, %.3f |", row4.x(),
+                row4.y(), row4.z(), row4.w());
   result.emplace_back(row);
   return result;
 }

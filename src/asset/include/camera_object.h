@@ -5,7 +5,7 @@
 #include <string>
 
 #include "asset/include/transform.h"
-#include "engine/include/input_listener.h"
+#include "engine/input/include/input_listener.h"
 
 namespace ho_renderer {
 class CameraObject : public InputListener {
@@ -34,8 +34,7 @@ class CameraObject : public InputListener {
   CameraObject& set_far_distance(const float far_distance);
   CameraObject& set_is_property_changed(bool is_property_changed);
 
-  void Update(InputReceiver& input_receiver,
-              const float delta_time) override;
+  void Update(InputReceiver& input_receiver, const float delta_time) override;
 
  private:
   std::string name_;

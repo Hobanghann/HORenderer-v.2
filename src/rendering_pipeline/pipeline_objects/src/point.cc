@@ -1,12 +1,13 @@
 #include "rendering_pipeline/pipeline_objects/include/point.h"
 
 #include "app/include/debug.h"
+#include "engine/color/include/linear_rgb.h"
 
 namespace ho_renderer {
 Point::Point(const Point& point) = default;
 Point::Point(int index0) : Primitive(false), index0_(index0) {}
-Point::Point(int index0, std::uint32_t color_bit)
-    : Primitive(false, color_bit), index0_(index0) {}
+Point::Point(int index0, const LinearRGB& color)
+    : Primitive(false, color), index0_(index0) {}
 Point& Point::operator=(const Point& point) = default;
 Point::~Point() = default;
 

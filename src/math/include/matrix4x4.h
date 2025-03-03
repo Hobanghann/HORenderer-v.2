@@ -1,8 +1,8 @@
 #ifndef _HORENDERER_MATH_MATRIX4X4_H_
 #define _HORENDERER_MATH_MATRIX4X4_H_
 
-#include <vector>
 #include <string>
+#include <vector>
 
 #include "math/include/vector4.h"
 
@@ -42,7 +42,8 @@ class Matrix4x4 {
   // transpose
   Matrix4x4 Transpose() const;
 
-  std::vector<std::string> Matrix4x4::ToStrings() const;
+  std::vector<std::string> ToStrings() const;
+
  private:
   Vector4 col1_;
   Vector4 col2_;

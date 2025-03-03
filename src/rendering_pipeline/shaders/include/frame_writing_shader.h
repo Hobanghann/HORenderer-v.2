@@ -21,7 +21,7 @@ class FrameWritingShader {
                                   FrameBuffer& frame_buffer);
 
  private:
-  void WriteColorToColorBuffer(const std::uint32_t color_bit,
+  void WriteColorToColorBuffer(const LinearRGB& color,
                                const Vector2& screen_coordinate,
                                ColorBuffer& color_buffer);
   void WriteDepthToDepthBuffer(const float depth,

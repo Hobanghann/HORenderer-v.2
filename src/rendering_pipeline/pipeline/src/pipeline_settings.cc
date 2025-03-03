@@ -6,7 +6,22 @@
 #include "math/include/vector2.h"
 
 namespace ho_renderer {
-PipelineSettings::PipelineSettings() = default;
+PipelineSettings::PipelineSettings()
+    : screen_width_(1280),
+      screen_height_(720),
+      depth_range_min_(0.f),
+      depth_range_max_(1.f),
+      background_color_(LinearRGB::kWHITE),
+      viewport_position_({0.f, 0.f}),
+      primitive_type_(PrimitiveType::kTRIANGLE),
+      bounding_volume_mode_(BoundingVolumeMode::kSPHERE),
+      is_sphere_mode_(true),
+      interpolation_mode_(InterpolationMode::kPERSPECTIVE_CORRECT),
+      is_affine_mode_(false),
+      rendering_mode_(RenderingMode::kFILL),
+      is_using_backface_culling_(true),
+      is_using_diffuse_lighting_(true),
+      is_using_specular_lighting_(true) {}
 PipelineSettings::~PipelineSettings() = default;
 
 const uint32_t PipelineSettings::screen_width() const { return screen_width_; }
@@ -19,7 +34,7 @@ const float PipelineSettings::depth_range_min() const {
 const float PipelineSettings::depth_range_max() const {
   return depth_range_max_;
 }
-const uint32_t PipelineSettings::background_color() const {
+const LinearRGB& PipelineSettings::background_color() const {
   return background_color_;
 }
 const Vector2& PipelineSettings::viewport_position() const {
@@ -39,6 +54,12 @@ const RenderingMode PipelineSettings::rendering_mode() const {
 }
 bool PipelineSettings::is_using_backface_culling() const {
   return is_using_backface_culling_;
+}
+bool PipelineSettings::is_using_diffuse_lighting() const {
+  return is_using_diffuse_lighting_;
+}
+bool PipelineSettings::is_using_specular_lighting() const {
+  return is_using_specular_lighting_;
 }
 
 PipelineSettings& PipelineSettings::set_screen_width(
@@ -60,7 +81,7 @@ PipelineSettings& PipelineSettings::set_depth_range_max(float depth_range_max) {
   return *this;
 }
 PipelineSettings& PipelineSettings::set_background_color(
-    const uint32_t background_color) {
+    const LinearRGB& background_color) {
   background_color_ = background_color;
   return *this;
 }
@@ -75,11 +96,21 @@ PipelineSettings& PipelineSettings::set_primitive_type(PrimitiveType type) {
 }
 PipelineSettings& PipelineSettings::set_bounding_volume_mode(
     BoundingVolumeMode mode) {
+  if (mode == kSPHERE) {
+    is_sphere_mode_ = true;
+  } else {
+    is_sphere_mode_ = false;
+  }
   bounding_volume_mode_ = mode;
   return *this;
 }
 PipelineSettings& PipelineSettings::set_interpolation_mode(
     InterpolationMode mode) {
+  if (mode == kAFFINE) {
+    is_affine_mode_ = true;
+  } else {
+    is_affine_mode_ = false;
+  }
   interpolation_mode_ = mode;
   return *this;
 }
@@ -89,6 +120,14 @@ PipelineSettings& PipelineSettings::set_rendering_mode(RenderingMode mode) {
 }
 PipelineSettings& PipelineSettings::set_is_using_backface_culling(bool arg) {
   is_using_backface_culling_ = arg;
+  return *this;
+}
+PipelineSettings& PipelineSettings::set_is_using_diffuse_lighting(bool arg) {
+  is_using_diffuse_lighting_ = arg;
+  return *this;
+}
+PipelineSettings& PipelineSettings::set_is_using_specular_lighting(bool arg) {
+  is_using_specular_lighting_ = arg;
   return *this;
 }
 
@@ -127,6 +166,14 @@ void PipelineSettings::Update(InputReceiver& input_receiver,
   if (input_receiver.IsPressed(InputKey::kKEY_F6)) {
     is_using_backface_culling_ = !is_using_backface_culling_;
     input_receiver.UpdateKeyStatus(InputKey::kKEY_F6, false);
+  }
+  if (input_receiver.IsPressed(InputKey::kKEY_F7)) {
+    is_using_diffuse_lighting_ = !is_using_diffuse_lighting_;
+    input_receiver.UpdateKeyStatus(InputKey::kKEY_F7, false);
+  }
+  if (input_receiver.IsPressed(InputKey::kKEY_F8)) {
+    is_using_specular_lighting_ = !is_using_specular_lighting_;
+    input_receiver.UpdateKeyStatus(InputKey::kKEY_F8, false);
   }
 }
 }  // namespace ho_renderer

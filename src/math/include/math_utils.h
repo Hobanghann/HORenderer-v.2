@@ -10,6 +10,8 @@ class MathUtils {
   static const float kFLOAT_MAX;
   static const float kFLOAT_MIN;
   static const float kPI;
+  static const float kHALF_PI;
+  static const float kINV_PI;
   static const float kEPSILON;
   static const float MathUtils::kFLOAT_NAN;
   static const float kDEGREE1_IN_RADIAN;
@@ -27,6 +29,7 @@ class MathUtils {
   static int Abs(const int i);
   static float Pow(float base, float exp);
   static float Sqrtf(const float f);
+  static float InvSqrtf(const float f);
   static bool IsFloatNaN(const float f);
   static float Sinf(const float radian);
   static float Cosf(const float radian);
@@ -34,6 +37,7 @@ class MathUtils {
   static float Asinf(const float radian);
   static float Acosf(const float radian);
   static float Atanf(const float radian);
+  static void SinCosf(float& out_sin, float& out_cos, const float radian);
   static float Maxf(const float f1, const float f2);
   static float Maxf(const float f1, const float f2, const float f3);
   static float Minf(const float f1, const float f2);

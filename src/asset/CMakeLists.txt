@@ -1,6 +1,6 @@
 message("Start to process asset")
 
-project(AssetModule)
+project(${ASSET_NAME})
 
 ################################################################################
 # Read source files
@@ -36,13 +36,13 @@ add_library(${PROJECT_NAME} STATIC ${ALL_FILES})
 ################################################################################
 # Include directory
 ################################################################################
-include_directories(AssetModule
+include_directories(${PROJECT_NAME}
 PUBLIC
 ${CMAKE_SOURCE_DIR}/src
 	)
 ################################################################################
 # Import Library
 ################################################################################
-target_link_libraries(${PROJECT_NAME} MathModule)
+target_link_libraries(${PROJECT_NAME} ${MATH_NAME})
 
 message("Processing asset finished")

@@ -45,6 +45,7 @@ class Vector2 {
   Vector3 ToHomogeneousCoordinate() const;
 
   std::string ToString() const;
+
  private:
   float x_;
   float y_;
@@ -52,6 +53,10 @@ class Vector2 {
 
 inline Vector2 operator*(const float scalar, const Vector2& vector) {
   return Vector2(scalar * vector.x(), scalar * vector.y());
+}
+inline Vector2 operator/(const Vector2& vector, const float scalar) {
+  float inv_scalar = 1.f / scalar;
+  return inv_scalar * vector;
 }
 }  // namespace ho_renderer
 

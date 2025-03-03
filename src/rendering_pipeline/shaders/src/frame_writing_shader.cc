@@ -8,7 +8,7 @@ FrameWritingShader::~FrameWritingShader() = default;
 
 void FrameWritingShader::WriteFragmentToFrameBuffer(const Fragment& fragment,
                                                     FrameBuffer& frame_buffer) {
-  WriteColorToColorBuffer(fragment.color_bit(), fragment.screen_coordinate(),
+  WriteColorToColorBuffer(fragment.color(), fragment.screen_coordinate(),
                           frame_buffer.GetColorBuffer());
   WriteDepthToDepthBuffer(fragment.interpolated_depth(),
                           fragment.screen_coordinate(),
@@ -16,10 +16,10 @@ void FrameWritingShader::WriteFragmentToFrameBuffer(const Fragment& fragment,
 }
 
 void FrameWritingShader::WriteColorToColorBuffer(
-    const std::uint32_t color_bit, const Vector2& screen_coordinate,
+    const LinearRGB& color, const Vector2& screen_coordinate,
     ColorBuffer& color_buffer) {
   color_buffer.SetColor(screen_coordinate.x(), screen_coordinate.y(),
-                        color_bit);
+                        color.ToARGB32());
 }
 void FrameWritingShader::WriteDepthToDepthBuffer(
     const float depth, const Vector2& screen_coordinate,

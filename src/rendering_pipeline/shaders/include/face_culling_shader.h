@@ -16,12 +16,9 @@ class FaceCullingShader {
   FaceCullingShader& operator=(const FaceCullingShader&) = delete;
   ~FaceCullingShader();
 
-  void BackfaceCullingInViewSpace(
-      const std::vector<Vertex>& view_coordinate_buffer,
-      std::vector<Primitive*>& primitive_buffer) const;
-  void BackfaceCullingInClipSpace(
-      const std::vector<Vector3>& ndc_buffer,
-      std::vector<Primitive*>& primitive_buffer) const;
+  void BackfaceCulling(std::vector<Primitive*>& primitive_buffer,
+                       std::vector<Vector3>& coordinate_buffer,
+                       const Vector3& view_direction) const;
 };
 }  // namespace ho_renderer
 

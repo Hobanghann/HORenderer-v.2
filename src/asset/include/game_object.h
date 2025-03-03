@@ -6,7 +6,7 @@
 
 #include "asset/include/mesh.h"
 #include "asset/include/transform.h"
-#include "engine/include/input_listener.h"
+#include "engine/input/include/input_listener.h"
 
 namespace ho_renderer {
 class GameObject : public InputListener {
@@ -24,8 +24,7 @@ class GameObject : public InputListener {
   GameObject& set_transform(const Transform& transform);
   GameObject& set_mesh(const Mesh* mesh);
 
-  void Update(InputReceiver& input_receiver,
-              const float delta_time) override;
+  void Update(InputReceiver& input_receiver, const float delta_time) override;
 
  private:
   std::string name_;

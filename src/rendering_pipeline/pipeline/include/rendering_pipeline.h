@@ -6,10 +6,11 @@
 
 #include <memory>
 
-#include "asset/include/scene.h"
+#include "engine/scene/include/scene.h"
 #include "rendering_pipeline/pipeline/include/pipeline_settings.h"
 #include "rendering_pipeline/stages/include/fragment_processing.h"
 #include "rendering_pipeline/stages/include/per_sample_processing.h"
+#include "rendering_pipeline/stages/include/pre_render.h"
 #include "rendering_pipeline/stages/include/rasterization.h"
 #include "rendering_pipeline/stages/include/vertex_post_processing.h"
 #include "rendering_pipeline/stages/include/vertex_processing.h"
@@ -29,11 +30,12 @@ class RenderingPipeline {
   PipelineSettings& pipeline_settings();
   FrameBuffer& frame_buffer();
 
-  void Run(const Scene& scene);
+  void Run(const Scene* scene);
 
  private:
   PipelineSettings pipeline_settings_;
   FrameBuffer frame_buffer_;
+  std::unique_ptr<PreRenderStage> pre_render_stage_;
   std::unique_ptr<VertexSpecification> vertex_specification_stage_;
   std::unique_ptr<VertexProcessing> vertex_processing_stage_;
   std::unique_ptr<VertexPostProcessing> vertex_post_processing_stage_;

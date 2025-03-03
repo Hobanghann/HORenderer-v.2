@@ -1,10 +1,12 @@
 #include "rendering_pipeline/stages/include/rasterization.h"
 
 #include "app/include/debug.h"
+#include "rendering_pipeline/shaders/include/depth_testing_shader.h"
 
 namespace ho_renderer {
 
-Rasterization::Rasterization() : rasterizing_shader_(new RasterizingShader()) {}
+Rasterization::Rasterization()
+    : rasterizing_shader_(new RasterizingShader()) {}
 Rasterization::~Rasterization() = default;
 
 Rasterization& Rasterization::SetInputPipelineSettings(
@@ -17,21 +19,38 @@ Rasterization& Rasterization::SetInputVertexBuffer(
   input_vertex_buffer_ = vertex_buffer;
   return *this;
 }
-Rasterization& Rasterization::SetInputTransformedCoordinateBuffer(
-    std::vector<Vector3>* transformed_coordinate_buffer) {
-  input_transformed_coordinate_buffer_ = transformed_coordinate_buffer;
+Rasterization& Rasterization::SetInputViewCoordinateBuffer(
+    std::vector<Vector3>* view_coordinate_buffer) {
+  input_view_coordinate_buffer_ = view_coordinate_buffer;
+  return *this;
+}
+Rasterization& Rasterization::SetInputNDCBuffer(
+    std::vector<Vector3>* ndc_buffer) {
+  input_ndc_buffer_ = ndc_buffer;
+  return *this;
+}
+Rasterization& Rasterization::SetInputViewportNDCBuffer(
+    std::vector<Vector3>* viewport_ndc_buffer) {
+  input_viewport_ndc_buffer_ = viewport_ndc_buffer;
   return *this;
 }
 Rasterization& Rasterization::SetInputPrimitive(const Primitive* primitive) {
   input_primitive_ = primitive;
   return *this;
 }
+Rasterization& Rasterization::SetInputFrameBuffer(
+    const FrameBuffer* frame_buffer) {
+  input_frame_buffer_ = frame_buffer;
+  return *this;
+}
 
 Rasterization& Rasterization::ResetInputs() {
   input_pipeline_settings_ = nullptr;
   input_vertex_buffer_ = nullptr;
-  input_transformed_coordinate_buffer_ = nullptr;
+  input_ndc_buffer_ = nullptr;
+  input_viewport_ndc_buffer_ = nullptr;
   input_primitive_ = nullptr;
+  input_frame_buffer_ = nullptr;
   return *this;
 }
 
@@ -57,11 +76,19 @@ void Rasterization::Rasterize() {
     assert(false);
 #endif
   }
-  if (input_transformed_coordinate_buffer_ == nullptr) {
+  if (input_view_coordinate_buffer_ == nullptr) {
 #ifdef DEBUG
     DEBUG_MSG(
-        "input_transformed_coordinate_buffer_ is null.\nRasterization has to "
+        "input_ndc_buffer_ is null.\nRasterization has to "
         "be excuted after perspective divide.")
+    assert(false);
+#endif
+  }
+  if (input_viewport_ndc_buffer_ == nullptr) {
+#ifdef DEBUG
+    DEBUG_MSG(
+        "input_viewport_ndc_buffer_ is null.\nRasterization has to "
+        "be excuted after viewport transformation.")
     assert(false);
 #endif
   }
@@ -76,20 +103,27 @@ void Rasterization::Rasterize() {
   switch (input_pipeline_settings_->primitive_type()) {
     case kPOINT:
       output_fragment_buffer_ = rasterizing_shader_->RasterizePoint(
-          *input_vertex_buffer_, *input_transformed_coordinate_buffer_,
+          *input_frame_buffer_, *input_vertex_buffer_, *input_view_coordinate_buffer_,
+          *input_viewport_ndc_buffer_,
           *(static_cast<const Point*>(input_primitive_)));
       break;
     case kLINE:
       switch (input_pipeline_settings_->interpolation_mode()) {
         case kAFFINE:
           output_fragment_buffer_ = rasterizing_shader_->RasterizeLineAffine(
-              *input_vertex_buffer_, *input_transformed_coordinate_buffer_,
+              *input_frame_buffer_, 
+              *input_vertex_buffer_, *input_view_coordinate_buffer_,
+              *input_viewport_ndc_buffer_,
+
               *(static_cast<const Line*>(input_primitive_)));
           break;
         case kPERSPECTIVE_CORRECT:
           output_fragment_buffer_ =
               rasterizing_shader_->RasterizeLinePerspective(
-                  *input_vertex_buffer_, *input_transformed_coordinate_buffer_,
+                  *input_frame_buffer_, 
+                  *input_vertex_buffer_, *input_view_coordinate_buffer_,
+                  *input_viewport_ndc_buffer_,
+
                   *(static_cast<const Line*>(input_primitive_)));
           break;
       }
@@ -101,15 +135,19 @@ void Rasterization::Rasterize() {
             case kWIRE_FRAME:
               output_fragment_buffer_ =
                   rasterizing_shader_->RasterizeWireTriangleAffine(
-                      *input_vertex_buffer_,
-                      *input_transformed_coordinate_buffer_,
+                      *input_frame_buffer_, 
+                      *input_vertex_buffer_, *input_view_coordinate_buffer_,
+                      *input_viewport_ndc_buffer_,
+
                       *(static_cast<const Triangle*>(input_primitive_)));
               break;
             case kFILL:
               output_fragment_buffer_ =
                   rasterizing_shader_->EdgeFunctionRasterizeTriangleAffine(
-                      *input_vertex_buffer_,
-                      *input_transformed_coordinate_buffer_,
+                      *input_frame_buffer_, 
+                      *input_vertex_buffer_, *input_view_coordinate_buffer_,
+                      *input_viewport_ndc_buffer_,
+
                       *(static_cast<const Triangle*>(input_primitive_)));
               break;
             case kTEXTURE_MAPPING:
@@ -121,15 +159,19 @@ void Rasterization::Rasterize() {
             case kWIRE_FRAME:
               output_fragment_buffer_ =
                   rasterizing_shader_->RasterizeWireTrianglePerspective(
-                      *input_vertex_buffer_,
-                      *input_transformed_coordinate_buffer_,
+                      *input_frame_buffer_, 
+                      *input_vertex_buffer_, *input_view_coordinate_buffer_,
+                      *input_viewport_ndc_buffer_,
+
                       *(static_cast<const Triangle*>(input_primitive_)));
               break;
             case kFILL:
               output_fragment_buffer_ =
                   rasterizing_shader_->EdgeFunctionRasterizeTrianglePerspective(
-                      *input_vertex_buffer_,
-                      *input_transformed_coordinate_buffer_,
+                      *input_frame_buffer_, 
+                      *input_vertex_buffer_, *input_view_coordinate_buffer_,
+                      *input_viewport_ndc_buffer_,
+
                       *(static_cast<const Triangle*>(input_primitive_)));
               break;
             case kTEXTURE_MAPPING:

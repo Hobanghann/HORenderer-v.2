@@ -1,6 +1,9 @@
 #ifndef _HORENDERER_MATH_MATRIX3X3_H_
 #define _HORENDERER_MATH_MATRIX3X3_H_
 
+#include <string>
+#include <vector>
+
 #include "math/include/vector3.h"
 
 namespace ho_renderer {
@@ -33,6 +36,8 @@ class Matrix3x3 {
   Vector3 operator*(const Vector3& vector) const;
   // transposition
   Matrix3x3 Transpose() const;
+
+  std::vector<std::string> ToStrings() const;
 
  private:
   Vector3 col1_;

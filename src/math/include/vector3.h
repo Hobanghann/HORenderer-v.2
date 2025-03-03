@@ -70,6 +70,10 @@ class Vector3 {
 inline Vector3 operator*(const float scalar, const Vector3 &vector) {
   return Vector3(scalar * vector.x(), scalar * vector.y(), scalar * vector.z());
 }
+inline Vector3 operator/(const Vector3 &vector, const float scalar) {
+  float inv_scalar = 1.f / scalar;
+  return inv_scalar * vector;
+}
 }  // namespace ho_renderer
 
 #endif  // _HORENDERER_MATH_VECOTR3_H_

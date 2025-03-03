@@ -38,10 +38,11 @@ Initialize ── Preupdate data ── Update data ── Run rendering pipelin
 │    ├── GameObject
 │    ├── Transform
 │    ├── Mesh
+│    ├── MeshGenerator
+│    ├── MeshManager
 │    ├── Vertex
 │    ├── SphereBoundingVolume 
-│    ├── AAB (Axis Aligned Box) BoundingVolume      
-│    └── Scene
+│    └── AAB (Axis Aligned Box) BoundingVolume      
 │            
 ├── <rendering_pipeline> 
 │    ├── /pipeline
@@ -85,17 +86,32 @@ Initialize ── Preupdate data ── Update data ── Run rendering pipelin
 │         └── FrameWritingShader
 │
 ├── <engine>
-│        ├── InputSender
-│        ├── InputReceiver
-│        ├── InputListener
-│        ├── InputManager
-│        ├── SRGB
 │        ├── Timer
-│        ├── MeshGenerator
-│        ├── MeshManager
-│        ├── SceneManager
-│        ├── RendererSettings
-│        └── Renderer
+│        │  
+│        ├── /input
+│        │      ├── InputReceiver
+│        │      ├── InputReceiver
+│        │      ├── InputListener
+│        │      └── InputManager
+│        │  
+│        ├── /color
+│        │      ├── LinearRGB
+│        │      └── SRGB
+│        │
+│        ├── /light
+│        │     ├── Light
+│        │     ├── AmbientLight
+│        │     ├── DirectionalLight
+│        │     └── PointLight
+│        │
+│        └── /scene
+│              ├── Scene
+│              └── SceneManager
+│
+├── <renderer>
+│       ├── Renderer
+│       │
+│       └── RendererSettings
 │
 └── <windows>
       └── WindowsApp
@@ -119,7 +135,7 @@ Initialize ── Preupdate data ── Update data ── Run rendering pipelin
 -Projection transform : Matrix
 
 [🎨 Color]
--The color space used is sRGB.
+-The color spaces used is LinearRGB, sRGB.
 -The renderer supports gamma correction.
 -The color depth is 32-bit, and it is composed of alpha, red, green, and blue (ARGB format).
 
@@ -128,6 +144,7 @@ Initialize ── Preupdate data ── Update data ── Run rendering pipelin
 -Triangle Rasterization : Barycentric Algorithm / Edge function Half-testing, Incremental Approch
 -Backface Culling: Triple Product
 -Interpolation : Linear Interpolation / Perspective-Correct Interpolation / Sphere Linearly Interpolation(Slerp)
+-Lighting : diffuse lighting - Rembrandt lighting, specular lighting - Blinn-phong lighting
 
 
 ## 🎮 Key Guide
@@ -138,6 +155,8 @@ Initialize ── Preupdate data ── Update data ── Run rendering pipelin
 -F4 : Sphere bounding volume / Aligned axis box bounding volume
 -F5 : Affine interpolation / Perspective correct interpolation
 -F6 : On / Off backface culling mode
+-F7 : On / Off Diffuse lighting
+-F8 : On / Off Specular lighting
 -F9 : 30 FPS mode
 -F10 : 60 FPS mode
 -F11 : Variable FPS mode

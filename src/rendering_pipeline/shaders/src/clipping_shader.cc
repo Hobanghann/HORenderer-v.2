@@ -20,6 +20,7 @@ ClippingShader::~ClippingShader() = default;
 
 void ho_renderer::ClippingShader::ClipPointAgainstFrustum(
     std::vector<Vertex>& clip_coordinate_buffer,
+    std::vector<Vector3>& view_coordinate_buffer,
     std::vector<Primitive*>& primitive_buffer) const {
   for (auto point_itr = primitive_buffer.begin();
        point_itr != primitive_buffer.end(); point_itr++) {
@@ -52,6 +53,7 @@ void ho_renderer::ClippingShader::ClipPointAgainstFrustum(
 
 void ho_renderer::ClippingShader::ClipLineAgainstFrustum(
     std::vector<Vertex>& clip_coordinate_buffer,
+    std::vector<Vector3>& view_coordinate_buffer,
     std::vector<Primitive*>& primitive_buffer) const {
   std::array<Frustum::PlanePosition, 6> plane_positions = {
       Frustum::PlanePosition::kLEFT,       Frustum::PlanePosition::kRIGHT,
@@ -62,7 +64,9 @@ void ho_renderer::ClippingShader::ClipLineAgainstFrustum(
   int num_inside;
   for (auto plane_position_itr = plane_positions.cbegin();
        plane_position_itr != plane_positions.cend(); plane_position_itr++) {
-    for (int i = 0; i < primitive_buffer.size(); i++) {
+    // newly added line not considerd against same plane.
+    uint32_t existing_size = primitive_buffer.size();
+    for (int i = 0; i < existing_size; i++) {
       Line& line = *(static_cast<Line*>(primitive_buffer[i]));
       if (line.is_outof_frustum()) {
         continue;
@@ -82,8 +86,9 @@ void ho_renderer::ClippingShader::ClipLineAgainstFrustum(
           line.set_is_outof_frustum(true);
           break;
         case 1:
-          ShrinkLine(clip_coordinate_buffer, primitive_buffer, index_states,
-                     index_buffer, *plane_position_itr, line.color_bit());
+          ShrinkLine(clip_coordinate_buffer, view_coordinate_buffer,
+                     primitive_buffer, index_states, index_buffer,
+                     *plane_position_itr, line);
           line.set_is_outof_frustum(true);
           break;
         case 2:
@@ -96,6 +101,7 @@ void ho_renderer::ClippingShader::ClipLineAgainstFrustum(
 
 void ho_renderer::ClippingShader::ClipTriangleAgainstFrustum(
     std::vector<Vertex>& clip_coordinate_buffer,
+    std::vector<Vector3>& view_coordinate_buffer,
     std::vector<Primitive*>& primitive_buffer) const {
   std::array<Frustum::PlanePosition, 6> plane_positions = {
       Frustum::PlanePosition::kLEFT,       Frustum::PlanePosition::kRIGHT,
@@ -134,15 +140,15 @@ void ho_renderer::ClippingShader::ClipTriangleAgainstFrustum(
           triangle.set_is_outof_frustum(true);
           break;
         case 1:
-          ShrinkTriangle(clip_coordinate_buffer, primitive_buffer, index_states,
-                         index_buffer, *plane_position_itr,
-                         triangle.color_bit());
+          ShrinkTriangle(clip_coordinate_buffer, view_coordinate_buffer,
+                         primitive_buffer, index_states, index_buffer,
+                         *plane_position_itr, triangle);
           triangle.set_is_outof_frustum(true);
           break;
         case 2:
-          DivideTriangle(clip_coordinate_buffer, primitive_buffer, index_states,
-                         index_buffer, *plane_position_itr,
-                         triangle.color_bit());
+          DivideTriangle(clip_coordinate_buffer, view_coordinate_buffer,
+                         primitive_buffer, index_states, index_buffer,
+                         *plane_position_itr, triangle);
           // make disable existing triangle
           triangle.set_is_outof_frustum(true);
           break;
@@ -157,10 +163,11 @@ void ho_renderer::ClippingShader::ClipTriangleAgainstFrustum(
 
 void ho_renderer::ClippingShader::ShrinkLine(
     std::vector<Vertex>& clip_coordinate_buffer,
+    std::vector<Vector3>& view_coordinate_buffer,
     std::vector<Primitive*>& primitive_buffer,
     const std::array<CoordinateState, 2>& index_states,
     std::array<int, 2>& index_buffer, Frustum::PlanePosition position,
-    std::uint32_t primitive_color) const {
+    const Line& line) const {
   int inside_buf_index = (index_states[0] == kINSIDE) ? 0 : 1;
   int inside_index = index_buffer[inside_buf_index];
   int outside_index = index_buffer[(inside_buf_index + 1) % 2];
@@ -169,6 +176,9 @@ void ho_renderer::ClippingShader::ShrinkLine(
       clip_coordinate_buffer[inside_index].coordinate();
   const Vector4& outside_coordinate =
       clip_coordinate_buffer[outside_index].coordinate();
+  const Vector3& inside_view_coordinate = view_coordinate_buffer[inside_index];
+  const Vector3& outside_view_coordinate =
+      view_coordinate_buffer[outside_index];
 
   // calculate scalar
   float intersection_scalar =
@@ -183,22 +193,25 @@ void ho_renderer::ClippingShader::ShrinkLine(
   // calculate intersected coordinate
   Vector4 intersected_coordinate = AffineCombination(
       inside_coordinate, outside_coordinate, intersection_scalar);
-
+  Vector3 intersected_view_coordinate = AffineCombination(
+      inside_view_coordinate, outside_view_coordinate, intersection_scalar);
   int intersect_index = clip_coordinate_buffer.size();
   // add coordinate to buffer
   clip_coordinate_buffer.push_back(intersected_coordinate);
+  view_coordinate_buffer.push_back(intersected_view_coordinate);
   // add new line to buffer
-  Line new_line = {intersect_index, inside_index, primitive_color};
+  Line new_line = {intersect_index, inside_index, line.color()};
   new_line.set_is_outof_frustum(false);
   primitive_buffer.emplace_back(new Line(new_line));
 }
 
 void ho_renderer::ClippingShader::ShrinkTriangle(
     std::vector<Vertex>& clip_coordinate_buffer,
+    std::vector<Vector3>& view_coordinate_buffer,
     std::vector<Primitive*>& primitive_buffer,
     const std::array<CoordinateState, 3>& index_states,
     std::array<int, 3>& index_buffer, Frustum::PlanePosition position,
-    std::uint32_t primitive_color) const {
+    const Triangle& triangle) const {
   int inside_buf_index =
       (index_states[0] == kINSIDE) ? 0 : ((index_states[1] == kINSIDE) ? 1 : 2);
   int inside_index = index_buffer[inside_buf_index];
@@ -211,6 +224,11 @@ void ho_renderer::ClippingShader::ShrinkTriangle(
       clip_coordinate_buffer[outside_index1].coordinate();
   const Vector4& outside_coordinate2 =
       clip_coordinate_buffer[outside_index2].coordinate();
+  const Vector3& inside_view_coordinate = view_coordinate_buffer[inside_index];
+  const Vector3& outside_view_coordinate1 =
+      view_coordinate_buffer[outside_index1];
+  const Vector3& outside_view_coordinate2 =
+      view_coordinate_buffer[outside_index2];
 
   // calculate scalar
   float intersection_scalar1 =
@@ -236,13 +254,22 @@ void ho_renderer::ClippingShader::ShrinkTriangle(
       inside_coordinate, outside_coordinate1, intersection_scalar1);
   Vector4 intersected_coordinate2 = AffineCombination(
       inside_coordinate, outside_coordinate2, intersection_scalar2);
+  Vector3 intersected_view_coordinate1 = AffineCombination(
+      inside_view_coordinate, outside_view_coordinate1, intersection_scalar1);
+  Vector3 intersected_view_coordinate2 = AffineCombination(
+      inside_view_coordinate, outside_view_coordinate2, intersection_scalar2);
   int intersect_index1 = clip_coordinate_buffer.size();
   int intersect_index2 = clip_coordinate_buffer.size() + 1;
   clip_coordinate_buffer.push_back(intersected_coordinate1);
   clip_coordinate_buffer.push_back(intersected_coordinate2);
+  view_coordinate_buffer.push_back(intersected_view_coordinate1);
+  view_coordinate_buffer.push_back(intersected_view_coordinate2);
 
-  Triangle new_triangle = {inside_index, intersect_index1, intersect_index2,
-                           primitive_color};
+  Triangle new_triangle = {
+      inside_index,        intersect_index1,
+      intersect_index2,    triangle.normal_vector(),
+      triangle.color(),    triangle.specular_reflection_coefficient(),
+      triangle.shininess()};
   new_triangle.set_is_backface(false).set_is_outof_frustum(false);
   primitive_buffer.emplace_back(new Triangle(new_triangle));
 }
@@ -250,10 +277,11 @@ void ho_renderer::ClippingShader::ShrinkTriangle(
 // DEBUG : modified index order
 void ho_renderer::ClippingShader::DivideTriangle(
     std::vector<Vertex>& clip_coordinate_buffer,
+    std::vector<Vector3>& view_coordinate_buffer,
     std::vector<Primitive*>& primitive_buffer,
     const std::array<CoordinateState, 3>& index_states,
     std::array<int, 3>& index_buffer, Frustum::PlanePosition position,
-    std::uint32_t primitive_color) const {
+    const Triangle& triangle) const {
   int outside_buf_index = (index_states[0] == kOUTSIDE)
                               ? 0
                               : ((index_states[1] == kOUTSIDE) ? 1 : 2);
@@ -267,6 +295,12 @@ void ho_renderer::ClippingShader::DivideTriangle(
       clip_coordinate_buffer[inside_index1].coordinate();
   const Vector4& inside_coordinate2 =
       clip_coordinate_buffer[inside_index2].coordinate();
+  const Vector3& outside_view_coordinate =
+      view_coordinate_buffer[outside_index];
+  const Vector3& inside_view_coordinate1 =
+      view_coordinate_buffer[inside_index1];
+  const Vector3& inside_view_coordinate2 =
+      view_coordinate_buffer[inside_index2];
 
   float intersection_scalar1 =
       CalculateScalar(outside_coordinate, inside_coordinate1, position);
@@ -290,15 +324,27 @@ void ho_renderer::ClippingShader::DivideTriangle(
       outside_coordinate, inside_coordinate1, intersection_scalar1);
   Vector4 intersected_coordinate2 = AffineCombination(
       outside_coordinate, inside_coordinate2, intersection_scalar2);
+  Vector3 intersected_view_coordinate1 = AffineCombination(
+      outside_view_coordinate, inside_view_coordinate1, intersection_scalar1);
+  Vector3 intersected_view_coordinate2 = AffineCombination(
+      outside_view_coordinate, inside_view_coordinate2, intersection_scalar2);
   int intersect_index1 = clip_coordinate_buffer.size();
   int intersect_index2 = clip_coordinate_buffer.size() + 1;
   clip_coordinate_buffer.push_back(intersected_coordinate1);
   clip_coordinate_buffer.push_back(intersected_coordinate2);
+  view_coordinate_buffer.push_back(intersected_view_coordinate1);
+  view_coordinate_buffer.push_back(intersected_view_coordinate2);
 
-  Triangle new_triangle1 = {inside_index1, inside_index2, intersect_index1,
-                            primitive_color};
-  Triangle new_triangle2 = {intersect_index1, inside_index2, intersect_index2,
-                            primitive_color};
+  Triangle new_triangle1 = {
+      inside_index1,       inside_index2,
+      intersect_index1,    triangle.normal_vector(),
+      triangle.color(),    triangle.specular_reflection_coefficient(),
+      triangle.shininess()};
+  Triangle new_triangle2 = {
+      intersect_index1,    inside_index2,
+      intersect_index2,    triangle.normal_vector(),
+      triangle.color(),    triangle.specular_reflection_coefficient(),
+      triangle.shininess()};
   new_triangle1.set_is_backface(false).set_is_outof_frustum(false);
   new_triangle2.set_is_backface(false).set_is_outof_frustum(false);
   primitive_buffer.emplace_back(new Triangle(new_triangle1));
@@ -433,10 +479,14 @@ float ho_renderer::ClippingShader::CalculateScalar(
   return numerator / denominator;
 }
 
-ho_renderer::Vector4 ho_renderer::ClippingShader::AffineCombination(
-    const Vector4 coordinate1, const Vector4 coordinate2,
-    const float scalar) const {
+Vector4 ClippingShader::AffineCombination(const Vector4& coordinate1,
+                                          const Vector4& coordinate2,
+                                          const float scalar) const {
   return (1.f - scalar) * coordinate1 + scalar * coordinate2;
 }
-
+Vector3 ClippingShader::AffineCombination(const Vector3& coordinate1,
+                                          const Vector3& coordinate2,
+                                          const float scalar) const {
+  return (1.f - scalar) * coordinate1 + scalar * coordinate2;
+}
 }  // namespace ho_renderer

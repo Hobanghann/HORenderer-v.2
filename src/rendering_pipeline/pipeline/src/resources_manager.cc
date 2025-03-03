@@ -6,83 +6,59 @@
 #include "app/include/debug.h"
 
 namespace ho_renderer {
-std::vector<Vertex> *ResourcesManager::AllocateVertexBuffer() {
-  vertex_buffer_ = new std::vector<Vertex>();
-  return vertex_buffer_;
+std::vector<Vertex> *ResourcesManager::GetClearVertexBuffer() {
+  vertex_buffer_->clear();
+  return vertex_buffer_.get();
 }
-std::vector<std::uint32_t> *ResourcesManager::AllocateIndexBuffer() {
-  index_buffer_ = new std::vector<std::uint32_t>();
-  return index_buffer_;
+std::vector<std::uint32_t> *ResourcesManager::GetClearIndexBuffer() {
+  index_buffer_->clear();
+  return index_buffer_.get();
 }
-std::vector<Vector3> *ResourcesManager::AllocateCoordinateBuffer() {
-  coordinate_buffer_ = new std::vector<Vector3>();
-  return coordinate_buffer_;
+std::vector<Vector3> *ResourcesManager::GetClearViewCoordinateBuffer() {
+  view_coordinate_buffer_->clear();
+  return view_coordinate_buffer_.get();
 }
-std::vector<Primitive *> *ResourcesManager::AllocatePrimitiveBuffer() {
-  primitive_buffer_ = new std::vector<Primitive *>();
-  return primitive_buffer_;
+std::vector<Vector3> *ResourcesManager::GetClearNDCBuffer() {
+  ndc_buffer_->clear();
+  return ndc_buffer_.get();
 }
-std::vector<Fragment> *ResourcesManager::AllocateFragmentBuffer() {
-  fragment_buffer_ = new std::vector<Fragment>();
-  return fragment_buffer_;
+std::vector<Vector3> *ResourcesManager::GetClearViewportNDCBuffer() {
+  viewport_ndc_buffer_->clear();
+  return viewport_ndc_buffer_.get();
 }
-std::vector<std::uint32_t> *ResourcesManager::AllocateColorBuffer() {
-  color_buffer_ = new std::vector<std::uint32_t>();
-  return color_buffer_;
+std::vector<Primitive *> *ResourcesManager::GetClearPrimitiveBuffer() {
+  primitive_buffer_->clear();
+  return primitive_buffer_.get();
 }
-RenderObjectState *ResourcesManager::AllocateRenderObjectState() {
-  render_object_state_ = new RenderObjectState();
-  return render_object_state_;
+std::vector<Fragment> *ResourcesManager::GetClearFragmentBuffer() {
+  fragment_buffer_->clear();
+  return fragment_buffer_.get();
 }
-
-void ResourcesManager::DeallocateVertexBuffer() {
-  delete vertex_buffer_;
-  vertex_buffer_ = nullptr;
+std::vector<LinearRGB> *ResourcesManager::GetClearColorBuffer() {
+  color_buffer_->clear();
+  return color_buffer_.get();
 }
-void ResourcesManager::DeallocateIndexBuffer() {
-  delete index_buffer_;
-  index_buffer_ = nullptr;
-}
-void ResourcesManager::DeallocateCoordinateBuffer() {
-  delete coordinate_buffer_;
-  coordinate_buffer_ = nullptr;
-}
-void ResourcesManager::DeallocatePrimitiveBuffer() {
-  for (auto itr = primitive_buffer_->begin(); itr != primitive_buffer_->end();
-       itr++) {
-    delete *itr;
-  }
-  delete primitive_buffer_;
-  primitive_buffer_ = nullptr;
-}
-void ResourcesManager::DeallocateFragmentBuffer() {
-  delete fragment_buffer_;
-  fragment_buffer_ = nullptr;
-}
-void ResourcesManager::DeallocateColorBuffer() {
-  delete color_buffer_;
-  color_buffer_ = nullptr;
-}
-void ResourcesManager::DeallocateRenderObjectState() {
-  delete render_object_state_;
-  render_object_state_ = nullptr;
+RenderObjectState *ResourcesManager::GetClearRenderObjectState() {
+  render_object_state_->set_object_culling_state(kINSIDE);
+  return render_object_state_.get();
 }
 
-void ResourcesManager::DeallocateAll() {
-  DeallocateVertexBuffer();
-  DeallocateIndexBuffer();
-  DeallocateCoordinateBuffer();
-  DeallocatePrimitiveBuffer();
-  DeallocateFragmentBuffer();
-  DeallocateColorBuffer();
-  DeallocateRenderObjectState();
-}
-
-std::vector<Vertex> *ResourcesManager::vertex_buffer_ = nullptr;
-std::vector<std::uint32_t> *ResourcesManager::index_buffer_ = nullptr;
-std::vector<Vector3> *ResourcesManager::coordinate_buffer_ = nullptr;
-std::vector<Primitive *> *ResourcesManager::primitive_buffer_ = nullptr;
-std::vector<Fragment> *ResourcesManager::fragment_buffer_ = nullptr;
-std::vector<std::uint32_t> *ResourcesManager::color_buffer_ = nullptr;
-RenderObjectState *ResourcesManager::render_object_state_ = nullptr;
+std::unique_ptr<std::vector<Vertex>> ResourcesManager::vertex_buffer_(
+    new std::vector<Vertex>());
+std::unique_ptr<std::vector<std::uint32_t>> ResourcesManager::index_buffer_(
+    new std::vector<std::uint32_t>());
+std::unique_ptr<std::vector<Vector3>> ResourcesManager::view_coordinate_buffer_(
+    new std::vector<Vector3>());
+std::unique_ptr<std::vector<Vector3>> ResourcesManager::ndc_buffer_(
+    new std::vector<Vector3>());
+std::unique_ptr<std::vector<Vector3>> ResourcesManager::viewport_ndc_buffer_(
+    new std::vector<Vector3>());
+std::unique_ptr<std::vector<Primitive *>> ResourcesManager::primitive_buffer_(
+    new std::vector<Primitive *>());
+std::unique_ptr<std::vector<Fragment>> ResourcesManager::fragment_buffer_(
+    new std::vector<Fragment>());
+std::unique_ptr<std::vector<LinearRGB>> ResourcesManager::color_buffer_(
+    new std::vector<LinearRGB>());
+std::unique_ptr<RenderObjectState> ResourcesManager::render_object_state_(
+    new RenderObjectState());
 }  // namespace ho_renderer

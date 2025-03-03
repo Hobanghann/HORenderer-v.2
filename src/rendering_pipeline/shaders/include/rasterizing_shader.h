@@ -9,6 +9,7 @@
 #include "rendering_pipeline/pipeline_objects/include/line.h"
 #include "rendering_pipeline/pipeline_objects/include/point.h"
 #include "rendering_pipeline/pipeline_objects/include/triangle.h"
+#include "rendering_pipeline/pipeline_objects/include/frame_buffer.h"
 
 namespace ho_renderer {
 class RasterizingShader {
@@ -19,40 +20,49 @@ class RasterizingShader {
   ~RasterizingShader();
 
   std::vector<Fragment>* RasterizePoint(
-      const std::vector<Vertex>& vertex_buffer,
-      const std::vector<Vector3>& transformed_coordinate_buffer,
+      const FrameBuffer& frame_buffer, const std::vector<Vertex>& vertex_buffer,
+      const std::vector<Vector3>& ndc_buffer,
+      const std::vector<Vector3>& viewport_ndc_buffer,
       const Point& primitive) const;
   std::vector<Fragment>* RasterizeLineAffine(
-      const std::vector<Vertex>& vertex_buffer,
-      const std::vector<Vector3>& transformed_coordinate_buffer,
+      const FrameBuffer& frame_buffer, const std::vector<Vertex>& vertex_buffer,
+      const std::vector<Vector3>& ndc_buffer,
+      const std::vector<Vector3>& viewport_ndc_buffer,
       const Line& primitive) const;
   std::vector<Fragment>* RasterizeTriangleAffine(
-      const std::vector<Vertex>& vertex_buffer,
-      const std::vector<Vector3>& transformed_coordinate_buffer,
+      const FrameBuffer& frame_buffer, const std::vector<Vertex>& vertex_buffer,
+      const std::vector<Vector3>& ndc_buffer,
+      const std::vector<Vector3>& viewport_ndc_buffer,
       const Triangle& primitive) const;
   std::vector<Fragment>* EdgeFunctionRasterizeTriangleAffine(
-      const std::vector<Vertex>& vertex_buffer,
-      const std::vector<Vector3>& transformed_coordinate_buffer,
+      const FrameBuffer& frame_buffer, const std::vector<Vertex>& vertex_buffer,
+      const std::vector<Vector3>& ndc_buffer,
+      const std::vector<Vector3>& viewport_ndc_buffer,
       const Triangle& primitive) const;
   std::vector<Fragment>* RasterizeWireTriangleAffine(
-      const std::vector<Vertex>& vertex_buffer,
-      const std::vector<Vector3>& transformed_coordinate_buffer,
+      const FrameBuffer& frame_buffer, const std::vector<Vertex>& vertex_buffer,
+      const std::vector<Vector3>& ndc_buffer,
+      const std::vector<Vector3>& viewport_ndc_buffer,
       const Triangle& primitive) const;
   std::vector<Fragment>* RasterizeLinePerspective(
-      const std::vector<Vertex>& vertex_buffer,
-      const std::vector<Vector3>& transformed_coordinate_buffer,
+      const FrameBuffer& frame_buffer, const std::vector<Vertex>& vertex_buffer,
+      const std::vector<Vector3>& ndc_buffer,
+      const std::vector<Vector3>& viewport_ndc_buffer,
       const Line& primitive) const;
   std::vector<Fragment>* RasterizeTrianglePerspective(
-      const std::vector<Vertex>& vertex_buffer,
-      const std::vector<Vector3>& transformed_coordinate_buffer,
+      const FrameBuffer& frame_buffer, const std::vector<Vertex>& vertex_buffer,
+      const std::vector<Vector3>& ndc_buffer,
+      const std::vector<Vector3>& viewport_ndc_buffer,
       const Triangle& primitive) const;
   std::vector<Fragment>* EdgeFunctionRasterizeTrianglePerspective(
-      const std::vector<Vertex>& vertex_buffer,
-      const std::vector<Vector3>& transformed_coordinate_buffer,
+      const FrameBuffer& frame_buffer, const std::vector<Vertex>& vertex_buffer,
+      const std::vector<Vector3>& ndc_buffer,
+      const std::vector<Vector3>& viewport_ndc_buffer,
       const Triangle& primitive) const;
   std::vector<Fragment>* RasterizeWireTrianglePerspective(
-      const std::vector<Vertex>& vertex_buffer,
-      const std::vector<Vector3>& transformed_coordinate_buffer,
+      const FrameBuffer& frame_buffer, const std::vector<Vertex>& vertex_buffer,
+      const std::vector<Vector3>& ndc_buffer,
+      const std::vector<Vector3>& viewport_ndc_buffer,
       const Triangle& primitive) const;
 };
 }  // namespace ho_renderer

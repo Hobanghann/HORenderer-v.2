@@ -15,10 +15,13 @@ SphereBoundingVolume::SphereBoundingVolume(
     const SphereBoundingVolume& bounding_volume) = default;
 SphereBoundingVolume::SphereBoundingVolume(const Mesh& mesh) {
   const std::vector<Vertex>& vertex_buffer = mesh.vertex_buffer();
+  size_t count = 0;
   // add all vertex coordinate
   for (auto vertex_itr = vertex_buffer.cbegin();
        vertex_itr != vertex_buffer.cend(); vertex_itr++) {
-    center_ += vertex_itr->coordinate().ToVector3();
+    count++;
+    center_ += (vertex_itr->coordinate().ToVector3() - center_) /
+               static_cast<float>(count);
   }
   // calculate average coordinate
   center_ = (1.f / vertex_buffer.size()) * center_;

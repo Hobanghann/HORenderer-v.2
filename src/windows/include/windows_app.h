@@ -6,8 +6,8 @@
 #include <memory>
 
 #include "app/include/debug.h"
-#include "engine/include/input_sender.h"
-#include "engine/include/renderer.h"
+#include "engine/input/include/input_sender.h"
+#include "renderer/include/renderer.h"
 
 class WindowsApp {
  public:

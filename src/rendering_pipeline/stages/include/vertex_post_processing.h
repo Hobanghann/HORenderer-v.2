@@ -33,10 +33,10 @@ class VertexPostProcessing {
       std::vector<Vertex>* vertex_buffer);
   VertexPostProcessing& SetInputIndexBuffer(
       std::vector<uint32_t>* index_buffer);
-  VertexPostProcessing& SetInputProjectionTransform(
-      const AffineTransform* projection_transform);
+  VertexPostProcessing& SetInputViewCoordinateBuffer(
+      std::vector<Vector3>* view_coordinate_buffer);
   VertexPostProcessing& SetInputPrimitiveColorBuffer(
-      std::vector<uint32_t>* primitive_color_buffer);
+      std::vector<LinearRGB>* primitive_color_buffer);
   VertexPostProcessing& SetInputFrustum(const Frustum* frustum);
   VertexPostProcessing& SetInputPipelineSettings(
       PipelineSettings* pipeline_settings);
@@ -44,7 +44,8 @@ class VertexPostProcessing {
   VertexPostProcessing& ResetInputs();
 
   std::vector<Primitive*>* GetOutputPrimitiveBuffer();
-  std::vector<Vector3>* GetOutputTransformedCoordinateBuffer();
+  std::vector<Vector3>* GetOutputNDCBuffer();
+  std::vector<Vector3>* GetOutputViewportNDCBuffer();
   RenderObjectState* GetOutputRenderObjectStates();
 
   VertexPostProcessing& ResetOutputs();
@@ -65,14 +66,15 @@ class VertexPostProcessing {
   const GameObject* input_game_object_;
   std::vector<Vertex>* input_vertex_buffer_;
   std::vector<std::uint32_t>* input_index_buffer_;
-  const AffineTransform* input_projection_transform_;
-  std::vector<std::uint32_t>* input_primitive_color_buffer_;
+  std::vector<Vector3>* input_view_coordinate_buffer_;
+  std::vector<LinearRGB>* input_primitive_color_buffer_;
   const Frustum* input_frustum_;
   PipelineSettings* input_pipeline_settings_;
 
   // outputs
   std::vector<Primitive*>* output_primitive_buffer_;
-  std::vector<Vector3>* output_transformed_coordinate_buffer_;
+  std::vector<Vector3>* output_ndc_buffer_;
+  std::vector<Vector3>* output_viewport_ndc_buffer_;
   RenderObjectState* output_render_object_states_;
 };
 }  // namespace ho_renderer

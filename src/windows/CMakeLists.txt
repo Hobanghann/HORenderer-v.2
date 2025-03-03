@@ -1,6 +1,6 @@
 message("Start to process windows")
 
-project(WindowsModule)
+project(${WINDOWS_NAME})
 
 ################################################################################
 # Read source files
@@ -36,13 +36,13 @@ add_library(${PROJECT_NAME} STATIC ${ALL_FILES})
 ################################################################################
 # Include directory
 ################################################################################
-target_include_directories(WindowsModule
+target_include_directories(${PROJECT_NAME}
 PUBLIC
 ${CMAKE_SOURCE_DIR}/src
 	)
 ################################################################################
 # Import Library
 ################################################################################
-target_link_libraries(${PROJECT_NAME} EngineModule)
+target_link_libraries(${PROJECT_NAME} ${MATH_NAME} ${ASSET_NAME} ${RENDERING_PIPELINE_NAME} ${ENGINE_NAME} ${RENDERER_NAME})
 
 message("Processing windows finished")

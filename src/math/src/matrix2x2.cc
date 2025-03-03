@@ -31,25 +31,26 @@ Vector2 Matrix2x2::GetRow1() const { return Vector2(col1_.x(), col2_.x()); }
 Vector2 Matrix2x2::GetRow2() const { return Vector2(col1_.y(), col2_.y()); }
 // addition
 Matrix2x2 Matrix2x2::operator+(const Matrix2x2& matrix) const {
-  return Matrix2x2(col1_ + matrix.col1(), col2_ + matrix.col2());
+  return Matrix2x2(col1_ + matrix.col1_, col2_ + matrix.col2_);
 }
 Matrix2x2& Matrix2x2::operator+=(const Matrix2x2& matrix) {
-  col1_ += matrix.col1();
-  col2_ += matrix.col2();
+  col1_ += matrix.col1_;
+  col2_ += matrix.col2_;
   return *this;
 }
 // matrix multiplication
 Matrix2x2 Matrix2x2::operator*(const Matrix2x2& matrix) const {
-  return Matrix2x2(
-      Vector2(GetRow1().Dot(matrix.col1_), GetRow2().Dot(matrix.col1_)),
-      Vector2(GetRow1().Dot(matrix.col2_), GetRow2().Dot(matrix.col2_)));
+  Vector2 row1 = GetRow1();
+  Vector2 row2 = GetRow2();
+  return Matrix2x2(Vector2(row1.Dot(matrix.col1_), row2.Dot(matrix.col1_)),
+                   Vector2(row1.Dot(matrix.col2_), row2.Dot(matrix.col2_)));
 }
 
 Matrix2x2& Matrix2x2::operator*=(const Matrix2x2& matrix) {
-  col1_.set_x(GetRow1().Dot(matrix.col1_));
-  col1_.set_y(GetRow2().Dot(matrix.col1_));
-  col2_.set_x(GetRow1().Dot(matrix.col2_));
-  col2_.set_y(GetRow2().Dot(matrix.col2_));
+  Vector2 row1 = GetRow1();
+  Vector2 row2 = GetRow2();
+  col1_ = Vector2(row1.Dot(matrix.col1_), row2.Dot(matrix.col1_));
+  col2_ = Vector2(row1.Dot(matrix.col2_), row2.Dot(matrix.col2_));
   return *this;
 }
 
@@ -57,7 +58,19 @@ Vector2 Matrix2x2::operator*(const Vector2& vector) const {
   return Vector2(GetRow1().Dot(vector), GetRow2().Dot(vector));
 }
 
-ho_renderer::Matrix2x2 ho_renderer::Matrix2x2::Transpose() const {
+Matrix2x2 Matrix2x2::Transpose() const {
   return Matrix2x2(GetRow1(), GetRow2());
+}
+
+std::vector<std::string> Matrix2x2::ToStrings() const {
+  Vector2 row1 = GetRow1();
+  Vector2 row2 = GetRow2();
+  std::vector<std::string> result;
+  char row[64];
+  std::snprintf(row, sizeof(row), "| %.3f , %.3f |", row1.x(), row1.y());
+  result.emplace_back(row);
+  std::snprintf(row, sizeof(row), "| %.3f , %.3f|", row2.x(), row2.y());
+  result.emplace_back(row);
+  return result;
 }
 }  // namespace ho_renderer

@@ -69,6 +69,10 @@ inline Vector4 operator*(const float scalar, const Vector4& vector) {
   return Vector4(scalar * vector.x(), scalar * vector.y(), scalar * vector.z(),
                  scalar * vector.w());
 }
+inline Vector4 operator/(const Vector4& vector, const float scalar) {
+  float inv_scalar = 1.f / scalar;
+  return inv_scalar * vector;
+}
 }  // namespace ho_renderer
 
 #endif  // _HORENDERER_MATH_VECTOR4_H_

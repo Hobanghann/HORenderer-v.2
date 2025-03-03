@@ -76,21 +76,18 @@ float Vector2::GetSqrdMagnitude() const { return this->Dot(*this); }
 
 // normalization
 void Vector2::Normalize() {
-  float magnitude = this->GetMagnitude();
-  if (MathUtils::IsEqual(magnitude, 0.f)) {
-    *this = Vector2::kZero;
+  float inv_mag = MathUtils::InvSqrtf(GetSqrdMagnitude());
+  if (MathUtils::IsFloatNaN(inv_mag)) {
     return;
   }
-  float inv_magnitude = 1.f / magnitude;
-  *this = inv_magnitude * *this;
+  *this = inv_mag * *this;
 }
 Vector2 Vector2::GetNormalized() const {
-  float magnitude = this->GetMagnitude();
-  if (MathUtils::IsEqual(magnitude, 0.f)) {
+  float inv_mag = MathUtils::InvSqrtf(GetSqrdMagnitude());
+  if (MathUtils::IsFloatNaN(inv_mag)) {
     return Vector2::kZero;
   }
-  float inv_magnitude = 1.f / magnitude;
-  return inv_magnitude * *this;
+  return inv_mag * *this;
 }
 
 Vector3 Vector2::ToHomogeneousCoordinate() const {

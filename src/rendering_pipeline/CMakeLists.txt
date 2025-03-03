@@ -1,6 +1,6 @@
 message("Start to process rendering_pipeline")
 
-project(RenderingPipelineModule)
+project(${RENDERING_PIPELINE_NAME})
 
 ################################################################################
 # Read source files
@@ -36,13 +36,13 @@ add_library(${PROJECT_NAME} STATIC ${ALL_FILES})
 ################################################################################
 # Include directory
 ################################################################################
-target_include_directories(RenderingPipelineModule
+target_include_directories(${PROJECT_NAME}
 PUBLIC
 ${CMAKE_SOURCE_DIR}/src
 	)
 ################################################################################
 # Import Library
 ################################################################################
-target_link_libraries(${PROJECT_NAME} MathModule AssetModule)
+target_link_libraries(${PROJECT_NAME} ${MATH_NAME} ${ASSET_NAME})
 
 message("Processing rendering pipeline finished")

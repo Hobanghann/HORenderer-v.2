@@ -13,7 +13,7 @@ class Point : public Primitive {
   Point() = delete;
   Point(const Point& point);
   Point(int index0);
-  Point(int index0, std::uint32_t color_bit);
+  Point(int index0, const LinearRGB& color);
   Point& operator=(const Point& point);
   ~Point();
 

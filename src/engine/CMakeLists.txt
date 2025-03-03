@@ -1,12 +1,12 @@
 message("Start to process engine")
 
-project(EngineModule)
+project(${ENGINE_NAME})
 
 ################################################################################
 # Read source files
 ################################################################################
-file(GLOB SOURCES ${PROJECT_SOURCE_DIR}/src/*.cc)
-file(GLOB HEADERS ${PROJECT_SOURCE_DIR}/include/*.h)
+file(GLOB_RECURSE SOURCES ${PROJECT_SOURCE_DIR}/*.cc)
+file(GLOB_RECURSE HEADERS ${PROJECT_SOURCE_DIR}/*.h)
 
 set(ALL_FILES ${SOURCES} ${HEADERS})
 ################################################################################
@@ -36,13 +36,13 @@ add_library(${PROJECT_NAME} STATIC ${ALL_FILES})
 ################################################################################
 # Include directory
 ################################################################################
-target_include_directories( EngineModule 
+target_include_directories(${PROJECT_NAME}
 PUBLIC
 ${CMAKE_SOURCE_DIR}/src
 	)
 ################################################################################
 # Import Library
 ################################################################################
-target_link_libraries(${PROJECT_NAME} MathModule AssetModule RenderingPipelineModule)
+target_link_libraries(${PROJECT_NAME} ${MATH_NAME} ${ASSET_NAME} ${RENDERING_PIPELINE_NAME})
 
 message("Processing engine finished")

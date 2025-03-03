@@ -19,11 +19,14 @@ class VertexProcessing {
   ~VertexProcessing();
 
   VertexProcessing& SetInputVertexBuffer(std::vector<Vertex>* vertex_buffer);
-  VertexProcessing& SetInputTransform(AffineTransform* transform);
+  VertexProcessing& SetInputModelingTransform(AffineTransform* transform);
+  VertexProcessing& SetInputViewTransform(AffineTransform* transform);
+  VertexProcessing& SetInputProjectionTransform(AffineTransform* transform);
 
   VertexProcessing& ResetInputs();
 
   std::vector<Vertex>* GetOutputVertexBuffer();
+  std::vector<Vector3>* GetOutputViewCoordinateBuffer();
 
   VertexProcessing& ResetOutputs();
 
@@ -34,9 +37,12 @@ class VertexProcessing {
   std::unique_ptr<VertexShader> vertex_shader_;
   // input
   std::vector<Vertex>* input_vertex_buffer_;
-  AffineTransform* input_transform_;
+  AffineTransform* input_modeling_transform_;
+  AffineTransform* input_view_transform_;
+  AffineTransform* input_projection_transform_;
   // output
   std::vector<Vertex>* output_vertex_buffer_;
+  std::vector<Vector3>* output_view_coordinate_buffer_;
 };
 }  // namespace ho_renderer
 

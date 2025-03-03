@@ -1,7 +1,7 @@
-#ifndef _HORENDERER_ASSETS_TRANSFORM_H_
-#define _HORENDERER_ASSETS_TRANSFORM_H_
+#ifndef _HORENDERER_ASSET_TRANSFORM_H_
+#define _HORENDERER_ASSET_TRANSFORM_H_
 
-#include "engine/include/input_sender.h"
+#include "engine/input/include/input_sender.h"
 #include "math/include/euler_angle.h"
 #include "math/include/vector3.h"
 
@@ -29,4 +29,4 @@ class Transform {
   float world_scale_;
 };
 }  // namespace ho_renderer
-#endif
+#endif  // _HORENDERER_ASSET_TRANSFORM_H_

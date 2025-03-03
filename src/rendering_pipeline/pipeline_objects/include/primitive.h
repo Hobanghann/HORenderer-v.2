@@ -3,25 +3,27 @@
 
 #include <cstdint>
 
+#include "engine/color/include/linear_rgb.h"
+
 namespace ho_renderer {
 class Primitive {
  public:
   Primitive();
   Primitive(bool is_outof_frustum);
-  Primitive(bool is_outof_frustum, std::uint32_t color_bit);
+  Primitive(bool is_outof_frustum, const LinearRGB& color);
   Primitive(const Primitive&);
   Primitive& operator=(const Primitive&);
   virtual ~Primitive();
 
   Primitive& set_is_outof_frustum(bool arg);
-  Primitive& set_color_bit(std::uint32_t color_bit);
+  Primitive& set_color(const LinearRGB& color);
 
   const bool is_outof_frustum() const;
-  const std::uint32_t color_bit() const;
+  const LinearRGB& color() const;
 
  private:
   bool is_outof_frustum_;
-  std::uint32_t color_bit_;
+  LinearRGB color_;
 };
 }  // namespace ho_renderer
 

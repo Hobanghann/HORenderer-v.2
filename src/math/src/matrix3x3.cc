@@ -56,21 +56,26 @@ Matrix3x3& ho_renderer::Matrix3x3::operator+=(const Matrix3x3& matrix) {
 }
 // matrix multiplication
 Matrix3x3 ho_renderer::Matrix3x3::operator*(const Matrix3x3& matrix) const {
-  return Matrix3x3(
-      Vector3(GetRow1().Dot(matrix.col1_), GetRow2().Dot(matrix.col1_),
-              GetRow3().Dot(matrix.col1_)),
-      Vector3(GetRow1().Dot(matrix.col2_), GetRow2().Dot(matrix.col2_),
-              GetRow3().Dot(matrix.col2_)),
-      Vector3(GetRow1().Dot(matrix.col3_), GetRow2().Dot(matrix.col3_),
-              GetRow3().Dot(matrix.col3_)));
+  Vector3 row1 = GetRow1();
+  Vector3 row2 = GetRow2();
+  Vector3 row3 = GetRow3();
+  return Matrix3x3(Vector3(row1.Dot(matrix.col1_), row2.Dot(matrix.col1_),
+                           row3.Dot(matrix.col1_)),
+                   Vector3(row1.Dot(matrix.col2_), row2.Dot(matrix.col2_),
+                           row3.Dot(matrix.col2_)),
+                   Vector3(row1.Dot(matrix.col3_), row2.Dot(matrix.col3_),
+                           row3.Dot(matrix.col3_)));
 }
 Matrix3x3& Matrix3x3::operator*=(const Matrix3x3& matrix) {
-  col1_ = Vector3(GetRow1().Dot(matrix.col1_), GetRow2().Dot(matrix.col1_),
-                  GetRow3().Dot(matrix.col1_));
-  col2_ = Vector3(GetRow1().Dot(matrix.col2_), GetRow2().Dot(matrix.col2_),
-                  GetRow3().Dot(matrix.col2_));
-  col3_ = Vector3(GetRow1().Dot(matrix.col3_), GetRow2().Dot(matrix.col3_),
-                  GetRow3().Dot(matrix.col3_));
+  Vector3 row1 = GetRow1();
+  Vector3 row2 = GetRow2();
+  Vector3 row3 = GetRow3();
+  col1_ = Vector3(row1.Dot(matrix.col1_), row2.Dot(matrix.col1_),
+                  row3.Dot(matrix.col1_));
+  col2_ = Vector3(row1.Dot(matrix.col2_), row2.Dot(matrix.col2_),
+                  row3.Dot(matrix.col2_));
+  col3_ = Vector3(row1.Dot(matrix.col3_), row2.Dot(matrix.col3_),
+                  row3.Dot(matrix.col3_));
   return *this;
 }
 Vector3 Matrix3x3::operator*(const Vector3& vector) const {
@@ -80,4 +85,23 @@ Vector3 Matrix3x3::operator*(const Vector3& vector) const {
 Matrix3x3 Matrix3x3::Transpose() const {
   return Matrix3x3(GetRow1(), GetRow2(), GetRow3());
 }
+
+std::vector<std::string> Matrix3x3::ToStrings() const {
+  Vector3 row1 = GetRow1();
+  Vector3 row2 = GetRow2();
+  Vector3 row3 = GetRow3();
+  std::vector<std::string> result;
+  char row[64];
+  std::snprintf(row, sizeof(row), "| %.3f , %.3f , %.3f |", row1.x(), row1.y(),
+                row1.z());
+  result.emplace_back(row);
+  std::snprintf(row, sizeof(row), "| %.3f , %.3f , %.3f |", row2.x(), row2.y(),
+                row2.z());
+  result.emplace_back(row);
+  std::snprintf(row, sizeof(row), "| %.3f , %.3f , %.3f |", row3.x(), row3.y(),
+                row3.z());
+  result.emplace_back(row);
+  return result;
+}
+
 }  // namespace ho_renderer

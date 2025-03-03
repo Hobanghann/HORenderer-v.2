@@ -1,13 +1,14 @@
 #include "rendering_pipeline/pipeline_objects/include/line.h"
 
 #include "app/include/debug.h"
+#include "engine/color/include/linear_rgb.h"
 
 namespace ho_renderer {
 Line::Line(const Line& line) = default;
 Line::Line(int index0, int index1)
     : Primitive(false), index0_(index0), index1_(index1) {}
-Line::Line(int index0, int index1, std::uint32_t color_bit)
-    : Primitive(false, color_bit), index0_(index0), index1_(index1) {}
+Line::Line(int index0, int index1, const LinearRGB& color)
+    : Primitive(false, color), index0_(index0), index1_(index1) {}
 Line& Line::operator=(const Line& line) = default;
 Line::~Line() = default;
 

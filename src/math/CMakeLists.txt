@@ -1,6 +1,6 @@
 message("Start to process math")
 
-project(MathModule)
+project(${MATH_NAME})
 
 ################################################################################
 # Read source files
@@ -36,7 +36,7 @@ add_library(${PROJECT_NAME} STATIC ${ALL_FILES})
 ################################################################################
 # Include directory
 ################################################################################
-target_include_directories(MathModule
+target_include_directories(${PROJECT_NAME}
 PUBLIC
   ${CMAKE_SOURCE_DIR}/src
 	)

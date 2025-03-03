@@ -20,29 +20,34 @@ LinearTransform LinearTransform::CreateScaleTransform(const float scale) {
 }
 LinearTransform LinearTransform::CreateRotateTransform(
     const EulerAngle& euler_angle) {
-  return LinearTransform::CreateRollTransform(euler_angle.roll_angle())
-      .ComposeWith(LinearTransform::CreateYawTransform(euler_angle.yaw_angle()))
-      .ComposeWith(
-          LinearTransform::CreatePitchTransform(euler_angle.pitch_angle()));
+  float cy = 0.f, sy = 0.f, cp = 0.f, sp = 0.f, cr = 0.f, sr = 0.f;
+  MathUtils::SinCosf(sy, cy, euler_angle.yaw_angle());
+  MathUtils::SinCosf(sp, cp, euler_angle.pitch_angle());
+  MathUtils::SinCosf(sr, cr, euler_angle.roll_angle());
+
+  return LinearTransform(Matrix3x3(
+      Vector3(cy * cr + sy * sp * sr, cp * sr, -sy * cr + cy * sp * sr),
+      Vector3(-cy * sr + sy * sp * cr, cp * cr, sy * sr + cy * sp * cr),
+      Vector3(sy * cp, -sp, cy * cp)));
 }
 LinearTransform LinearTransform::CreateYawTransform(const float angle) {
-  return LinearTransform(
-      Matrix3x3(Vector3(MathUtils::Cosf(angle), 0.f, -MathUtils::Sinf(angle)),
-                Vector3::kUnitY,
-                Vector3(MathUtils::Sinf(angle), 0.f, MathUtils::Cosf(angle))));
+  float sin, cos;
+  MathUtils::SinCosf(sin, cos, angle);
+  return LinearTransform(Matrix3x3(Vector3(cos, 0.f, -sin), Vector3::kUnitY,
+                                   Vector3(sin, 0.f, cos)));
 }
 LinearTransform LinearTransform::CreateRollTransform(const float angle) {
-  return LinearTransform(
-      Matrix3x3(Vector3(MathUtils::Cosf(angle), MathUtils::Sinf(angle), 0.f),
-                Vector3(-MathUtils::Sinf(angle), MathUtils::Cosf(angle), 0.f),
-                Vector3::kUnitZ));
+  float sin, cos;
+  MathUtils::SinCosf(sin, cos, angle);
+  return LinearTransform(Matrix3x3(Vector3(cos, sin, 0.f),
+                                   Vector3(-sin, cos, 0.f), Vector3::kUnitZ));
 }
 
 LinearTransform LinearTransform::CreatePitchTransform(const float angle) {
-  return LinearTransform(
-      Matrix3x3(Vector3::kUnitX,
-                Vector3(0.f, MathUtils::Cosf(angle), MathUtils::Sinf(angle)),
-                Vector3(0.f, -MathUtils::Sinf(angle), MathUtils::Cosf(angle))));
+  float sin, cos;
+  MathUtils::SinCosf(sin, cos, angle);
+  return LinearTransform(Matrix3x3(Vector3::kUnitX, Vector3(0.f, cos, sin),
+                                   Vector3(0.f, -sin, cos)));
 }
 
 LinearTransform LinearTransform::CreateInverseScaleTransform(
@@ -51,32 +56,37 @@ LinearTransform LinearTransform::CreateInverseScaleTransform(
 }
 LinearTransform LinearTransform::CreateInverseRotateTransform(
     const EulerAngle& euler_angle) {
-  return CreateInversePitchTransform(euler_angle.pitch_angle())
-      .ComposeWith(CreateInverseYawTransform(euler_angle.yaw_angle())
-                       .ComposeWith(CreateInverseRollTransform(
-                           euler_angle.roll_angle())));
+  float cy = 0.f, sy = 0.f, cp = 0.f, sp = 0.f, cr = 0.f, sr = 0.f;
+  MathUtils::SinCosf(sy, cy, euler_angle.yaw_angle());
+  MathUtils::SinCosf(sp, cp, euler_angle.pitch_angle());
+  MathUtils::SinCosf(sr, cr, euler_angle.roll_angle());
+
+  return LinearTransform(Matrix3x3(
+      Vector3(cy * cr + sy * sp * sr, cp * sr, -sy * cr + cy * sp * sr),
+      Vector3(-cy * sr + sy * sp * cr, cp * cr, sy * sr + cy * sp * cr),
+      Vector3(sy * cp, -sp, cy * cp)).Transpose());
 }
 LinearTransform LinearTransform::CreateInverseYawTransform(const float angle) {
-  return LinearTransform(
-      Matrix3x3(Vector3(MathUtils::Cosf(angle), 0.f, -MathUtils::Sinf(angle)),
-                Vector3::kUnitY,
-                Vector3(MathUtils::Sinf(angle), 0.f, MathUtils::Cosf(angle)))
-          .Transpose());
+  float sin, cos;
+  MathUtils::SinCosf(sin, cos, angle);
+  return LinearTransform(Matrix3x3(Vector3(cos, 0.f, -sin), Vector3::kUnitY,
+                                   Vector3(sin, 0.f, cos))
+                             .Transpose());
 }
 LinearTransform LinearTransform::CreateInverseRollTransform(const float angle) {
-  return LinearTransform(
-      Matrix3x3(Vector3(MathUtils::Cosf(angle), MathUtils::Sinf(angle), 0.f),
-                Vector3(-MathUtils::Sinf(angle), MathUtils::Cosf(angle), 0.f),
-                Vector3::kUnitZ)
-          .Transpose());
+  float sin, cos;
+  MathUtils::SinCosf(sin, cos, angle);
+  return LinearTransform(Matrix3x3(Vector3(cos, sin, 0.f),
+                                   Vector3(-sin, cos, 0.f), Vector3::kUnitZ)
+                             .Transpose());
 }
 LinearTransform LinearTransform::CreateInversePitchTransform(
     const float angle) {
-  return LinearTransform(
-      Matrix3x3(Vector3::kUnitX,
-                Vector3(0.f, MathUtils::Cosf(angle), MathUtils::Sinf(angle)),
-                Vector3(0.f, -MathUtils::Sinf(angle), MathUtils::Cosf(angle)))
-          .Transpose());
+  float sin, cos;
+  MathUtils::SinCosf(sin, cos, angle);
+  return LinearTransform(Matrix3x3(Vector3::kUnitX, Vector3(0.f, cos, sin),
+                                   Vector3(0.f, -sin, cos))
+                             .Transpose());
 }
 
 LinearTransform& LinearTransform::ComposeWith(

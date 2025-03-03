@@ -19,15 +19,18 @@ Quaternion::~Quaternion() = default;
 
 Quaternion Quaternion::CreateRotationQuartation(const float angle,
                                                 const Vector3& rotation_axis) {
-  return Quaternion(MathUtils::Cosf(angle),
-                    MathUtils::Sinf(angle) * rotation_axis.GetNormalized());
+  float sin;
+  float cos;
+  MathUtils::SinCosf(sin, cos, angle);
+  return Quaternion(cos, sin * rotation_axis.GetNormalized());
 }
 
 Quaternion Quaternion::CreateHalfRotationQuartation(
     const float angle, const Vector3& rotation_axis) {
-  return Quaternion(
-      MathUtils::Cosf(angle * 0.5f),
-      MathUtils::Sinf(angle * 0.5f) * rotation_axis.GetNormalized());
+  float sin;
+  float cos;
+  MathUtils::SinCosf(sin, cos, angle * 0.5f);
+  return Quaternion(cos, sin * rotation_axis.GetNormalized());
 }
 
 float Quaternion::scalar_part() const { return scalar_part_; }
@@ -104,7 +107,11 @@ Quaternion Quaternion::GetAdditionInverseElement() const {
   return Quaternion(-1.f * scalar_part_, -1.f * vector_part_);
 }
 Quaternion Quaternion::GetMultiplicationInverseElement() const {
-  return GetConjugation() / GetSqrdNorm();
+  float sqrd_norm = GetSqrdNorm();
+  if (MathUtils::IsEqual(sqrd_norm, 0.f)) {
+    return *this;
+  }
+  return GetConjugation() / sqrd_norm;
 }
 
 bool Quaternion::IsPurelyImaginary() const { return scalar_part_ == 0.f; }

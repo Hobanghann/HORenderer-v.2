@@ -34,13 +34,24 @@ if(TARGET_WINDOWS)
 endif()
 
 ##########################################################
-# Sub projects
+# Sub Project's Name
 ##########################################################
+set(MATH_NAME MathModule)
+set(ASSET_NAME AssetModule)
+set(RENDERING_PIPELINE_NAME RenderingPipelineModule)
+set(ENGINE_NAME EngineModule)
+set(RENDERER_NAME RendererModule)
+set(WINDOWS_NAME WindowsModule)
+set(APP_NAME AppModule)
 
+##########################################################
+# Sub Projects
+##########################################################
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/src/math)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/src/asset)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/src/rendering_pipeline)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/src/engine)
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/src/renderer)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/src/windows)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/src/app)
 

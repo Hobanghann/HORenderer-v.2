@@ -13,7 +13,7 @@ class Line : public Primitive {
   Line() = delete;
   Line(const Line& line);
   Line(int index0, int index1);
-  Line(int index0, int index1, std::uint32_t color_bit);
+  Line(int index0, int index1, const LinearRGB& color);
   Line& operator=(const Line& line);
   ~Line();
 

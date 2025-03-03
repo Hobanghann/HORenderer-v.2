@@ -4,7 +4,7 @@
 
 #include "app/include/debug.h"
 #include "asset/include/vertex.h"
-#include "engine/include/srgb.h"
+#include "engine/color/include/srgb.h"
 #include "math/include/vector3.h"
 #include "rendering_pipeline/pipeline/include/pipeline_settings.h"
 
@@ -22,7 +22,7 @@ Mesh::Mesh(const std::string& name, const std::vector<Vertex>& vertex_buffer,
 
 Mesh::Mesh(const std::string& name, const std::vector<Vertex>& vertex_buffer,
            const std::vector<std::uint32_t>& index_buffer,
-           const std::vector<std::uint32_t>& primitive_color_buffer,
+           const std::vector<LinearRGB>& primitive_color_buffer,
            const PrimitiveType primitive_type)
     : name_(name),
       vertex_buffer_(vertex_buffer),
@@ -42,7 +42,7 @@ const std::vector<Vertex>& Mesh::vertex_buffer() const {
 const std::vector<std::uint32_t>& Mesh::index_buffer() const {
   return index_buffer_;
 }
-const std::vector<std::uint32_t>& Mesh::primitive_color_buffer() const {
+const std::vector<LinearRGB>& Mesh::primitive_color_buffer() const {
   return primitive_color_buffer_;
 }
 const SphereBoundingVolume& Mesh::sphere_bounding_volume() const {

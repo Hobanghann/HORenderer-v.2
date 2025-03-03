@@ -12,7 +12,7 @@
 #include <cstdint>
 
 #include "app/res/resource.h"
-#include "engine/include/input_receiver.h"
+#include "engine/input/include/input_receiver.h"
 
 WindowsApp::WindowsApp(HINSTANCE hInstance, const int screen_width,
                        const int screen_height)

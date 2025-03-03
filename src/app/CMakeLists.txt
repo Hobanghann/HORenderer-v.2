@@ -1,6 +1,6 @@
 message("Start to process app")
 
-project(App)
+project(${APP_NAME})
 
 ################################################################################
 # Read source files
@@ -51,7 +51,7 @@ set_property(DIRECTORY ${CMAKE_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT "${PROJEC
 ################################################################################
 # Include directory
 ################################################################################
-target_include_directories(App
+target_include_directories(${PROJECT_NAME}
 PUBLIC
 ${CMAKE_SOURCE_DIR}/src
 	)
@@ -59,6 +59,6 @@ ${CMAKE_SOURCE_DIR}/src
 ################################################################################
 # Import Library
 ################################################################################
-target_link_libraries(${PROJECT_NAME} MathModule AssetModule RenderingPipelineModule EngineModule WindowsModule)
+target_link_libraries(${PROJECT_NAME} ${MATH_NAME} ${ASSET_NAME} ${RENDERING_PIPELINE_NAME} ${ENGINE_NAME} ${RENDERER_NAME} ${WINDOWS_NAME})
 
 message("Processing app finished")
