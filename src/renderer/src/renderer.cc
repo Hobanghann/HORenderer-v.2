@@ -4,13 +4,13 @@
 #include <random>
 #include <string>
 
-#include "app/include/debug.h"
-#include "asset/include/mesh_generator.h"
-#include "engine/color/include/linear_rgb.h"
-#include "engine/light/include/ambient_light.h"
-#include "engine/light/include/directional_light.h"
-#include "engine/light/include/point_light.h"
-#include "math/include/math_utils.h"
+#include "core/math/include/math_utils.h"
+#include "graphics/color/include/linear_rgb.h"
+#include "scene/camera/include/camera_builder.h"
+#include "scene/light/include/ambient_light.h"
+#include "scene/light/include/directional_light.h"
+#include "scene/light/include/point_light.h"
+#include "scene/object/include/game_object_builder.h"
 
 namespace ho_renderer {
 
@@ -18,17 +18,12 @@ Renderer::Renderer(const int screen_width, const int screen_height)
     : total_frame_count_(0),
       delta_time_(0),
       FPS_(0),
-      rendering_pipeline_(screen_width, screen_height, Vector2(0.f, 0.f), 0.f,
-                          1.f) {
-  // set initial renderer settings
-  renderer_settings_.set_screen_width(screen_width)
-      .set_screen_height(screen_height)
-      .set_frame_rate_mode(FrameRateMode::kVARIABLE);
-}
+      renderer_settings_(screen_width, screen_height),
+      rendering_pipeline_(screen_width, screen_height) {}
 Renderer::~Renderer() = default;
 
 int Renderer::Initialize() {
-  CreateMeshs();
+  LoadModels();
   CreateScene();
   CreateCameraObjects();
   CreateGameObjects();
@@ -73,176 +68,131 @@ int Renderer::Quit() { return 0; }
 InputManager& Renderer::GetInputManager() { return input_manager_; }
 
 void Renderer::InjectExternalColorBuffer(std::uint32_t* color_buffer) {
-  rendering_pipeline_.frame_buffer().GetColorBuffer().InjectExternalBuffer(
-      color_buffer);
+  rendering_pipeline_.frame_buffer().GetColorBuffer()->ImportExternalBuffer(
+      std::unique_ptr<std::uint32_t[]>(color_buffer));
 }
 void Renderer::InjectExternalDepthBuffer(float* depth_buffer) {
-  rendering_pipeline_.frame_buffer().GetDepthBuffer().InjectExternalBuffer(
-      depth_buffer);
+  rendering_pipeline_.frame_buffer().GetDepthBuffer()->ImportExternalBuffer(
+      std::unique_ptr<float[]>(depth_buffer));
 }
 
 long long Renderer::GetFPS() { return FPS_; }
 
-int Renderer::CreateMeshs() {
-  // create meshes
-  mesh_manager_.AddMesh(
-      MeshGenerator::GeneratePlane("Unit Plane", 1.f, 1.f, LinearRGB::kBROWN));
-  mesh_manager_.AddMesh(
-      MeshGenerator::GenerateBox("Unit Box", 1.f, 1.f, 1.f, LinearRGB::kBROWN));
-  mesh_manager_.AddMesh(MeshGenerator::GenerateSphere("Unit Sphere", 20, 20,
-                                                      1.f, LinearRGB::kBROWN));
-  mesh_manager_.AddMesh(
-      MeshGenerator::GenerateLine("X axis", 1000.f, LinearRGB::kRED));
-  mesh_manager_.AddMesh(
-      MeshGenerator::GenerateLine("Y axis", 1000.f, LinearRGB::kGREEN));
-  mesh_manager_.AddMesh(
-      MeshGenerator::GenerateLine("Z axis", 1000.f, LinearRGB::kBLUE));
+int Renderer::LoadModels() {
+  std::unique_ptr<Model> model;
+  /* std::unique_ptr<Model> sphere =
+      std::move(ModelLoader().Load("Sphere", "./resource/Sphere/sphere.obj"));
+  if (sphere == nullptr) {
+    // exception : model not loaded
+    return 1;
+  }
+  resource_manager_.AddModel(std::move(sphere));
+  std::unique_ptr<Model> cube =
+      std::move(ModelLoader().Load("Cube", "./resource/Cube/cube.obj"));
+  if (cube == nullptr) {
+    return 1;
+  }
+  resource_manager_.AddModel(std::move(cube));
+  std::unique_ptr<Model> triangle =
+      std::move(ModelLoader().Load("Triangle", "./resource/Triangle/triangle.obj"));
+  if (triangle == nullptr) {
+    return 1;
+  }
+  resource_manager_.AddModel(std::move(triangle));
+  std::unique_ptr<Model> cone =
+      std::move(ModelLoader().Load("Cone", "./resource/Cone/cone.obj"));
+  if (cone == nullptr) {
+    return 1;
+  }
+  resource_manager_.AddModel(std::move(cone));*/
+  model =
+      std::move(ModelLoader().Load("Nier2B", "./resource/Nier2B/Nier2B.obj"));
+  if (model == nullptr) {
+    // exception : model not loaded
+    return 1;
+  }
+  resource_manager_.AddModel(std::move(model));
+   model =
+      std::move(ModelLoader().Load("Mug", "./resource/Mug/Mug.obj"));
+  if (model == nullptr) {
+    // exception : model not loaded
+    return 1;
+  }
+  resource_manager_.AddModel(std::move(model));
+  model = std::move(ModelLoader().Load("Dummy", "./resource/Dummy-low/Dummy-low.obj"));
+  if (model == nullptr) {
+    // exception : model not loaded
+    return 1;
+  }
+  resource_manager_.AddModel(std::move(model));
   return 0;
 }
+
 int Renderer::CreateScene() {
-  // create scene
-  Scene* main_scene = new Scene(std::string("Main Scene"));
-  // add scene
-  scene_manager_.AddScene(main_scene);
+  scene_manager_.AddScene(std::make_unique<Scene>("Main Scene"));
   scene_manager_.SetMainScene("Main Scene");
   return 0;
 }
 int Renderer::CreateCameraObjects() {
-  // create main_camera
-  CameraObject* main_camera = new CameraObject(std::string("Main Camera"));
-  // set initial camera settings
-  main_camera
-      ->set_aspect_ratio(renderer_settings_.screen_width(),
-                         renderer_settings_.screen_height())
-      .set_transform(
-          Transform()
-              .set_world_coordinate(Vector3(0.f, 100.f, 500.f))
-              .set_world_euler_angle(EulerAngle()
-                                         .set_pitch_angle(0.f)
-                                         .set_yaw_angle(MathUtils::kPI)
-                                         .set_roll_angle(0.f)))
-      .set_fov(MathUtils::kPI * 0.38f)
-      .set_near_distance(5.5f)
-      .set_far_distance(5000.f);
-  // add, set camera in scene
-  scene_manager_.GetMainScene()->AddCameraObject(main_camera);
+  scene_manager_.GetMainScene()->AddCamera(
+      CameraBuilder()
+          .set_name("Main Camera")
+          .set_viewport_width(renderer_settings_.screen_width())
+          .set_viewport_height(renderer_settings_.screen_height())
+          // Since the view space is defined in a right-handed coord system,
+          // the default local axis is the camera's local axis rotated by 180
+          // degrees around the yaw axis.
+          .set_world_coord(Vector3(0.f, 200.f, 500.f))
+          .set_world_forward(-Vector3::kUnitZ)
+          .set_world_right(-Vector3::kUnitX)
+          .set_world_up(Vector3::kUnitY)
+          .set_fov(MathUtils::kPi * 0.38f)
+          .set_near_distance(5.5f)
+          .set_far_distance(5000.f)
+          .set_rotate_velocity(MathUtils::kPi * 0.01f)
+          .set_move_velocity(80.f)
+          .Build());
   scene_manager_.GetMainScene()->SetMainCamera("Main Camera");
+  scene_manager_.GetMainScene()->GetMainCamera()->Active();
   return 0;
 }
 int Renderer::CreateGameObjects() {
-  GameObject* main_object = new GameObject("Main Object");
-  main_object
-      ->set_transform(Transform()
-                          .set_world_coordinate({0.f, 0.f, 0.f})
-                          .set_world_euler_angle(EulerAngle()
-                                                     .set_pitch_angle(0.f)
-                                                     .set_yaw_angle(0.f)
-                                                     .set_roll_angle(0.f))
-                          .set_world_scale(100.f))
-      // Problem: The static member kBOX is initialized using SRGB's static
-      // members. However, the initialization order of static members is
-      // undefined. If kBOX is initialized first before SRGB's static members,
-      // it will be default-initialized. The initialization order must be
-      // explicitly defined so that SRGB's static members are initialized first
-      // before kBOX. Solution: Convert SRGB's static members to non-static
-      // members.
-      .set_mesh(mesh_manager_.GetMesh("Unit Box"))
-      .Active();
-
-  // add game_object
-  scene_manager_.GetMainScene()->AddGameObject(main_object);
-
-  // create sub game object
-  std::random_device rd;
-  std::mt19937 gen(rd());
-  std::uniform_real_distribution<float> position_dist(-500.f, 500.0f);
-  std::uniform_real_distribution<float> depth_dist(-500.f, 0.f);
-  std::uniform_real_distribution<float> angle_dist(0.0f, MathUtils::kPI);
-  char buffer[30];
-  for (int i = 0; i < 0; i++) {
-    snprintf(buffer, sizeof(buffer), "Object%d", i);
-    GameObject* object = new GameObject(std::string(buffer));
-    object
-        ->set_transform(
-            Transform()
-                .set_world_coordinate(
-                    {position_dist(gen), position_dist(gen), depth_dist(gen)})
-                .set_world_euler_angle(EulerAngle()
-                                           .set_pitch_angle(angle_dist(gen))
-                                           .set_yaw_angle(angle_dist(gen))
-                                           .set_roll_angle(angle_dist(gen)))
-                .set_world_scale(100.f))
-        .set_mesh(mesh_manager_.GetMesh("Unit Box"))
-        .Inactive();
-    // add sub game_object
-    scene_manager_.GetMainScene()->AddGameObject(object);
-  }
-
-  // create axis
-  GameObject* x_axis = new GameObject("X axis");
-  x_axis
-      ->set_transform(Transform()
-                          .set_world_coordinate(Vector3::kZero)
-                          .set_world_euler_angle(EulerAngle()
-                                                     .set_pitch_angle(0.f)
-                                                     .set_yaw_angle(0.f)
-                                                     .set_roll_angle(0.f))
-                          .set_world_scale(10.f))
-      .set_mesh(mesh_manager_.GetMesh("X axis"))
-      .Inactive();
-  GameObject* y_axis = new GameObject("Y axis");
-  y_axis
-      ->set_transform(
-          Transform()
-              .set_world_coordinate(Vector3::kZero)
-              .set_world_euler_angle(EulerAngle()
-                                         .set_pitch_angle(0.f)
-                                         .set_yaw_angle(MathUtils::kPI * 0.5f)
-                                         .set_roll_angle(0.f))
-              .set_world_scale(10.f))
-      .set_mesh(mesh_manager_.GetMesh("Y axis"))
-      .Inactive();
-  GameObject* z_axis = new GameObject("Z axis");
-  z_axis
-      ->set_transform(
-          Transform()
-              .set_world_coordinate(Vector3::kZero)
-              .set_world_euler_angle(EulerAngle()
-                                         .set_pitch_angle(0.f)
-                                         .set_yaw_angle(0.f)
-                                         .set_roll_angle(MathUtils::kPI * 0.5f))
-              .set_world_scale(10.f))
-      .set_mesh(mesh_manager_.GetMesh("Z axis"))
-      .Inactive();
-
-  // add axis
-  scene_manager_.GetMainScene()->AddGameObject(x_axis);
-  scene_manager_.GetMainScene()->AddGameObject(y_axis);
-  scene_manager_.GetMainScene()->AddGameObject(z_axis);
-
+  scene_manager_.GetMainScene()->AddGameObject(
+      GameObjectBuilder()
+          .set_name("Main Object")
+          .set_world_coord({0.f, 0.f, 0.f})
+          .set_world_forward(Vector3::kUnitZ)
+          .set_world_right(Vector3::kUnitX)
+          .set_world_up(Vector3::kUnitY)
+          .set_world_scale(100.f)
+          // Problem: The static member kBOX is initialized using SRGB's static
+          // members. However, the initialization order of static members is
+          // undefined. If kBOX is initialized first before SRGB's static
+          // members, it will be default-initialized. The initialization order
+          // must be explicitly defined so that SRGB's static members are
+          // initialized first before kBOX. Solution: Convert SRGB's static
+          // members to non-static members.
+          .set_model(resource_manager_.GetModel("Mug"))
+          .set_rotate_velocity(MathUtils::kPi * 0.01f)
+          .Build());
+  scene_manager_.GetMainScene()->GetGameObject("Main Object")->Active();
   return 0;
 }
 int Renderer::CreateLights() {
-  AmbientLight* ambient_light = new AmbientLight("Main Ambient Light");
-  ambient_light->set_light_color(LinearRGB::kGRAY).set_light_intensity(1.f);
-  scene_manager_.GetMainScene()->AddAmbientLight(ambient_light);
+  scene_manager_.GetMainScene()->AddAmbientLight(std::make_unique<AmbientLight>(
+      "Main Ambient Light", LinearRGB::kDARK_GRAY, 1.0f));
   scene_manager_.GetMainScene()->SetMainAmbientLight("Main Ambient Light");
-  DirectionalLight* directional_light =
-      new DirectionalLight("Main Directional Light");
-  directional_light->set_light_direction({1.f, 1.f, -1.f, 0.f})
-      .set_light_color(LinearRGB::kWHITE)
-      .set_light_intensity(0.3f);
-  scene_manager_.GetMainScene()->AddDirectionalLight(directional_light);
+
+  scene_manager_.GetMainScene()->AddDirectionalLight(
+      std::make_unique<DirectionalLight>("Main Directional Light",
+                                         LinearRGB::kWHITE, 1.f,
+                                         Vector4(1.f, 1.f, -1.f, 0.f)));
   scene_manager_.GetMainScene()->SetMainDirectionalLight(
       "Main Directional Light");
-  PointLight* point_light = new PointLight("Main Point Light");
-  point_light->set_world_coordinate(Vector4(150.f, 200.f, 150.f, 1.f))
-      .set_constant_attenuation(1.f)
-      .set_linear_attenuation(0.007f)
-      .set_quadratic_attenuation(0.0002f)
-      .set_light_color(LinearRGB::kWHITE)
-      .set_light_intensity(15.0f);
-  scene_manager_.GetMainScene()->AddPointLight(point_light);
+
+  scene_manager_.GetMainScene()->AddPointLight(std::make_unique<PointLight>(
+      "Main Point Light", LinearRGB::kWHITE, 1.f,
+      Vector4(0.f, 300.f, -500.f, 1.f), 1.f, 0.007f, 0.0002f));
   return 0;
 }
 int Renderer::EnrollInputListener() {

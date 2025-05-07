@@ -5,8 +5,8 @@ project(${RENDERER_NAME})
 ################################################################################
 # Read source files
 ################################################################################
-file(GLOB SOURCES ${PROJECT_SOURCE_DIR}/src/*.cc)
-file(GLOB HEADERS ${PROJECT_SOURCE_DIR}/include/*.h)
+file(GLOB_RECURSE SOURCES ${PROJECT_SOURCE_DIR}/*.cc)
+file(GLOB_RECURSE HEADERS ${PROJECT_SOURCE_DIR}/*.h)
 
 set(ALL_FILES ${SOURCES} ${HEADERS})
 ################################################################################
@@ -39,9 +39,10 @@ add_library(${PROJECT_NAME} STATIC ${ALL_FILES})
 target_include_directories(${PROJECT_NAME}
 PUBLIC
   ${CMAKE_SOURCE_DIR}/src
+  ${CMAKE_SOURCE_DIR}
 	)
 ################################################################################
 # Import Library
 ################################################################################
-target_link_libraries(${PROJECT_NAME} ${MATH_NAME} ${ASSET_NAME} ${RENDERING_PIPELINE_NAME} ${ENGINE_NAME})
+target_link_libraries(${PROJECT_NAME} ${THIRD_PARTY_DUMMY} ${TOOLS_NAME} ${CORE_NAME} ${GRAPHICS_NAME} ${SCENE_NAME})
 message("Processing math finished")

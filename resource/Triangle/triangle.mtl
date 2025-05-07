@@ -1,0 +1,21 @@
+# Simple triangle material
+
+newmtl TriangleMaterial
+
+# Ambient color
+Ka 0.1 0.1 0.1
+
+# Diffuse color
+Kd 0.8 0.8 0.8
+
+# Specular color
+Ks 0.2 0.2 0.2
+
+# Specular exponent
+Ns 16.0
+
+# Opacity
+d 1.0
+
+# Illumination model (2 = diffuse + specular)
+illum 2

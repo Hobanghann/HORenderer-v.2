@@ -4,13 +4,16 @@
 #include <cstdint>
 #include <memory>
 #include <vector>
+#include <filesystem>
 
-#include "asset/include/mesh_manager.h"
-#include "engine/include/timer.h"
-#include "engine/scene/include/scene.h"
-#include "engine/scene/include/scene_manager.h"
+#include "core/input/include/input_manager.h"
+#include "core/time/include/timer.h"
+#include "graphics/rendering_pipeline/system/include/rendering_pipeline.h"
+#include "graphics/resource/include/graphic_resource_manager.h"
+#include "graphics/resource/include/model_loader.h"
 #include "renderer/include/renderer_settings.h"
-#include "rendering_pipeline/pipeline/include/rendering_pipeline.h"
+#include "scene/system/include/scene.h"
+#include "scene/system/include/scene_manager.h"
 
 namespace ho_renderer {
 class Renderer {
@@ -36,7 +39,7 @@ class Renderer {
   long long GetFPS();
 
  private:
-  int CreateMeshs();
+  int LoadModels();
   int CreateScene();
   int CreateCameraObjects();
   int CreateGameObjects();
@@ -44,7 +47,7 @@ class Renderer {
   int EnrollInputListener();
 
   SceneManager scene_manager_;
-  MeshManager mesh_manager_;
+  GraphicResourceManager resource_manager_;
   RenderingPipeline rendering_pipeline_;
   RendererSettings renderer_settings_;
   InputManager input_manager_;

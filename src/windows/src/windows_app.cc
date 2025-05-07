@@ -1,18 +1,14 @@
-#define VK_Q 0x51
-#define VK_W 0x57
-#define VK_E 0x45
-#define VK_A 0x41
-#define VK_S 0x53
-#define VK_D 0x44
-
 #include "windows/include/windows_app.h"
 
+#include <commctrl.h>
 #include <windows.h>
+#include <windowsx.h>
 
 #include <cstdint>
 
 #include "app/res/resource.h"
-#include "engine/input/include/input_receiver.h"
+#include "core/input/include/input_receiver.h"
+#include "windows/include/key_macro.h"
 
 WindowsApp::WindowsApp(HINSTANCE hInstance, const int screen_width,
                        const int screen_height)
@@ -57,13 +53,12 @@ void WindowsApp::InitializeApp(HINSTANCE hInstance, int nCmdShow,
 
   AdjustWindowRect(&clientSize, dwStyle, FALSE);
 
-  hMainWnd = CreateWindow(
+  hWindow_ = CreateWindow(
       lpszWndClassName, NULL, WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT,
       clientSize.right - clientSize.left, clientSize.bottom - clientSize.top,
       NULL, (HMENU)NULL, hInstance, NULL);
-  SetWindowTextW(hMainWnd, L"HO Renderer");
-  ShowWindow(hMainWnd, nCmdShow);
-  hWindow_ = hMainWnd;
+  SetWindowTextW(hWindow_, L"HO Renderer");
+  ShowWindow(hWindow_, nCmdShow);
 
   BITMAPINFO bmi = {};
   bmi.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
@@ -73,6 +68,7 @@ void WindowsApp::InitializeApp(HINSTANCE hInstance, int nCmdShow,
   bmi.bmiHeader.biBitCount = 32;
   bmi.bmiHeader.biCompression = BI_RGB;
   window_dc_ = GetDC(hWindow_);
+  SetBkMode(window_dc_, TRANSPARENT);
   memory_dc_ = CreateCompatibleDC(window_dc_);
   std::uint32_t* color_buffer = nullptr;
   created_bitmap_ = CreateDIBSection(memory_dc_, &bmi, DIB_RGB_COLORS,
@@ -119,77 +115,147 @@ void WindowsApp::Quit() {
 
 LRESULT CALLBACK WindowsApp::WndProc(HWND hWnd, UINT iMessage, WPARAM wParam,
                                      LPARAM lParam) {
+  RECT clientRect;
+  POINT mouse_pt;
   switch (iMessage) {
     case WM_CREATE:
+      break;
+    case WM_LBUTTONDOWN:
+      GetClientRect(hWnd, &clientRect);
+      mouse_pt.x = GET_X_LPARAM(lParam);
+      mouse_pt.y = GET_Y_LPARAM(lParam);
+      if (!PtInRect(&clientRect, mouse_pt)) {
+        break;
+      }
+      input_sender_.MousePressed(ho_renderer::Input::kMOUSE_LBUTTON, mouse_pt.x,
+                                 mouse_pt.y);
+      SetCapture(hWnd);
+      break;
+    case WM_LBUTTONUP:
+      mouse_pt.x = GET_X_LPARAM(lParam);
+      mouse_pt.y = GET_Y_LPARAM(lParam);
+      input_sender_.MouseReleased(ho_renderer::Input::kMOUSE_LBUTTON,
+                                  mouse_pt.x, mouse_pt.y);
+      break;
+    case WM_RBUTTONDOWN:
+      GetClientRect(hWnd, &clientRect);
+      mouse_pt.x = GET_X_LPARAM(lParam);
+      mouse_pt.y = GET_Y_LPARAM(lParam);
+      if (!PtInRect(&clientRect, mouse_pt)) {
+        break;
+      }
+      input_sender_.MousePressed(ho_renderer::Input::kMOUSE_RBUTTON, mouse_pt.x,
+                                 mouse_pt.y);
+      SetCapture(hWnd);
+      break;
+    case WM_RBUTTONUP:
+      mouse_pt.x = GET_X_LPARAM(lParam);
+      mouse_pt.y = GET_Y_LPARAM(lParam);
+      input_sender_.MouseReleased(ho_renderer::Input::kMOUSE_RBUTTON,
+                                  mouse_pt.x, mouse_pt.y);
+      break;
+    case WM_MOUSEMOVE:
+      if ((wParam & MK_LBUTTON) || (wParam & MK_RBUTTON)) {
+        mouse_pt.x = GET_X_LPARAM(lParam);
+        mouse_pt.y = GET_Y_LPARAM(lParam);
+        input_sender_.MouseMoved(mouse_pt.x, mouse_pt.y);
+      }
       break;
     case WM_KEYDOWN:
       // send input
       switch (wParam) {
         case VK_F1:
-          input_sender_.KeyPressed(ho_renderer::InputKey::kKEY_F1);
+          input_sender_.KeyPressed(ho_renderer::Input::kKEY_F1);
           break;
         case VK_F2:
-          input_sender_.KeyPressed(ho_renderer::InputKey::kKEY_F2);
+          input_sender_.KeyPressed(ho_renderer::Input::kKEY_F2);
           break;
         case VK_F3:
-          input_sender_.KeyPressed(ho_renderer::InputKey::kKEY_F3);
+          input_sender_.KeyPressed(ho_renderer::Input::kKEY_F3);
           break;
         case VK_F4:
-          input_sender_.KeyPressed(ho_renderer::InputKey::kKEY_F4);
+          input_sender_.KeyPressed(ho_renderer::Input::kKEY_F4);
           break;
         case VK_F5:
-          input_sender_.KeyPressed(ho_renderer::InputKey::kKEY_F5);
+          input_sender_.KeyPressed(ho_renderer::Input::kKEY_F5);
           break;
         case VK_F6:
-          input_sender_.KeyPressed(ho_renderer::InputKey::kKEY_F6);
+          input_sender_.KeyPressed(ho_renderer::Input::kKEY_F6);
           break;
         case VK_F7:
-          input_sender_.KeyPressed(ho_renderer::InputKey::kKEY_F7);
+          input_sender_.KeyPressed(ho_renderer::Input::kKEY_F7);
           break;
         case VK_F8:
-          input_sender_.KeyPressed(ho_renderer::InputKey::kKEY_F8);
+          input_sender_.KeyPressed(ho_renderer::Input::kKEY_F8);
           break;
         case VK_F9:
-          input_sender_.KeyPressed(ho_renderer::InputKey::kKEY_F9);
+          input_sender_.KeyPressed(ho_renderer::Input::kKEY_F9);
           break;
-        case VK_F11:
-          input_sender_.KeyPressed(ho_renderer::InputKey::kKEY_F11);
+        case VK_NUM_0:
+          input_sender_.KeyPressed(ho_renderer::Input::kKEY_NUM_0);
+          break;
+        case VK_NUM_1:
+          input_sender_.KeyPressed(ho_renderer::Input::kKEY_NUM_1);
+          break;
+        case VK_NUM_2:
+          input_sender_.KeyPressed(ho_renderer::Input::kKEY_NUM_2);
+          break;
+        case VK_NUM_3:
+          input_sender_.KeyPressed(ho_renderer::Input::kKEY_NUM_3);
+          break;
+        case VK_NUM_4:
+          input_sender_.KeyPressed(ho_renderer::Input::kKEY_NUM_4);
+          break;
+        case VK_NUM_5:
+          input_sender_.KeyPressed(ho_renderer::Input::kKEY_NUM_5);
+          break;
+        case VK_NUM_6:
+          input_sender_.KeyPressed(ho_renderer::Input::kKEY_NUM_6);
+          break;
+        case VK_NUM_7:
+          input_sender_.KeyPressed(ho_renderer::Input::kKEY_NUM_7);
+          break;
+        case VK_NUM_8:
+          input_sender_.KeyPressed(ho_renderer::Input::kKEY_NUM_8);
+          break;
+        case VK_NUM_9:
+          input_sender_.KeyPressed(ho_renderer::Input::kKEY_NUM_9);
           break;
         case VK_LEFT:
-          input_sender_.KeyPressed(ho_renderer::InputKey::kKEY_LEFT);
+          input_sender_.KeyPressed(ho_renderer::Input::kKEY_LEFT);
           break;
         case VK_RIGHT:
-          input_sender_.KeyPressed(ho_renderer::InputKey::kKEY_RIGHT);
+          input_sender_.KeyPressed(ho_renderer::Input::kKEY_RIGHT);
           break;
         case VK_UP:
-          input_sender_.KeyPressed(ho_renderer::InputKey::kKEY_UP);
+          input_sender_.KeyPressed(ho_renderer::Input::kKEY_UP);
           break;
         case VK_DOWN:
-          input_sender_.KeyPressed(ho_renderer::InputKey::kKEY_DOWN);
+          input_sender_.KeyPressed(ho_renderer::Input::kKEY_DOWN);
           break;
         case VK_DELETE:
-          input_sender_.KeyPressed(ho_renderer::InputKey::kKEY_DELETE);
+          input_sender_.KeyPressed(ho_renderer::Input::kKEY_DELETE);
           break;
         case VK_NEXT:
-          input_sender_.KeyPressed(ho_renderer::InputKey::kKEY_PAGEDOWN);
+          input_sender_.KeyPressed(ho_renderer::Input::kKEY_PAGEDOWN);
           break;
         case VK_Q:
-          input_sender_.KeyPressed(ho_renderer::InputKey::kKEY_Q);
+          input_sender_.KeyPressed(ho_renderer::Input::kKEY_Q);
           break;
         case VK_W:
-          input_sender_.KeyPressed(ho_renderer::InputKey::kKEY_W);
+          input_sender_.KeyPressed(ho_renderer::Input::kKEY_W);
           break;
         case VK_E:
-          input_sender_.KeyPressed(ho_renderer::InputKey::kKEY_E);
+          input_sender_.KeyPressed(ho_renderer::Input::kKEY_E);
           break;
         case VK_A:
-          input_sender_.KeyPressed(ho_renderer::InputKey::kKEY_A);
+          input_sender_.KeyPressed(ho_renderer::Input::kKEY_A);
           break;
         case VK_S:
-          input_sender_.KeyPressed(ho_renderer::InputKey::kKEY_S);
+          input_sender_.KeyPressed(ho_renderer::Input::kKEY_S);
           break;
         case VK_D:
-          input_sender_.KeyPressed(ho_renderer::InputKey::kKEY_D);
+          input_sender_.KeyPressed(ho_renderer::Input::kKEY_D);
           break;
       }
       break;
@@ -197,85 +263,98 @@ LRESULT CALLBACK WindowsApp::WndProc(HWND hWnd, UINT iMessage, WPARAM wParam,
       // send input
       switch (wParam) {
         case VK_F1:
-          input_sender_.KeyReleased(ho_renderer::InputKey::kKEY_F1);
+          input_sender_.KeyReleased(ho_renderer::Input::kKEY_F1);
           break;
         case VK_F2:
-          input_sender_.KeyReleased(ho_renderer::InputKey::kKEY_F2);
+          input_sender_.KeyReleased(ho_renderer::Input::kKEY_F2);
           break;
         case VK_F3:
-          input_sender_.KeyReleased(ho_renderer::InputKey::kKEY_F3);
+          input_sender_.KeyReleased(ho_renderer::Input::kKEY_F3);
           break;
         case VK_F4:
-          input_sender_.KeyReleased(ho_renderer::InputKey::kKEY_F4);
+          input_sender_.KeyReleased(ho_renderer::Input::kKEY_F4);
           break;
         case VK_F5:
-          input_sender_.KeyReleased(ho_renderer::InputKey::kKEY_F5);
+          input_sender_.KeyReleased(ho_renderer::Input::kKEY_F5);
           break;
         case VK_F6:
-          input_sender_.KeyReleased(ho_renderer::InputKey::kKEY_F6);
+          input_sender_.KeyReleased(ho_renderer::Input::kKEY_F6);
           break;
         case VK_F7:
-          input_sender_.KeyReleased(ho_renderer::InputKey::kKEY_F7);
+          input_sender_.KeyReleased(ho_renderer::Input::kKEY_F7);
           break;
         case VK_F8:
-          input_sender_.KeyReleased(ho_renderer::InputKey::kKEY_F8);
+          input_sender_.KeyReleased(ho_renderer::Input::kKEY_F8);
           break;
         case VK_F9:
-          input_sender_.KeyReleased(ho_renderer::InputKey::kKEY_F9);
+          input_sender_.KeyReleased(ho_renderer::Input::kKEY_F9);
           break;
-        case VK_F11:
-          input_sender_.KeyReleased(ho_renderer::InputKey::kKEY_F11);
+        case VK_NUM_0:
+          input_sender_.KeyReleased(ho_renderer::Input::kKEY_NUM_0);
+          break;
+        case VK_NUM_1:
+          input_sender_.KeyReleased(ho_renderer::Input::kKEY_NUM_1);
+          break;
+        case VK_NUM_2:
+          input_sender_.KeyReleased(ho_renderer::Input::kKEY_NUM_2);
+          break;
+        case VK_NUM_3:
+          input_sender_.KeyReleased(ho_renderer::Input::kKEY_NUM_3);
+          break;
+        case VK_NUM_4:
+          input_sender_.KeyReleased(ho_renderer::Input::kKEY_NUM_4);
+          break;
+        case VK_NUM_5:
+          input_sender_.KeyReleased(ho_renderer::Input::kKEY_NUM_5);
+          break;
+        case VK_NUM_6:
+          input_sender_.KeyReleased(ho_renderer::Input::kKEY_NUM_6);
+          break;
+        case VK_NUM_7:
+          input_sender_.KeyReleased(ho_renderer::Input::kKEY_NUM_7);
+          break;
+        case VK_NUM_8:
+          input_sender_.KeyReleased(ho_renderer::Input::kKEY_NUM_8);
+          break;
+        case VK_NUM_9:
+          input_sender_.KeyReleased(ho_renderer::Input::kKEY_NUM_9);
           break;
         case VK_LEFT:
-          input_sender_.KeyReleased(ho_renderer::InputKey::kKEY_LEFT);
+          input_sender_.KeyReleased(ho_renderer::Input::kKEY_LEFT);
           break;
         case VK_RIGHT:
-          input_sender_.KeyReleased(ho_renderer::InputKey::kKEY_RIGHT);
+          input_sender_.KeyReleased(ho_renderer::Input::kKEY_RIGHT);
           break;
         case VK_UP:
-          input_sender_.KeyReleased(ho_renderer::InputKey::kKEY_UP);
+          input_sender_.KeyReleased(ho_renderer::Input::kKEY_UP);
           break;
         case VK_DOWN:
-          input_sender_.KeyReleased(ho_renderer::InputKey::kKEY_DOWN);
+          input_sender_.KeyReleased(ho_renderer::Input::kKEY_DOWN);
           break;
         case VK_DELETE:
-          input_sender_.KeyReleased(ho_renderer::InputKey::kKEY_DELETE);
+          input_sender_.KeyReleased(ho_renderer::Input::kKEY_DELETE);
           break;
         case VK_NEXT:
-          input_sender_.KeyReleased(ho_renderer::InputKey::kKEY_PAGEDOWN);
+          input_sender_.KeyReleased(ho_renderer::Input::kKEY_PAGEDOWN);
           break;
         case VK_Q:
-          input_sender_.KeyReleased(ho_renderer::InputKey::kKEY_Q);
+          input_sender_.KeyReleased(ho_renderer::Input::kKEY_Q);
           break;
         case VK_W:
-          input_sender_.KeyReleased(ho_renderer::InputKey::kKEY_W);
+          input_sender_.KeyReleased(ho_renderer::Input::kKEY_W);
           break;
         case VK_E:
-          input_sender_.KeyReleased(ho_renderer::InputKey::kKEY_E);
+          input_sender_.KeyReleased(ho_renderer::Input::kKEY_E);
           break;
         case VK_A:
-          input_sender_.KeyReleased(ho_renderer::InputKey::kKEY_A);
+          input_sender_.KeyReleased(ho_renderer::Input::kKEY_A);
           break;
         case VK_S:
-          input_sender_.KeyReleased(ho_renderer::InputKey::kKEY_S);
+          input_sender_.KeyReleased(ho_renderer::Input::kKEY_S);
           break;
         case VK_D:
-          input_sender_.KeyReleased(ho_renderer::InputKey::kKEY_D);
+          input_sender_.KeyReleased(ho_renderer::Input::kKEY_D);
           break;
-      }
-      break;
-    case WM_SYSKEYDOWN:
-      switch (wParam) {
-        case VK_F10:
-          input_sender_.KeyPressed(ho_renderer::InputKey::kKEY_F10);
-          return 0;  // disable default action
-      }
-      break;
-    case WM_SYSKEYUP:
-      switch (wParam) {
-        case VK_F10:
-          input_sender_.KeyReleased(ho_renderer::InputKey::kKEY_F10);
-          return 0;  // disable default action
       }
       break;
     case WM_DESTROY:

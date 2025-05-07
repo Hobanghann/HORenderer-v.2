@@ -5,8 +5,7 @@
 
 #include <memory>
 
-#include "app/include/debug.h"
-#include "engine/input/include/input_sender.h"
+#include "core/input/include/input_sender.h"
 #include "renderer/include/renderer.h"
 
 class WindowsApp {

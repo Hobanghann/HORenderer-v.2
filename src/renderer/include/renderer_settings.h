@@ -4,13 +4,13 @@
 #define SCREEN_WIDTH = 1280
 #define SCREEN_HEIGHT = 720
 
-#include "engine/input/include/input_listener.h"
+#include "core/input/include/input_listener.h"
 
 namespace ho_renderer {
 enum FrameRateMode { k30 = 0, k60, kVARIABLE };
 class RendererSettings : public InputListener {
  public:
-  RendererSettings();
+  RendererSettings(const int screen_width, const int screen_height);
   RendererSettings(const RendererSettings&) = delete;
   RendererSettings& operator=(const RendererSettings&) = delete;
   ~RendererSettings();

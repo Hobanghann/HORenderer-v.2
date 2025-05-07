@@ -70,7 +70,7 @@ Initialize ── Preupdate data ── Update data ── Run rendering pipelin
 │    │    ├── FragmentProcessing
 │    │    └── PerSampleProcessing
 │    │     
-│    └── /shaders
+│    └── /pipeline_components
 │         ├── VertexSpecifyingShader
 │         ├── VertexShader
 │         ├── FrustumCullingShader

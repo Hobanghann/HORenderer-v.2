@@ -3,7 +3,7 @@
 ##########################################################
 
 cmake_minimum_required(VERSION 3.4)
-
+include(FetchContent)
 set(MAIN_PROJECT_NAME HORenderer)
 
 project(${MAIN_PROJECT_NAME} LANGUAGES CXX)
@@ -34,23 +34,30 @@ if(TARGET_WINDOWS)
 endif()
 
 ##########################################################
-# Sub Project's Name
+# Set Sub Project's Name
 ##########################################################
-set(MATH_NAME MathModule)
-set(ASSET_NAME AssetModule)
-set(RENDERING_PIPELINE_NAME RenderingPipelineModule)
-set(ENGINE_NAME EngineModule)
-set(RENDERER_NAME RendererModule)
-set(WINDOWS_NAME WindowsModule)
-set(APP_NAME AppModule)
+set(CONFIG_NAME Config)
+set(RESOURCE_NAME Resource)
+set(THIRD_PARTY_NAME ThirdParty)
+set(THIRD_PARTY_DUMMY TP_DUMMY)
+set(TOOLS_NAME Tools)
+set(CORE_NAME Core)
+set(GRAPHICS_NAME Graphics)
+set(SCENE_NAME Scene)
+set(RENDERER_NAME Renderer)
+set(WINDOWS_NAME Windows)
+set(APP_NAME App)
 
 ##########################################################
-# Sub Projects
+# Process Sub Projects
 ##########################################################
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/src/math)
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/src/asset)
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/src/rendering_pipeline)
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/src/engine)
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/config)
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/resource)
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/lib)
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/src/tools)
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/src/core)
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/src/graphics)
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/src/scene)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/src/renderer)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/src/windows)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/src/app)

@@ -2,12 +2,12 @@
 #include <wchar.h>
 #include <windows.h>
 
-#include "app/include/debug.h"
+#include "tools/include/debug.h"
 #include "windows/include/windows_app.h"
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
                    LPSTR lpszCmdParam, int nCmdShow) {
-  WindowsApp app(hInstance, 1280, 720);
+  WindowsApp app(hInstance, 600, 600);
 #ifdef DEBUG
   app.CreateDebugConsole();
 #endif

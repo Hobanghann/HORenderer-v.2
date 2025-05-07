@@ -1,0 +1,46 @@
+# Blender 4.3.2 MTL File: 'None'
+# www.blender.org
+
+newmtl HairBasic
+Ns 159.999985
+Ka 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+illum 2
+map_Kd HairD.jpg
+map_Ks HairS.jpg
+map_d HairAlpha.png
+map_Bump HairN.jpg
+
+newmtl HairBasic_NONE
+Ns 159.999985
+Ka 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+illum 2
+map_Kd HairD.jpg
+map_Ks HairS.jpg
+map_d HairAlpha.png
+map_Bump HairN.jpg
+
+newmtl Material.004
+Ns 159.999985
+Ka 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+illum 2
+map_Kd Diffuse.jpg
+map_Ks Specular.jpg
+map_d Alpha.jpg
+map_Bump Normalfix2.jpg
+
+newmtl Material.004_NONE
+Ns 159.999985
+Ka 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+illum 2
+map_Kd Diffuse.jpg
+map_Ks Specular.jpg
+map_d Alpha.jpg
+map_Bump Normalfix2.jpg

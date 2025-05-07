@@ -1,11 +1,12 @@
 #include "renderer/include/renderer_settings.h"
 
-#include "app/include/debug.h"
-
 namespace ho_renderer {
 
-RendererSettings::RendererSettings()
-    : frame_rate_mode_(FrameRateMode::kVARIABLE) {}
+RendererSettings::RendererSettings(const int screen_width,
+                                   const int screen_height)
+    : screen_width_(screen_width),
+      screen_height_(screen_height),
+      frame_rate_mode_(FrameRateMode::kVARIABLE) {}
 RendererSettings::~RendererSettings() = default;
 
 const int RendererSettings::screen_width() const { return screen_width_; }
@@ -30,17 +31,17 @@ RendererSettings& RendererSettings::set_frame_rate_mode(
 
 void RendererSettings::Update(InputReceiver& input_receiver,
                               const float delta_time) {
-  if (input_receiver.IsPressed(InputKey::kKEY_F9)) {
+  if (input_receiver.IsPressed(Input::kKEY_F1)) {
     frame_rate_mode_ = FrameRateMode::k30;
-    input_receiver.UpdateKeyStatus(InputKey::kKEY_F9, false);
+    input_receiver.UpdateKeyStatus(Input::kKEY_F1, false);
   }
-  if (input_receiver.IsPressed(InputKey::kKEY_F10)) {
+  if (input_receiver.IsPressed(Input::kKEY_F2)) {
     frame_rate_mode_ = FrameRateMode::k60;
-    input_receiver.UpdateKeyStatus(InputKey::kKEY_F10, false);
+    input_receiver.UpdateKeyStatus(Input::kKEY_F2, false);
   }
-  if (input_receiver.IsPressed(InputKey::kKEY_F11)) {
+  if (input_receiver.IsPressed(Input::kKEY_F3)) {
     frame_rate_mode_ = FrameRateMode::kVARIABLE;
-    input_receiver.UpdateKeyStatus(InputKey::kKEY_F11, false);
+    input_receiver.UpdateKeyStatus(Input::kKEY_F3, false);
   }
 }
 }  // namespace ho_renderer
