@@ -1,5 +1,6 @@
 #include "graphics/rendering_pipeline/pipeline_objects/include/frame_buffer.h"
 
+#include "tools/include/debug.h"
 namespace ho_renderer {
 
 FrameBuffer::FrameBuffer() : color_buffer_(nullptr), depth_buffer_(nullptr) {}
@@ -21,8 +22,18 @@ FrameBuffer& FrameBuffer::CreateDepthBuffer(const int screen_width,
   return *this;
 }
 
-ColorBuffer* FrameBuffer::GetColorBuffer() const { return color_buffer_.get(); }
-DepthBuffer* FrameBuffer::GetDepthBuffer() const { return depth_buffer_.get(); }
+ColorBuffer* FrameBuffer::GetColorBuffer() const {
+  ASSERT_MSG(color_buffer_ != nullptr,
+             "FrameBuffer::GetColorBuffer Error : color buffer is not created "
+             "(color buffer is null)");
+  return color_buffer_.get();
+}
+DepthBuffer* FrameBuffer::GetDepthBuffer() const {
+  ASSERT_MSG(depth_buffer_ != nullptr,
+             "FrameBuffer::GetDepthBuffer Error : depth buffer is not created "
+             "(depth buffer is null)");
+  return depth_buffer_.get();
+}
 
 FrameBuffer& FrameBuffer::ChangeColorBuffer(
     const int screen_width, const int screen_height,
@@ -41,6 +52,12 @@ FrameBuffer& FrameBuffer::ChangeDepthBuffer(const int screen_width,
 }
 
 void FrameBuffer::ResetBuffers() {
+  ASSERT_MSG(color_buffer_ != nullptr,
+             "FrameBuffer::ResetBuffers Error : color buffer is not created "
+             "(color buffer is null)");
+  ASSERT_MSG(depth_buffer_ != nullptr,
+             "FrameBuffer::ResetBuffers Error : depth buffer is not created "
+             "(depth buffer is null)");
   color_buffer_->ResetBuffer();
   depth_buffer_->ResetBuffer();
 }

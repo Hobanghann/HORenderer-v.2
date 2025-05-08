@@ -3,9 +3,11 @@
 #include <cstdint>
 
 #include "core/input/include/input_listener.h"
+#include "core/math/include/math_utils.h"
 #include "core/math/include/vector2.h"
 #include "graphics/color/include/linear_rgb.h"
 #include "graphics/rendering_pipeline/system/include/pipeline_enum.h"
+#include "tools/include/debug.h"
 
 namespace ho_renderer {
 PipelineSettings::PipelineSettings(int viewport_width, int viewport_height)
@@ -19,18 +21,28 @@ PipelineSettings::PipelineSettings(int viewport_width, int viewport_height)
       primitive_type_(kTriangle),
       bounding_volume_mode_(kAABB),
       interpolation_mode_(kPerspectiveCorrection),
-      rendering_mode_(kTextureMapping),
-      shading_mode_(kPhong),
+      rendering_mode_(kFill),
+      shading_mode_(kFlat),
       is_using_backface_culling_(true),
       is_using_ambient_lighting_(true),
       is_using_diffuse_lighting_(true),
       is_using_specular_lighting_(true),
       default_ambient_color_(LinearRGB::kDARK_GRAY),
-      default_diffuse_color_(LinearRGB::kDARK_GRAY),
+      default_diffuse_color_(LinearRGB::kGRAY),
       default_specular_color_(LinearRGB::kWHITE),
       default_specular_coefficient_(0.5f),
       default_specular_exponent_(8.f),
-      default_opacity_(1.f) {}
+      default_opacity_(1.f) {
+  ASSERT_MSG(viewport_width_ > 0 && viewport_height_ > 0,
+             "PipelineSettings::PipelineSettings Error : viewport width, "
+             "height must be bigger than zero");
+  ASSERT_MSG(MathUtils::IsGreater(depth_range_max_, depth_range_min_),
+             "PipelineSettings::PipelineSettings Error : depth range min must "
+             "be less than depth range max");
+  ASSERT_MSG(MathUtils::IsNotEqual(depth_range_min_, depth_range_max_),
+             "PipelineSettings::PipelineSettings Error : depth range size must "
+             "be bigger than zero");
+}
 PipelineSettings::~PipelineSettings() = default;
 
 IndexOrder PipelineSettings::index_order() const { return index_order_; }

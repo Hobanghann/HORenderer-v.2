@@ -6,6 +6,7 @@
 #include "core/math/include/affine_transform.h"
 #include "graphics/rendering_pipeline/pipeline_components/include/vertex_shader.h"
 #include "graphics/rendering_pipeline/pipeline_objects/include/transformed_vertex.h"
+#include "tools/include/debug.h"
 
 namespace ho_renderer {
 VertexProcessing::VertexProcessing() = default;
@@ -15,6 +16,12 @@ void VertexProcessing::TransformVertices(
     std::vector<TransformedVertex>* v_buffer,
     const AffineTransform& m_transform, const AffineTransform& v_transform,
     const AffineTransform& p_transform) const {
+  ASSERT_MSG(
+      v_buffer != nullptr,
+      "VertexProcessing::TransformVertices Error : vertex buffer is null");
+  if (v_buffer == nullptr) {
+    return;
+  }
   AffineTransform mv_transform = m_transform.GetComposeWith(v_transform);
   for (TransformedVertex& vertex : *v_buffer) {
     vertex_shader_.TransformLocalPositionToView(vertex, mv_transform);

@@ -15,9 +15,9 @@ namespace ho_renderer {
 MaterialBuilder::MaterialBuilder()
     : name_("Unnamed Material"),
       ambient_color_(LinearRGB::kDARK_GRAY),
-      diffuse_color_(LinearRGB::kDARK_GRAY),
+      diffuse_color_(LinearRGB::kGRAY),
       specular_color_(LinearRGB::kWHITE),
-      specular_coefficient_(100.f),
+      specular_coefficient_(1.f),
       specular_exponent_(2.f),
       opaque_(1.f),
       textures_() {}
@@ -74,9 +74,9 @@ std::unique_ptr<Material> MaterialBuilder::Build(Model* owner) {
 void MaterialBuilder::Reset() {
   name_ = "Unnamed Material";
   ambient_color_ = LinearRGB::kDARK_GRAY;
-  diffuse_color_ = LinearRGB::kDARK_GRAY;
+  diffuse_color_ = LinearRGB::kGRAY;
   specular_color_ = LinearRGB::kWHITE;
-  specular_coefficient_ = 100.f;
+  specular_coefficient_ = 1.f;
   specular_exponent_ = 2.f;
   opaque_ = 1.f;
   for (auto& t : textures_) t = nullptr;

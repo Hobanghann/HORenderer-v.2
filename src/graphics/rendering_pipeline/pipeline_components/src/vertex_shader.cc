@@ -34,7 +34,7 @@ TransformedVertex& VertexShader::TransformLocalNormal(
 TransformedVertex& VertexShader::TransformLocalTangent(
     TransformedVertex& v, const AffineTransform& transform) const {
   v.set_tangent_vector(
-      transform.Transform(Vector4(v.source_vertex()->normal_vector()))
+      transform.Transform(Vector4(v.source_vertex()->tangent_vector()))
           .ToVector3().GetNormalized());
   return v;
 }

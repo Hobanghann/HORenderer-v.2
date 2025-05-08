@@ -4,14 +4,21 @@
 #include <string>
 #include <unordered_map>
 
+#include "tools/include/debug.h"
+
 namespace ho_renderer {
 
 GraphicResourceManager::GraphicResourceManager() = default;
 GraphicResourceManager::~GraphicResourceManager() = default;
 
 bool GraphicResourceManager::AddModel(std::unique_ptr<Model> model) {
+  ASSERT_MSG(model != nullptr,
+             "GraphicResourceManager::AddModel Error: model must not be null");
   std::uint32_t index = models_.size();
   const std::string& name = model->name();
+  ASSERT_MSG(models_map_.find(name) == models_map_.end(),
+             "GraphicResourceManager::AddModel Error: model with same name "
+             "already exists");
   if (models_map_.find(name) == models_map_.end()) {
     models_.push_back(std::move(model));
     models_map_.insert({name, index});
@@ -21,6 +28,8 @@ bool GraphicResourceManager::AddModel(std::unique_ptr<Model> model) {
 }
 
 bool GraphicResourceManager::DeleteModel(std::uint32_t index) {
+  ASSERT_MSG(index >= 0,
+             "GraphicResourceManager::DeleteModel Error: index out of range");
   if (index >= models_.size()) {
     return false;
   }
@@ -28,13 +37,19 @@ bool GraphicResourceManager::DeleteModel(std::uint32_t index) {
   return true;
 }
 bool GraphicResourceManager::DeleteModel(const std::string& name) {
-  if (models_map_.erase(name)) {
-    return true;
+  auto found = models_map_.find(name);
+  ASSERT_MSG(found != models_map_.end(),
+             "GraphicResourceManager::DeleteModel Error : model with given "
+             "name does not exist");
+  if (found == models_map_.end()) {
+    return false;
   }
-  return false;
+  return DeleteModel(found->second);
 }
 
 Model* GraphicResourceManager::GetModel(std::uint32_t index) const {
+  ASSERT_MSG(index >= 0,
+             "GraphicResourceManager::DeleteModel Error: index out of range");
   if (index >= models_.size()) {
     return nullptr;
   }
@@ -42,6 +57,9 @@ Model* GraphicResourceManager::GetModel(std::uint32_t index) const {
 }
 Model* GraphicResourceManager::GetModel(const std::string& name) const {
   auto found = models_map_.find(name);
+  ASSERT_MSG(found != models_map_.end(),
+             "GraphicResourceManager::GetModel Error : model with given "
+             "name does not exist");
   if (found == models_map_.end()) {
     return nullptr;
   }

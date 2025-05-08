@@ -1,5 +1,6 @@
 #include "graphics/resource/include/vertex.h"
 
+#include "tools/include/debug.h"
 namespace ho_renderer {
 
 Vertex::Vertex()
@@ -82,9 +83,17 @@ Vertex& Vertex::operator*=(float scalar) {
   return *this;
 }
 
-Vertex Vertex::operator/(float scalar) const { return Vertex(*this) /= scalar; }
+Vertex Vertex::operator/(float scalar) const {
+  ASSERT_MSG(
+      scalar != 0.f,
+      "Vertex::operator/ Error: scalar must not be zero (division by zero)");
+  return Vertex(*this) /= scalar;
+}
 
 Vertex& Vertex::operator/=(float scalar) {
+  ASSERT_MSG(
+      scalar != 0.f,
+      "Vertex::operator/= Error: scalar must not be zero (division by zero)");
   float inv_scalar = 1.f / scalar;
   position_ *= inv_scalar;
   texture_coord_ *= inv_scalar;

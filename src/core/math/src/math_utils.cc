@@ -12,6 +12,7 @@
 #include "core/math/include/vector2.h"
 #include "core/math/include/vector3.h"
 #include "core/math/include/vector4.h"
+#include "tools/include/debug.h"
 
 namespace ho_renderer {
 
@@ -42,6 +43,9 @@ float MathUtils::FastPow(float base, int exp) {
   float result = 1.0f;
 
   if (exp < 0) {
+    ASSERT_MSG(base != 0.f,
+               "FastPow error: base must not be zero when exponent is negative "
+               "(division by zero)");
     base = 1.0f / base;
     exp = -exp;
   }
@@ -70,9 +74,9 @@ float MathUtils::FastInvSqrtf(float f) {
   // This final form has one more operation than the legacy factorization (X1 =
   // 0.5*X0*(3-(Y*X0)*X0) but retains better accuracy (namely InvSqrt(1) = 1
   // exactly).
-  if (MathUtils::IsEqual(f, 0.f)) {
-    return kFloatNaN;
-  }
+  ASSERT_MSG(
+      f != 0,
+      "FastInvSqrtf error: argument must not be zero (division by zero)");
 
   const __m128 fOneHalf = _mm_set_ss(0.5f);
   __m128 Y0, X0, X1, X2, FOver2;

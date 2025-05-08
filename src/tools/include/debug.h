@@ -2,7 +2,8 @@
 #define _DEBUG_H_
 
 #include <cassert>
-#include <iostream>
+#include <cstdio>
+#include <cstdlib>
 
 // If DEBUG undefined, debug mode is disable.
 #define DEBUG
@@ -11,9 +12,16 @@
 
 #undef NDEBUG
 
-#define DEBUG_MSG(msg, ...)                                            \
-  printf("DEBUG [%s:%d - %s] " msg "\n", __FILE__, __LINE__, __func__, \
-         ##__VA_ARGS__);
+#define ASSERT_MSG(cond, msg)                                            \
+  do {                                                                   \
+    if (!(cond)) {                                                       \
+      fprintf(stderr,                                                    \
+              "[ASSERT FAILED] %s:%d\n  Condition: %s\n  Message: %s\n", \
+              __FILE__, __LINE__, #cond, msg);                           \
+      assert(false);                                                     \
+    }                                                                    \
+  } while (0)
+#else
 #endif
 
 #endif

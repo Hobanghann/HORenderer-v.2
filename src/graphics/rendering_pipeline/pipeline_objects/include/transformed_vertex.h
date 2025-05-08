@@ -21,6 +21,7 @@ class TransformedVertex {
   const Vector3& texture_coord() const;
   const Vector3& normal_vector() const;
   const Vector3& tangent_vector() const;
+  float handedness() const;
   const Vertex* source_vertex() const;
 
   TransformedVertex& set_view_coord(const Vector3& v);

@@ -4,6 +4,7 @@
 #include "core/math/include/vector3.h"
 #include "graphics/color/include/linear_rgb.h"
 #include "graphics/rendering_pipeline/system/include/pipeline_enum.h"
+#include "tools/include/debug.h"
 
 namespace ho_renderer {
 Fragment::Fragment(const Fragment& fragment) = default;
@@ -19,7 +20,10 @@ Fragment::Fragment(const Primitive* source, const Vector2& screen_coord,
       tangent_(tangent),
       handedness_(handedness),
       depth_(depth),
-      color_(LinearRGB::kBLACK) {}
+      color_(LinearRGB::kBLACK) {
+  ASSERT_MSG(source_ != nullptr,
+             "Fragment::Fragment Error : source primitive is null");
+}
 Fragment& Fragment::operator=(const Fragment& fragment) = default;
 Fragment::~Fragment() = default;
 

@@ -1,5 +1,7 @@
 #include "graphics/resource/include/model.h"
 
+#include "tools/include/debug.h"
+
 namespace ho_renderer {
 Model::Model(const std::string& name) : name_(name) {}
 Model::Model(const std::string& name, std::vector<std::unique_ptr<Mesh>> meshes,
@@ -13,18 +15,25 @@ Model::~Model() = default;
 
 const std::string& Model::name() const { return name_; }
 const Mesh* Model::GetMesh(std::uint32_t index) const {
+  ASSERT_MSG(index < meshes_.size(),
+             "Model::GetMesh Error: index out of range");
   if (index >= meshes_.size()) {
     return nullptr;
   }
   return meshes_[index].get();
 }
 const Material* Model::GetMaterial(std::uint32_t index) const {
+  ASSERT_MSG(index < materials_.size(),
+             "Model::GetMaterial Error: index out of range");
   if (index >= materials_.size()) {
     return nullptr;
   }
   return materials_[index].get();
 }
-ModelNode* Model::root() const { return root_.get(); }
+ModelNode* Model::root() const {
+  ASSERT_MSG(root_ != nullptr, "Model::root Error: root node is null");
+  return root_.get();
+}
 
 std::uint32_t Model::GetNumMeshes() const { return meshes_.size(); }
 std::uint32_t Model::GetNumMaterials() const { return materials_.size(); }

@@ -1,5 +1,7 @@
 #include "graphics/rendering_pipeline/pipeline_objects/include/transformed_vertex.h"
 
+#include "tools/include/debug.h"
+
 namespace ho_renderer {
 
 TransformedVertex::TransformedVertex(const TransformedVertex& tv) = default;
@@ -28,6 +30,9 @@ const Vector3& TransformedVertex::normal_vector() const {
 }
 const Vector3& TransformedVertex::tangent_vector() const {
   return tangent_vector_;
+}
+float TransformedVertex::handedness() const {
+  return source_vertex_->handedness();
 }
 const Vertex* TransformedVertex::source_vertex() const {
   return source_vertex_;
@@ -112,10 +117,18 @@ TransformedVertex& TransformedVertex::operator*=(float scalar) {
 }
 
 TransformedVertex TransformedVertex::operator/(float scalar) const {
+  ASSERT_MSG(
+      scalar != 0.f,
+      "TransformedVertex::operator/ Error : scalar must not be zero (Divide "
+      "by zero)");
   return TransformedVertex(*this) /= scalar;
 }
 
 TransformedVertex& TransformedVertex::operator/=(float scalar) {
+  ASSERT_MSG(
+      scalar != 0.f,
+      "TransformedVertex::operator/= Error : scalar must not be zero (Divide "
+      "by zero)");
   float inv_scalar = 1.f / scalar;
   view_coord_ *= inv_scalar;
   clip_coord_ *= inv_scalar;

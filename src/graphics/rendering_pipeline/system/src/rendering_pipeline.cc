@@ -13,6 +13,7 @@
 #include "scene/camera/include/camera.h"
 #include "scene/object/include/game_object.h"
 #include "scene/system/include/scene.h"
+#include "tools/include/debug.h"
 
 namespace ho_renderer {
 RenderingPipeline::RenderingPipeline(const int viewport_width,
@@ -34,6 +35,7 @@ PipelineSettings& RenderingPipeline::pipeline_settings() {
 FrameBuffer& RenderingPipeline::frame_buffer() { return frame_buffer_; }
 
 void RenderingPipeline::Run(const Scene* scene) {
+  ASSERT_MSG(scene != nullptr, "RenderingPipeline::Run Error : scene is null");
   if (scene == nullptr) {
     return;
   }
@@ -99,8 +101,8 @@ void RenderingPipeline::Run(const Scene* scene) {
         /////////////////////////////////////////////////////////////////////
         // vertex processing
         /////////////////////////////////////////////////////////////////////
-        vertex_processing_.TransformVertices(v_buffer,m_transform,
-                                             v_transform, p_transform);
+        vertex_processing_.TransformVertices(v_buffer, m_transform, v_transform,
+                                             p_transform);
         /////////////////////////////////////////////////////////////////////
         // vertex post-processing
         /////////////////////////////////////////////////////////////////////
@@ -164,7 +166,13 @@ void RenderingPipeline::Run(const Scene* scene) {
                 pipeline_settings_.viewport_height());
             per_sample_processing_.WriteFragment(*f_itr, frame_buffer_);
           }
+          resource_manager_.ReturnFragmentBuffer(f_buffer);
         }
+        /////////////////////////////////////////////////////////////////////
+        // Rendering finished
+        /////////////////////////////////////////////////////////////////////
+        resource_manager_.ReturnPrimitiveBuffer(p_buffer);
+        resource_manager_.ReturnVertexBuffer(v_buffer);
       }
     }
   }

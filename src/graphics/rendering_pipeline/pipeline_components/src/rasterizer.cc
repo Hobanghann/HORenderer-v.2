@@ -9,6 +9,7 @@
 #include "graphics/rendering_pipeline/pipeline_objects/include/edge_function.h"
 #include "graphics/rendering_pipeline/pipeline_objects/include/frame_buffer.h"
 #include "graphics/rendering_pipeline/pipeline_objects/include/transformed_vertex.h"
+#include "tools/include/debug.h"
 
 namespace ho_renderer {
 Rasterizer::Rasterizer() = default;
@@ -18,6 +19,22 @@ std::vector<Fragment>* Rasterizer::RasterizePoint(
     std::vector<Fragment>* output_f_buffer,
     const std::vector<TransformedVertex>* v_buffer, const Point* p,
     DepthBuffer* d_buffer) {
+  ASSERT_MSG(
+      output_f_buffer != nullptr,
+      "Rasterizer::RasterizePoint Error : output fragment buffer is null");
+  ASSERT_MSG(v_buffer != nullptr,
+             "Rasterizer::RasterizePoint Error : vertex buffer is null");
+  ASSERT_MSG(p != nullptr, "Rasterizer::RasterizePoint Error : point is null");
+  ASSERT_MSG(d_buffer != nullptr,
+             "Rasterizer::RasterizePoint Error : depth buffer is null");
+
+  if (output_f_buffer == nullptr) {
+    return nullptr;
+  }
+  if (v_buffer == nullptr || p == nullptr || d_buffer == nullptr) {
+    return output_f_buffer;
+  }
+
   const TransformedVertex& v = (*v_buffer)[p->index0()];
   const Vector3& view_ndc = v.viewport_ndc();
   const Vector2 screen_coord = Vector2(view_ndc.x(), view_ndc.y());
@@ -32,6 +49,23 @@ std::vector<Fragment>* Rasterizer::RasterizeLineAffine(
     std::vector<Fragment>* output_f_buffer,
     const std::vector<TransformedVertex>* v_buffer, const Line* l,
     DepthBuffer* d_buffer, const Triangle* t) {
+  ASSERT_MSG(
+      output_f_buffer != nullptr,
+      "Rasterizer::RasterizeLineAffine Error : output fragment buffer is null");
+  ASSERT_MSG(v_buffer != nullptr,
+             "Rasterizer::RasterizeLineAffine Error : vertex buffer is null");
+  ASSERT_MSG(l != nullptr,
+             "Rasterizer::RasterizeLineAffine Error : line is null");
+  ASSERT_MSG(d_buffer != nullptr,
+             "Rasterizer::RasterizeLineAffine Error : depth buffer is null");
+
+  if (output_f_buffer == nullptr) {
+    return nullptr;
+  }
+  if (v_buffer == nullptr || l == nullptr || d_buffer == nullptr) {
+    return output_f_buffer;
+  }
+
   // load attributes
   const TransformedVertex& v1 = (*v_buffer)[l->index0()];
   const TransformedVertex& v2 = (*v_buffer)[l->index1()];
@@ -82,6 +116,24 @@ std::vector<Fragment>* Rasterizer::RasterizeLinePerspective(
     std::vector<Fragment>* output_f_buffer,
     const std::vector<TransformedVertex>* v_buffer, const Line* l,
     DepthBuffer* d_buffer, const Triangle* t) {
+  ASSERT_MSG(output_f_buffer != nullptr,
+             "Rasterizer::RasterizeLinePerspective Error : output fragment "
+             "buffer is null");
+  ASSERT_MSG(
+      v_buffer != nullptr,
+      "Rasterizer::RasterizeLinePerspective Error : vertex buffer is null");
+  ASSERT_MSG(l != nullptr,
+             "Rasterizer::RasterizeLinePerspective Error : line is null");
+  ASSERT_MSG(
+      d_buffer != nullptr,
+      "Rasterizer::RasterizeLinePerspective Error : depth buffer is null");
+
+  if (output_f_buffer == nullptr) {
+    return nullptr;
+  }
+  if (v_buffer == nullptr || l == nullptr || d_buffer == nullptr) {
+    return output_f_buffer;
+  }
   // load attrivutes
   const TransformedVertex& v1 = (*v_buffer)[l->index0()];
   const TransformedVertex& v2 = (*v_buffer)[l->index1()];
@@ -135,6 +187,24 @@ std::vector<Fragment>* Rasterizer::RasterizeTriangleAffine(
     std::vector<Fragment>* output_f_buffer,
     const std::vector<TransformedVertex>* v_buffer, const Triangle* t,
     DepthBuffer* d_buffer) {
+  ASSERT_MSG(output_f_buffer != nullptr,
+             "Rasterizer::RasterizeTriangleAffine Error : output fragment "
+             "buffer is null");
+  ASSERT_MSG(
+      v_buffer != nullptr,
+      "Rasterizer::RasterizeTriangleAffine Error : vertex buffer is null");
+  ASSERT_MSG(t != nullptr,
+             "Rasterizer::RasterizeTriangleAffine Error : triangle is null");
+  ASSERT_MSG(
+      d_buffer != nullptr,
+      "Rasterizer::RasterizeTriangleAffine Error : depth buffer is null");
+
+  if (output_f_buffer == nullptr) {
+    return nullptr;
+  }
+  if (v_buffer == nullptr || t == nullptr || d_buffer == nullptr) {
+    return output_f_buffer;
+  }
   // attributes
   const TransformedVertex& v1 = (*v_buffer)[t->index0()];
   const TransformedVertex& v2 = (*v_buffer)[t->index1()];
@@ -175,6 +245,26 @@ std::vector<Fragment>* Rasterizer::EdgeFunctionRasterizeTriangleAffine(
     std::vector<Fragment>* output_f_buffer,
     const std::vector<TransformedVertex>* v_buffer, const Triangle* t,
     DepthBuffer* d_buffer) {
+  ASSERT_MSG(
+      output_f_buffer != nullptr,
+      "Rasterizer::EdgeFunctionRasterizeTriangleAffine Error : output fragment "
+      "buffer is null");
+  ASSERT_MSG(v_buffer != nullptr,
+             "Rasterizer::EdgeFunctionRasterizeTriangleAffine Error : vertex "
+             "buffer is null");
+  ASSERT_MSG(t != nullptr,
+             "Rasterizer::EdgeFunctionRasterizeTriangleAffine Error : triangle "
+             "is null");
+  ASSERT_MSG(d_buffer != nullptr,
+             "Rasterizer::EdgeFunctionRasterizeTriangleAffine Error : depth "
+             "buffer is null");
+
+  if (output_f_buffer == nullptr) {
+    return nullptr;
+  }
+  if (v_buffer == nullptr || t == nullptr || d_buffer == nullptr) {
+    return output_f_buffer;
+  }
   // attributes
   const TransformedVertex& v1 = (*v_buffer)[t->index0()];
   const TransformedVertex& v2 = (*v_buffer)[t->index1()];
@@ -231,6 +321,25 @@ std::vector<Fragment>* Rasterizer::RasterizeWireTriangleAffine(
     std::vector<Fragment>* output_f_buffer,
     const std::vector<TransformedVertex>* v_buffer, const Triangle* t,
     DepthBuffer* d_buffer) {
+  ASSERT_MSG(output_f_buffer != nullptr,
+             "Rasterizer::RasterizeWireTriangleAffine Error : output fragment "
+             "buffer is null");
+  ASSERT_MSG(
+      v_buffer != nullptr,
+      "Rasterizer::RasterizeWireTriangleAffine Error : vertex buffer is null");
+  ASSERT_MSG(
+      t != nullptr,
+      "Rasterizer::RasterizeWireTriangleAffine Error : triangle is null");
+  ASSERT_MSG(
+      d_buffer != nullptr,
+      "Rasterizer::RasterizeWireTriangleAffine Error : depth buffer is null");
+
+  if (output_f_buffer == nullptr) {
+    return nullptr;
+  }
+  if (v_buffer == nullptr || t == nullptr || d_buffer == nullptr) {
+    return output_f_buffer;
+  }
   Line wire1 = Line(t->material(), t->index0(), t->index1());
   Line wire2 = Line(t->material(), t->index1(), t->index2());
   Line wire3 = Line(t->material(), t->index2(), t->index0());
@@ -247,6 +356,25 @@ std::vector<Fragment>* Rasterizer::RasterizeTrianglePerspective(
     std::vector<Fragment>* output_f_buffer,
     const std::vector<TransformedVertex>* v_buffer, const Triangle* t,
     DepthBuffer* d_buffer) {
+  ASSERT_MSG(output_f_buffer != nullptr,
+             "Rasterizer::RasterizeTrianglePerspective Error : output fragment "
+             "buffer is null");
+  ASSERT_MSG(
+      v_buffer != nullptr,
+      "Rasterizer::RasterizeTrianglePerspective Error : vertex buffer is null");
+  ASSERT_MSG(
+      t != nullptr,
+      "Rasterizer::RasterizeTrianglePerspective Error : triangle is null");
+  ASSERT_MSG(
+      d_buffer != nullptr,
+      "Rasterizer::RasterizeTrianglePerspective Error : depth buffer is null");
+
+  if (output_f_buffer == nullptr) {
+    return nullptr;
+  }
+  if (v_buffer == nullptr || t == nullptr || d_buffer == nullptr) {
+    return output_f_buffer;
+  }
   const TransformedVertex& v1 = (*v_buffer)[t->index0()];
   const TransformedVertex& v2 = (*v_buffer)[t->index1()];
   const TransformedVertex& v3 = (*v_buffer)[t->index2()];
@@ -286,6 +414,26 @@ std::vector<Fragment>* Rasterizer::EdgeFunctionRasterizeTrianglePerspective(
     std::vector<Fragment>* output_f_buffer,
     const std::vector<TransformedVertex>* v_buffer, const Triangle* t,
     DepthBuffer* d_buffer) {
+  ASSERT_MSG(output_f_buffer != nullptr,
+             "Rasterizer::EdgeFunctionRasterizeTrianglePerspective Error : "
+             "output fragment "
+             "buffer is null");
+  ASSERT_MSG(v_buffer != nullptr,
+             "Rasterizer::EdgeFunctionRasterizeTrianglePerspective Error : "
+             "vertex buffer is null");
+  ASSERT_MSG(t != nullptr,
+             "Rasterizer::EdgeFunctionRasterizeTrianglePerspective Error : "
+             "triangle is null");
+  ASSERT_MSG(d_buffer != nullptr,
+             "Rasterizer::EdgeFunctionRasterizeTrianglePerspective Error : "
+             "depth buffer is null");
+
+  if (output_f_buffer == nullptr) {
+    return nullptr;
+  }
+  if (v_buffer == nullptr || t == nullptr || d_buffer == nullptr) {
+    return output_f_buffer;
+  }
   // attributes
   const TransformedVertex& v1 = (*v_buffer)[t->index0()];
   const TransformedVertex& v2 = (*v_buffer)[t->index1()];
@@ -343,6 +491,26 @@ Rasterizer::RasterizeWireTrianglePerspective(
     std::vector<Fragment>* output_f_buffer,
     const std::vector<TransformedVertex>* v_buffer, const Triangle* t,
     DepthBuffer* d_buffer) {
+  ASSERT_MSG(
+      output_f_buffer != nullptr,
+      "Rasterizer::RasterizeWireTrianglePerspective Error : output fragment "
+      "buffer is null");
+  ASSERT_MSG(v_buffer != nullptr,
+             "Rasterizer::RasterizeWireTrianglePerspective Error : vertex "
+             "buffer is null");
+  ASSERT_MSG(
+      t != nullptr,
+      "Rasterizer::RasterizeWireTrianglePerspective Error : triangle is null");
+  ASSERT_MSG(d_buffer != nullptr,
+             "Rasterizer::RasterizeWireTrianglePerspective Error : depth "
+             "buffer is null");
+
+  if (output_f_buffer == nullptr) {
+    return nullptr;
+  }
+  if (v_buffer == nullptr || t == nullptr || d_buffer == nullptr) {
+    return output_f_buffer;
+  }
   Line wire1 = Line(t->material(), t->index0(), t->index1());
   Line wire2 = Line(t->material(), t->index1(), t->index2());
   Line wire3 = Line(t->material(), t->index2(), t->index0());
@@ -451,6 +619,13 @@ Rasterizer::BoundingVolume Rasterizer::LoadBoundingVolume(
 std::optional<Fragment> Rasterizer::LoadFragmentAffine(
     const Vector2& target_coord, const Vector2& barycentric,
     const Attributes& atr, DepthBuffer* d_buffer, const Primitive* p) {
+  ASSERT_MSG(d_buffer != nullptr,
+             "Rasterizer::LoadFragmentAffine Error : depth buffer is null");
+  ASSERT_MSG(p != nullptr,
+             "Rasterizer::LoadFragmentAffine Error : primitive is null");
+  if (d_buffer == nullptr || p == nullptr) {
+    return std::nullopt;
+  }
   float depth = InterpolationUtils::InterpolateAffineLine(
       atr.depth1, atr.depth2, barycentric);
   if (d_buffer->GetDepth(target_coord.x(), target_coord.y()) > depth) {
@@ -468,6 +643,13 @@ std::optional<Fragment> Rasterizer::LoadFragmentAffine(
 std::optional<Fragment> Rasterizer::LoadFragmentAffine(
     const Vector2& target_coord, const Vector3& barycentric,
     const Attributes& atr, DepthBuffer* d_buffer, const Primitive* p) {
+  ASSERT_MSG(d_buffer != nullptr,
+             "Rasterizer::LoadFragmentAffine Error : depth buffer is null");
+  ASSERT_MSG(p != nullptr,
+             "Rasterizer::LoadFragmentAffine Error : primitive is null");
+  if (d_buffer == nullptr || p == nullptr) {
+    return std::nullopt;
+  }
   float depth = InterpolationUtils::InterpolateAffineTriangle(
       atr.depth1, atr.depth2, atr.depth3, barycentric);
   if (d_buffer->GetDepth(target_coord.x(), target_coord.y()) > depth) {
@@ -485,6 +667,14 @@ std::optional<Fragment> Rasterizer::LoadFragmentAffine(
 std::optional<Fragment> Rasterizer::LoadFragmentPerspective(
     const Vector2& target_coord, const Vector2& barycentric,
     const Attributes& atr, DepthBuffer* d_buffer, const Primitive* p) {
+  ASSERT_MSG(
+      d_buffer != nullptr,
+      "Rasterizer::LoadFragmentPerspective Error : depth buffer is null");
+  ASSERT_MSG(p != nullptr,
+             "Rasterizer::LoadFragmentPerspective Error : primitive is null");
+  if (d_buffer == nullptr || p == nullptr) {
+    return std::nullopt;
+  }
   float depth = InterpolationUtils::InterpolateAffineLine(
       atr.depth1, atr.depth2, barycentric);
   if (d_buffer->GetDepth(target_coord.x(), target_coord.y()) > depth) {
@@ -497,7 +687,7 @@ std::optional<Fragment> Rasterizer::LoadFragmentPerspective(
     return std::make_optional<Fragment>(
         p, target_coord, frag_vertex.view_coord(), frag_vertex.texture_coord(),
         frag_vertex.normal_vector(), frag_vertex.tangent_vector(),
-        frag_vertex.source_vertex()->handedness(), depth);
+        frag_vertex.handedness(), depth);
   } else {
     return std::nullopt;
   }
@@ -505,6 +695,14 @@ std::optional<Fragment> Rasterizer::LoadFragmentPerspective(
 std::optional<Fragment> Rasterizer::LoadFragmentPerspective(
     const Vector2& target_coord, const Vector3& barycentric,
     const Attributes& atr, DepthBuffer* d_buffer, const Primitive* p) {
+  ASSERT_MSG(
+      d_buffer != nullptr,
+      "Rasterizer::LoadFragmentPerspective Error : depth buffer is null");
+  ASSERT_MSG(p != nullptr,
+             "Rasterizer::LoadFragmentPerspective Error : primitive is null");
+  if (d_buffer == nullptr || p == nullptr) {
+    return std::nullopt;
+  }
   float depth = InterpolationUtils::InterpolateAffineTriangle(
       atr.depth1, atr.depth2, atr.depth3, barycentric);
   if (d_buffer->GetDepth(target_coord.x(), target_coord.y()) > depth) {
@@ -517,7 +715,7 @@ std::optional<Fragment> Rasterizer::LoadFragmentPerspective(
     return std::make_optional<Fragment>(
         p, target_coord, frag_vertex.view_coord(), frag_vertex.texture_coord(),
         frag_vertex.normal_vector(), frag_vertex.tangent_vector(),
-        frag_vertex.source_vertex()->handedness(), depth);
+        frag_vertex.handedness(), depth);
   } else {
     return std::nullopt;
   }

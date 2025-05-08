@@ -15,6 +15,7 @@
 #include "graphics/resource/include/vertex.h"
 #include "lib/include/stb_image_impl.h"
 #include "scene/object/include/transform.h"
+#include "tools/include/debug.h"
 
 namespace ho_renderer {
 ModelLoader::ModelLoader() = default;
@@ -28,6 +29,8 @@ std::unique_ptr<Model> ModelLoader::Load(const std::string& name,
                         aiProcess_FlipUVs | aiProcess_GenSmoothNormals |
                         aiProcess_GenBoundingBoxes |
                         aiProcess_CalcTangentSpace);
+  ASSERT_MSG(scene != nullptr,
+             "ModelLoader::Load Error : failed to assimp ReadFile");
   if (scene == nullptr) {
     printf("Assimp error: %s\n", importer.GetErrorString());
     return nullptr;
@@ -61,6 +64,8 @@ std::unique_ptr<Model> ModelLoader::LoadLeftHanded(const std::string& name,
       aiProcess_JoinIdenticalVertices | aiProcess_Triangulate |
           aiProcess_GenSmoothNormals | aiProcess_GenBoundingBoxes |
           aiProcess_CalcTangentSpace | aiProcess_ConvertToLeftHanded);
+  ASSERT_MSG(scene != nullptr,
+             "ModelLoader::LoadLeftHanded Error : failed to assimp ReadFile");
   if (scene == nullptr) {
     printf("Assimp error: %s\n", importer.GetErrorString());
     return nullptr;
@@ -87,6 +92,10 @@ std::unique_ptr<Model> ModelLoader::LoadLeftHanded(const std::string& name,
 }
 
 std::unique_ptr<Mesh> ModelLoader::LoadMesh(aiMesh* ai_mesh, Model* owner) {
+  ASSERT_MSG(ai_mesh != nullptr,
+             "ModelLoader::LoadMesh Erorr : assimp mesh must not be null");
+  ASSERT_MSG(owner != nullptr,
+             "ModelLoader::LoadMesh Erorr : owner must not be null");
   std::vector<Vertex> vertices;
   std::vector<std::uint32_t> indices;
   std::string mesh_name = ai_mesh->mName.C_Str();
@@ -122,7 +131,7 @@ std::unique_ptr<Mesh> ModelLoader::LoadMesh(aiMesh* ai_mesh, Model* owner) {
                           ai_mesh->mBitangents[i].z)
                       .GetNormalized();
     }
-    float handedness = 1.f;
+    float handedness = 0.f;
     if (MathUtils::IsFloatNaN(normal.x()) &&
         MathUtils::IsFloatNaN(tangent.x()) &&
         MathUtils::IsFloatNaN(bitangent.x())) {
@@ -138,17 +147,21 @@ std::unique_ptr<Mesh> ModelLoader::LoadMesh(aiMesh* ai_mesh, Model* owner) {
     }
   }
   // load bounding volume
-  const aiAABB& aabb = ai_mesh->mAABB;
-  Vector3 max(aabb.mMax.x, aabb.mMax.y, aabb.mMax.z);
-  Vector3 min(aabb.mMin.x, aabb.mMin.y, aabb.mMin.z);
-  AABBoundingVolume(max, min);
+  const aiAABB& ai_aabb = ai_mesh->mAABB;
+  Vector3 max(ai_aabb.mMax.x, ai_aabb.mMax.y, ai_aabb.mMax.z);
+  Vector3 min(ai_aabb.mMin.x, ai_aabb.mMin.y, ai_aabb.mMin.z);
+  AABBoundingVolume aabb(max, min);
 
   return std::make_unique<Mesh>(owner, mesh_name, vertices, indices,
-                                ai_mesh->mMaterialIndex);
+                                ai_mesh->mMaterialIndex, aabb);
 }
 
 std::unique_ptr<Material> ModelLoader::LoadMaterial(aiMaterial* material,
                                                     Model* owner) {
+  ASSERT_MSG(material != nullptr,
+             "ModelLoader::LoadMaterial Erorr : material must not be null");
+  ASSERT_MSG(owner != nullptr,
+             "ModelLoader::LoadMaterial Erorr : owner must not be null");
   MaterialBuilder mat_builder;
   mat_builder.Reset();
   char name_buf[100];
@@ -181,7 +194,8 @@ std::unique_ptr<Material> ModelLoader::LoadMaterial(aiMaterial* material,
       .set_diffuse_color(diffuse_color)
       .set_specular_color(specular_color)
       .set_specular_coefficient(specular_coefficient)
-      .set_specular_exponent(specular_exponent);
+      .set_specular_exponent(specular_exponent)
+      .set_opaque(opacity);
 
   std::array<std::unique_ptr<Texture>, TextureType::Last> textures;
   for (int j = 0; j < TextureType::Last; j++) {
@@ -245,6 +259,8 @@ std::unique_ptr<Material> ModelLoader::LoadMaterial(aiMaterial* material,
   return mat_builder.Build(owner);
 }
 std::unique_ptr<ModelNode> ModelLoader::LoadTree(aiNode* root, Model* owner) {
+  ASSERT_MSG(owner != nullptr,
+             "ModelLoader::LoadTree Erorr : owner must not be null");
   if (root == nullptr) {
     return nullptr;
   }
@@ -278,6 +294,9 @@ std::unique_ptr<Texture> ModelLoader::LoadTexture(const std::string& path) {
   int num_channel;
   std::uint32_t* texels = (std::uint32_t*)(stbi_load(path.c_str(), &width,
                                                      &height, &num_channel, 4));
+  ASSERT_MSG(texels != nullptr,
+             "ModelLoader::LoadTexture Error : failed to load image");
+
   if (texels == nullptr) {
     printf("Failed to load image : %s\n", stbi_failure_reason());
   }

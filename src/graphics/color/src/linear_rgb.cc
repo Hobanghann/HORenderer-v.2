@@ -4,6 +4,7 @@
 
 #include "core/math/include/math_utils.h"
 #include "graphics/color/include/srgb.h"
+#include "tools/include/debug.h"
 
 namespace ho_renderer {
 
@@ -124,10 +125,28 @@ LinearRGB& LinearRGB::operator*=(const LinearRGB& rgb) {
   return *this;
 }
 LinearRGB LinearRGB::operator/(const LinearRGB& rgb) const {
+  ASSERT_MSG(rgb.red_ != 0.f,
+             "LinearRGB::operator/ Error: red component is zero");
+  ASSERT_MSG(rgb.green_ != 0.f,
+             "LinearRGB::operator/ Error: green component is zero");
+  ASSERT_MSG(rgb.blue_ != 0.f,
+             "LinearRGB::operator/ Error: blue component is zero");
+  ASSERT_MSG(rgb.alpha_ != 0.f,
+             "LinearRGB::operator/ Error: alpha component is zero");
+
   return LinearRGB(red_ / rgb.red_, green_ / rgb.green_, blue_ / rgb.blue_,
                    alpha_ / rgb.alpha_);
 }
 LinearRGB& LinearRGB::operator/=(const LinearRGB& rgb) {
+  ASSERT_MSG(rgb.red_ != 0.f,
+             "LinearRGB::operator/ Error: red component is zero");
+  ASSERT_MSG(rgb.green_ != 0.f,
+             "LinearRGB::operator/ Error: green component is zero");
+  ASSERT_MSG(rgb.blue_ != 0.f,
+             "LinearRGB::operator/ Error: blue component is zero");
+  ASSERT_MSG(rgb.alpha_ != 0.f,
+             "LinearRGB::operator/ Error: alpha component is zero");
+
   red_ /= rgb.red_;
   green_ /= rgb.green_;
   blue_ /= rgb.blue_;

@@ -7,6 +7,7 @@
 #include "scene/light/include/ambient_light.h"
 #include "scene/light/include/directional_light.h"
 #include "scene/light/include/point_light.h"
+#include "tools/include/debug.h"
 
 namespace ho_renderer {
 
@@ -71,6 +72,10 @@ std::unique_ptr<DirectionalLight> LightBuilder::BuildDirectionalLight() const {
 }
 
 std::unique_ptr<PointLight> LightBuilder::BuildPointLight() const {
+  ASSERT_MSG(constant_attenuation_ != 0.f || linear_attenuation_ != 0.f ||
+                 quadratic_attenuation_ != 0.f,
+             "LightBuilder::BuildPointLight Error : at least one attenuation "
+             "factor must be non-zero");
   return std::make_unique<PointLight>(
       name_, light_color_, light_intensity_, light_vector_,
       constant_attenuation_, linear_attenuation_, quadratic_attenuation_);

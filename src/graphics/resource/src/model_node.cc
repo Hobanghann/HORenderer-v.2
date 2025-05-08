@@ -1,6 +1,7 @@
 #include "graphics/resource/include/model_node.h"
 
 #include "graphics/resource/include/model.h"
+#include "tools/include/debug.h"
 
 namespace ho_renderer {
 ModelNode::ModelNode(Model* owner, const std::string& name,
@@ -39,12 +40,20 @@ ModelNode& ModelNode::set_modeling_transform_cache(
   return *this;
 }
 const Mesh* ModelNode::GetMesh(std::uint32_t index) const {
-  if (index >= mesh_indices_.size()) {
+  ASSERT_MSG(
+      index < mesh_indices_.size(),
+      "ModelNode::GetMesh Error: index out of range (invalid mesh index)");
+  ASSERT_MSG(owner_ != nullptr,
+             "ModelNode::GetMesh Error: owner model is null");
+  if (index >= mesh_indices_.size() || owner_ == nullptr) {
     return nullptr;
   }
   return owner_->GetMesh(mesh_indices_[index]);
 }
 ModelNode* ModelNode::GetChild(std::uint32_t index) const {
+  ASSERT_MSG(
+      index < childs_.size(),
+      "ModelNode::GetChild Error: index out of range (invalid child index)");
   if (index >= childs_.size()) {
     return nullptr;
   }

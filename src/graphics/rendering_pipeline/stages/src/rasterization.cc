@@ -1,6 +1,7 @@
 #include "graphics/rendering_pipeline/stages/include/rasterization.h"
 
 #include "graphics/rendering_pipeline/pipeline_components/include/depth_tester.h"
+#include "tools/include/debug.h"
 
 namespace ho_renderer {
 Rasterization::Rasterization() = default;
@@ -10,6 +11,15 @@ std::vector<Fragment> *Rasterization::Rasterize(
     std::vector<Fragment> *output_buffer, const Primitive *primitive,
     std::vector<TransformedVertex> *v_buffer, FrameBuffer &frame_buffer,
     const PipelineSettings &settings) {
+  ASSERT_MSG(output_buffer != nullptr,
+             "Rasterization::Rasterize Error : output fragment buffer is null");
+  ASSERT_MSG(primitive != nullptr,
+             "Rasterization::Rasterize Error : primitive is null");
+  ASSERT_MSG(v_buffer != nullptr,
+             "Rasterization::Rasterize Error : vertex buffer is null");
+  if (output_buffer == nullptr || primitive == nullptr || v_buffer == nullptr) {
+    return output_buffer;
+  }
   switch (settings.primitive_type()) {
     case kPoint:
       rasterizer_.RasterizePoint(output_buffer, v_buffer,

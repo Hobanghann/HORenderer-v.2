@@ -4,6 +4,8 @@
 #include "graphics/rendering_pipeline/pipeline_objects/include/point.h"
 #include "graphics/rendering_pipeline/pipeline_objects/include/primitive.h"
 #include "graphics/rendering_pipeline/pipeline_objects/include/triangle.h"
+#include "tools/include/debug.h"
+
 namespace ho_renderer {
 FragmentProcessing::FragmentProcessing() = default;
 FragmentProcessing::~FragmentProcessing() = default;
@@ -13,6 +15,9 @@ Fragment& FragmentProcessing::Shading(Fragment& frag,
                                       const DirectionalLight* d_light,
                                       const std::vector<PointLight*>& p_lights,
                                       const PipelineSettings& settings) const {
+  /////////////////////////////////////////////////////////////////////
+  // Load attributes
+  /////////////////////////////////////////////////////////////////////
   const Material* material = frag.source()->material();
   LinearRGB ambient_color = settings.default_ambient_color();
   LinearRGB diffuse_color = settings.default_diffuse_color();
@@ -47,6 +52,18 @@ Fragment& FragmentProcessing::Shading(Fragment& frag,
       return frag;
       break;
     case kTriangle:
+      switch (settings.shading_mode()) {
+        case kFlat:
+          frag_pos = static_cast<const Triangle*>(frag.source())->center();
+          frag_normal = static_cast<const Triangle*>(frag.source())
+                            ->normal()
+                            .GetNormalized();
+
+          break;
+        case kPhong:
+          frag_pos = frag.view_coord();
+          frag_normal = frag.fragment_normal().GetNormalized();
+      }
       switch (settings.rendering_mode()) {
         case kWireFrame:
           frag.set_color(diffuse_color);
@@ -64,7 +81,7 @@ Fragment& FragmentProcessing::Shading(Fragment& frag,
             diffuse_color =
                 material->GetTexture(Diffuse)->GetTexel(uv.x(), uv.y());
           }
-           if (material->GetTexture(Specular) != nullptr) {
+          if (material->GetTexture(Specular) != nullptr) {
             specular_color =
                 material->GetTexture(Specular)->GetTexel(uv.x(), uv.y());
           }
@@ -79,34 +96,18 @@ Fragment& FragmentProcessing::Shading(Fragment& frag,
                 material->GetTexture(Alpha)->GetTexel(uv.x(), uv.y()).red();
           }
           if (material->GetTexture(Normal) != nullptr) {
-            Vector3 bitangent =
-                frag.handedness() *
-                (frag.fragment_normal().Cross(frag.tangent())).GetNormalized();
+            Vector3 bitangent = frag.handedness() *
+                                (frag.fragment_normal().Cross(frag.tangent()));
             LinearTransform tbn(
-                Matrix3x3(frag.tangent().GetNormalized(), bitangent,
-                          frag.fragment_normal().GetNormalized()));
+                Matrix3x3(frag.tangent(), bitangent, frag.fragment_normal()));
             Vector3 normal =
                 material->GetTexture(Normal)->GetVector(uv.x(), uv.y());
-            frag_normal = tbn.Transform(normal);
+            frag_normal = tbn.Transform(normal).GetNormalized();
           }
           break;
       }
 
-      if (material->GetTexture(Normal) == nullptr) {
-        switch (settings.shading_mode()) {
-          case kFlat:
-            frag_pos = static_cast<const Triangle*>(frag.source())->center();
-            frag_normal = static_cast<const Triangle*>(frag.source())
-                              ->normal()
-                              .GetNormalized();
-
-            break;
-          case kPhong:
-            frag_pos = frag.view_coord();
-            frag_normal = frag.fragment_normal().GetNormalized();
-        }
-        break;
-      }
+      break;
   }
 
   frag_to_camera = -frag_pos.GetNormalized();
@@ -116,7 +117,9 @@ Fragment& FragmentProcessing::Shading(Fragment& frag,
         (p->transformed_coord() - frag_pos).GetNormalized());
     p_intensities.emplace_back(p->GetIntensityAt(frag_pos));
   }
-
+  /////////////////////////////////////////////////////////////////////
+  // Compute lights
+  /////////////////////////////////////////////////////////////////////
   if (settings.is_using_ambient_lighting()) {
     ambient_light =
         fragment_shader_.ComputeAmbientLighting(a_light, ambient_color);

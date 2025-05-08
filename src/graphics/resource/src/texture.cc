@@ -5,6 +5,7 @@
 #include <string>
 
 #include "core/math/include/math_utils.h"
+#include "tools/include/debug.h"
 
 namespace ho_renderer {
 Texture::Texture(const std::string& path, const std::uint32_t* texels,
@@ -12,6 +13,10 @@ Texture::Texture(const std::string& path, const std::uint32_t* texels,
     : path_(path),
       texture_width_(texture_width),
       texture_height_(texture_height) {
+  ASSERT_MSG(texels != nullptr,
+             "Texture::Texture Error: texels pointer must not be null");
+  ASSERT_MSG(texture_width > 0 && texture_height > 0,
+             "Texture::Texture Error: width and height must be positive");
   int tex_size = texture_width_ * texture_height_;
   for (int i = 0; i < tex_size; i++) {
     texels_.emplace_back(texels[i]);
@@ -27,17 +32,27 @@ int Texture::texture_width() const { return texture_width_; }
 int Texture::texture_height() const { return texture_height_; }
 
 const LinearRGB& Texture::GetTexel(float u, float v) const {
+  ASSERT_MSG(u >= 0.f && u <= 1.f,
+             "Texture::GetTexel Error: u must be in [0, 1]");
+  ASSERT_MSG(v >= 0.f && v <= 1.f,
+             "Texture::GetTexel Error: v must be in [0, 1]");
   if (MathUtils::IsLess(u, 0.f) || MathUtils::IsGreater(u, 1.f) ||
       MathUtils::IsLess(v, 0.f) || MathUtils::IsGreater(v, 1.f)) {
     // exception handling
   }
   // point filtering
-  int x = static_cast<int>(MathUtils::Clamp(0.f, texture_width_ - 1, u * static_cast<float>(texture_width_ - 1)));
-  int y = static_cast<int>(MathUtils::Clamp(0.f, texture_height_ - 1, v * static_cast<float>(texture_height_ - 1)));
+  int x = static_cast<int>(MathUtils::Clamp(
+      0.f, texture_width_ - 1, u * static_cast<float>(texture_width_ - 1)));
+  int y = static_cast<int>(MathUtils::Clamp(
+      0.f, texture_height_ - 1, v * static_cast<float>(texture_height_ - 1)));
   return texels_[texture_width_ * y + x];
 }
 
 Vector3 Texture::GetVector(float u, float v) const {
+  ASSERT_MSG(u >= 0.f && u <= 1.f,
+             "Texture::GetVector Error: u must be in [0, 1]");
+  ASSERT_MSG(v >= 0.f && v <= 1.f,
+             "Texture::GetVector Error: v must be in [0, 1]");
   if (MathUtils::IsLess(u, 0.f) || MathUtils::IsGreater(u, 1.f) ||
       MathUtils::IsLess(v, 0.f) || MathUtils::IsGreater(v, 1.f)) {
     // exception handling

@@ -1,12 +1,18 @@
 #include "renderer/include/renderer_settings.h"
 
+#include "tools/include/debug.h"
+
 namespace ho_renderer {
 
 RendererSettings::RendererSettings(const int screen_width,
                                    const int screen_height)
     : screen_width_(screen_width),
       screen_height_(screen_height),
-      frame_rate_mode_(FrameRateMode::kVARIABLE) {}
+      frame_rate_mode_(FrameRateMode::kVARIABLE) {
+  ASSERT_MSG(screen_width_ != 0.f || screen_height_ != 0.f,
+             "Cannot Initialize Renderer : screen width, height must be bigger "
+             "than zero.");
+}
 RendererSettings::~RendererSettings() = default;
 
 const int RendererSettings::screen_width() const { return screen_width_; }

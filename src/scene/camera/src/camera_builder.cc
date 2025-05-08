@@ -6,6 +6,7 @@
 #include "core/math/include/math_utils.h"
 #include "core/math/include/vector3.h"
 #include "scene/camera/include/camera.h"
+#include "tools/include/debug.h"
 
 namespace ho_renderer {
 CameraBuilder::CameraBuilder()
@@ -19,7 +20,7 @@ CameraBuilder::CameraBuilder()
       move_velocity_(0.f),
       world_coord_(Vector3::kZero),
       world_forward_(-Vector3::kUnitZ),
-      world_right_(Vector3::kUnitX),
+      world_right_(-Vector3::kUnitX),
       world_up_(Vector3::kUnitY) {}
 CameraBuilder::~CameraBuilder() = default;
 CameraBuilder& CameraBuilder::set_name(const std::string& name) {
@@ -81,6 +82,14 @@ CameraBuilder& CameraBuilder::set_world_up(const Vector3& world_up) {
 }
 
 std::unique_ptr<Camera> CameraBuilder::Build() const {
+  ASSERT_MSG(MathUtils::IsNotEqual(fov_, 0.f),
+             "CameraBuilder::Build Error : fov must not be zero");
+  ASSERT_MSG(MathUtils::IsNotEqual(viewport_width_, 0.f),
+             "CameraBuilder::Build Error : viewport_width must not be zero");
+  ASSERT_MSG(MathUtils::IsNotEqual(viewport_height_, 0.f),
+             "CameraBuilder::Build Error : viewport_height must not be zero");
+  ASSERT_MSG(MathUtils::IsNotEqual(far_distance_, 0.f),
+             "CameraBuilder::Build Error : far_distance must not be zero");
   if (MathUtils::IsEqual(fov_, 0.f) ||
       MathUtils::IsEqual(viewport_width_, 0.f) ||
       MathUtils::IsEqual(viewport_height_, 0.f) ||
@@ -105,7 +114,7 @@ void CameraBuilder::Reset() {
   move_velocity_ = 0.f;
   world_coord_ = Vector3::kZero;
   world_forward_ = -Vector3::kUnitZ;
-  world_right_ = Vector3::kUnitX;
+  world_right_ = -Vector3::kUnitX;
   world_up_ = Vector3::kUnitY;
 }
 

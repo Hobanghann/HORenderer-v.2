@@ -37,7 +37,6 @@ class Mesh {
   std::vector<Vertex> vertices_;
   std::vector<std::uint32_t> indices_;
   std::uint32_t material_index_;
-  const Material* material_;
   SphereBoundingVolume sphere_bounding_volume_;
   AABBoundingVolume aab_bounding_volume_;
 

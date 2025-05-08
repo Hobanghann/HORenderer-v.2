@@ -4,6 +4,7 @@
 
 #include "core/math/include/math_utils.h"
 #include "core/math/include/vector3.h"
+#include "tools/include/debug.h"
 
 namespace ho_renderer {
 

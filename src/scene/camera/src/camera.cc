@@ -7,6 +7,7 @@
 #include "core/math/include/quaternion_transform.h"
 #include "core/math/include/vector3.h"
 #include "core/math/include/vector4.h"
+#include "tools/include/debug.h"
 
 namespace ho_renderer {
 Camera::Camera(const Camera& camera_object) = default;
@@ -43,6 +44,7 @@ Camera& Camera::set_transform(const Transform& transform) {
   return *this;
 }
 Camera& Camera::set_fov(float fov) {
+  ASSERT_MSG(fov != 0, "Camera::set_fov Error : fov must not be zero");
   fov_ = fov;
   focal_length_ = 1.f / MathUtils::Tanf(fov * 0.5f);
   return *this;
@@ -81,6 +83,9 @@ AffineTransform Camera::GetViewTransform() const {
       .ComposeWith(yaw_180_transform);
 }
 AffineTransform Camera::GetProjectionTransform() const {
+  ASSERT_MSG(!MathUtils::IsEqual(near_distance_, far_distance_),
+             "Camera::GetProjectionTransform Error: near and far planes must "
+             "not be equal");
   float near_minus_far = (near_distance_ - far_distance_);
   if (MathUtils::IsEqual(near_minus_far, 0.f)) {
     near_minus_far = MathUtils::kFloatMin;
@@ -94,6 +99,10 @@ AffineTransform Camera::GetProjectionTransform() const {
        0.f}));
 }
 AffineTransform Camera::GetReversedProjectionTransform() const {
+  ASSERT_MSG(
+      !MathUtils::IsEqual(near_distance_, far_distance_),
+      "Camera::GetReversedProjectionTransform Error: near and far planes must "
+      "not be equal");
   float far_minus_near = (far_distance_ - near_distance_);
   if (MathUtils::IsEqual(far_minus_near, 0.f)) {
     far_minus_near = MathUtils::kFloatMin;

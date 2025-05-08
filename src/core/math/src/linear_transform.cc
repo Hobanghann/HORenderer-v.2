@@ -5,6 +5,7 @@
 #include "core/math/include/matrix3x3.h"
 #include "core/math/include/vector3.h"
 #include "core/math/include/vector4.h"
+#include "tools/include/debug.h"
 
 namespace ho_renderer {
 LinearTransform::LinearTransform() : matrix_(Matrix3x3::kIdentityMatrix) {}
@@ -56,6 +57,8 @@ LinearTransform LinearTransform::CreatePitchTransform(float angle) {
 }
 
 LinearTransform LinearTransform::CreateInverseScaleTransform(float scale) {
+  ASSERT_MSG(scale != 0.f,
+             "Cannot create inverse scale transform: scale must not be zero");
   return LinearTransform((1.f / scale) * Matrix3x3::kIdentityMatrix);
 }
 LinearTransform LinearTransform::CreateInverseRotationTransform(

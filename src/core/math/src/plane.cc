@@ -1,7 +1,5 @@
 #include "core/math/include/plane.h"
 
-#include <cassert>
-
 #include "core/math/include/math_utils.h"
 #include "core/math/include/vector3.h"
 
@@ -28,10 +26,6 @@ Vector3 Plane::normalized_normal_vector() const {
 
 float Plane::GetDistanceFromPoint(const Vector3& point) const {
   float inv_mag = MathUtils::FastInvSqrtf(normal_vector_.GetSqrdMagnitude());
-  // if normal vector is zero vector -- plane can't define
-  if (MathUtils::IsFloatNaN(inv_mag)) {
-    assert(false);
-  }
   return MathUtils::Abs(EvaluatePoint(point)) * inv_mag;
 }
 float Plane::EvaluatePoint(const Vector3& point) const {

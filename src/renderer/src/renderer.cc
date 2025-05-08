@@ -11,6 +11,7 @@
 #include "scene/light/include/directional_light.h"
 #include "scene/light/include/point_light.h"
 #include "scene/object/include/game_object_builder.h"
+#include "tools/include/debug.h"
 
 namespace ho_renderer {
 
@@ -68,10 +69,16 @@ int Renderer::Quit() { return 0; }
 InputManager& Renderer::GetInputManager() { return input_manager_; }
 
 void Renderer::InjectExternalColorBuffer(std::uint32_t* color_buffer) {
+  ASSERT_MSG(color_buffer != nullptr,
+             "Renderer::InjectExternalColorBuffer Error : color buffer must "
+             "not be null");
   rendering_pipeline_.frame_buffer().GetColorBuffer()->ImportExternalBuffer(
       std::unique_ptr<std::uint32_t[]>(color_buffer));
 }
 void Renderer::InjectExternalDepthBuffer(float* depth_buffer) {
+  ASSERT_MSG(depth_buffer != nullptr,
+             "Renderer::InjectExternalDepthBuffer Error : depth buffer must "
+             "not be null");
   rendering_pipeline_.frame_buffer().GetDepthBuffer()->ImportExternalBuffer(
       std::unique_ptr<float[]>(depth_buffer));
 }
@@ -80,51 +87,18 @@ long long Renderer::GetFPS() { return FPS_; }
 
 int Renderer::LoadModels() {
   std::unique_ptr<Model> model;
-  /* std::unique_ptr<Model> sphere =
-      std::move(ModelLoader().Load("Sphere", "./resource/Sphere/sphere.obj"));
-  if (sphere == nullptr) {
-    // exception : model not loaded
-    return 1;
-  }
-  resource_manager_.AddModel(std::move(sphere));
-  std::unique_ptr<Model> cube =
-      std::move(ModelLoader().Load("Cube", "./resource/Cube/cube.obj"));
-  if (cube == nullptr) {
-    return 1;
-  }
-  resource_manager_.AddModel(std::move(cube));
-  std::unique_ptr<Model> triangle =
-      std::move(ModelLoader().Load("Triangle", "./resource/Triangle/triangle.obj"));
-  if (triangle == nullptr) {
-    return 1;
-  }
-  resource_manager_.AddModel(std::move(triangle));
-  std::unique_ptr<Model> cone =
-      std::move(ModelLoader().Load("Cone", "./resource/Cone/cone.obj"));
-  if (cone == nullptr) {
-    return 1;
-  }
-  resource_manager_.AddModel(std::move(cone));*/
-  model =
-      std::move(ModelLoader().Load("Nier2B", "./resource/Nier2B/Nier2B.obj"));
-  if (model == nullptr) {
-    // exception : model not loaded
-    return 1;
-  }
-  resource_manager_.AddModel(std::move(model));
-   model =
-      std::move(ModelLoader().Load("Mug", "./resource/Mug/Mug.obj"));
-  if (model == nullptr) {
-    // exception : model not loaded
-    return 1;
-  }
-  resource_manager_.AddModel(std::move(model));
-  model = std::move(ModelLoader().Load("Dummy", "./resource/Dummy-low/Dummy-low.obj"));
-  if (model == nullptr) {
-    // exception : model not loaded
-    return 1;
-  }
-  resource_manager_.AddModel(std::move(model));
+  resource_manager_.AddModel(std::move(ModelLoader().Load("Sphere",
+  "./resource/Sphere/sphere.obj")));
+  resource_manager_.AddModel(std::move(ModelLoader().Load("Cube",
+  "./resource/Cube/cube.obj"))); 
+  resource_manager_.AddModel(std::move(ModelLoader().Load("Triangle",
+  "./resource/Triangle/triangle.obj")));
+  resource_manager_.AddModel(std::move(ModelLoader().Load("Cone",
+  "./resource/Cone/cone.obj")));
+  resource_manager_.AddModel(
+      std::move(ModelLoader().Load("Nier2B", "./resource/Nier2B/Nier2B.obj")));
+  resource_manager_.AddModel(
+      std::move(ModelLoader().Load("Mug", "./resource/Mug/Mug.obj")));
   return 0;
 }
 
@@ -149,7 +123,7 @@ int Renderer::CreateCameraObjects() {
           .set_fov(MathUtils::kPi * 0.38f)
           .set_near_distance(5.5f)
           .set_far_distance(5000.f)
-          .set_rotate_velocity(MathUtils::kPi * 0.01f)
+          .set_rotate_velocity(MathUtils::kPi * 0.025f)
           .set_move_velocity(80.f)
           .Build());
   scene_manager_.GetMainScene()->SetMainCamera("Main Camera");
@@ -164,7 +138,7 @@ int Renderer::CreateGameObjects() {
           .set_world_forward(Vector3::kUnitZ)
           .set_world_right(Vector3::kUnitX)
           .set_world_up(Vector3::kUnitY)
-          .set_world_scale(100.f)
+          .set_world_scale(80.f)
           // Problem: The static member kBOX is initialized using SRGB's static
           // members. However, the initialization order of static members is
           // undefined. If kBOX is initialized first before SRGB's static
@@ -173,7 +147,7 @@ int Renderer::CreateGameObjects() {
           // initialized first before kBOX. Solution: Convert SRGB's static
           // members to non-static members.
           .set_model(resource_manager_.GetModel("Mug"))
-          .set_rotate_velocity(MathUtils::kPi * 0.01f)
+          .set_rotate_velocity(MathUtils::kPi * 0.025f)
           .Build());
   scene_manager_.GetMainScene()->GetGameObject("Main Object")->Active();
   return 0;
@@ -185,13 +159,13 @@ int Renderer::CreateLights() {
 
   scene_manager_.GetMainScene()->AddDirectionalLight(
       std::make_unique<DirectionalLight>("Main Directional Light",
-                                         LinearRGB::kWHITE, 1.f,
-                                         Vector4(1.f, 1.f, -1.f, 0.f)));
+                                         LinearRGB::kWHITE, 0.5f,
+                                         Vector4(0.f, 0.f, -1.f, 0.f)));
   scene_manager_.GetMainScene()->SetMainDirectionalLight(
       "Main Directional Light");
 
   scene_manager_.GetMainScene()->AddPointLight(std::make_unique<PointLight>(
-      "Main Point Light", LinearRGB::kWHITE, 1.f,
+      "Main Point Light", LinearRGB::kWHITE, 0.5f,
       Vector4(0.f, 300.f, -500.f, 1.f), 1.f, 0.007f, 0.0002f));
   return 0;
 }

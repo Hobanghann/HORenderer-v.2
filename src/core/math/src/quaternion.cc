@@ -4,6 +4,7 @@
 
 #include "core/math/include/math_utils.h"
 #include "core/math/include/vector3.h"
+#include "tools/include/debug.h"
 
 namespace ho_renderer {
 Quaternion::Quaternion() = default;
@@ -88,6 +89,9 @@ Quaternion& Quaternion::operator*=(float scalar) {
   return *this;
 }
 Quaternion& Quaternion::operator/=(float scalar) {
+  ASSERT_MSG(scalar != 0,
+             "Quaternion::operator/= Error : scalar must not be zero (Divide "
+             "by zero)");
   float inv_scalar = 1.f / scalar;
   *this *= inv_scalar;
   return *this;
@@ -108,9 +112,9 @@ Quaternion Quaternion::GetAdditionInverseElement() const {
 }
 Quaternion Quaternion::GetMultiplicationInverseElement() const {
   float sqrd_norm = GetSqrdNorm();
-  if (MathUtils::IsEqual(sqrd_norm, 0.f)) {
-    return *this;
-  }
+  ASSERT_MSG(!MathUtils::IsEqual(sqrd_norm, 0.f),
+             "Quaternion::GetMultiplicationInverseElement Error : "
+             "quaternion norm must not be zero (Divide by zero)");
   return GetConjugation() / sqrd_norm;
 }
 

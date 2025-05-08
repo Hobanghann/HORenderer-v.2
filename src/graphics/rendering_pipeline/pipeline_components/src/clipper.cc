@@ -13,13 +13,20 @@
 #include "graphics/rendering_pipeline/pipeline_objects/include/primitive.h"
 #include "graphics/rendering_pipeline/pipeline_objects/include/transformed_vertex.h"
 #include "graphics/rendering_pipeline/pipeline_objects/include/triangle.h"
+#include "tools/include/debug.h"
 
 namespace ho_renderer {
 Clipper::Clipper() = default;
 Clipper::~Clipper() = default;
 
-void ho_renderer::Clipper::ClipPoint(
-    Point* p, std::vector<TransformedVertex>* v_buffer) const {
+void Clipper::ClipPoint(Point* p,
+                        std::vector<TransformedVertex>* v_buffer) const {
+  ASSERT_MSG(p != nullptr, "Clipper::ClipPoint Error : point is null");
+  ASSERT_MSG(v_buffer != nullptr,
+             "Clipper::ClipPoint Error : vertex buffer is null");
+  if (p == nullptr || v_buffer == nullptr) {
+    return;
+  }
   if (p->is_outof_frustum()) {
     return;
   }
@@ -43,6 +50,12 @@ void ho_renderer::Clipper::ClipPoint(
 
 void Clipper::ClipLine(Line* l,
                        std::vector<TransformedVertex>* v_buffer) const {
+  ASSERT_MSG(l != nullptr, "Clipper::ClipLine Error : point is null");
+  ASSERT_MSG(v_buffer != nullptr,
+             "Clipper::ClipLine Error : vertex buffer is null");
+  if (l == nullptr || v_buffer == nullptr) {
+    return;
+  }
   std::array<Frustum::PlanePosition, 6> positions = {
       Frustum::PlanePosition::kLeft,   Frustum::PlanePosition::kRight,
       Frustum::PlanePosition::kBottom, Frustum::PlanePosition::kTop,
@@ -80,6 +93,9 @@ void Clipper::ClipLine(Line* l,
 std::vector<std::unique_ptr<Triangle>> Clipper::ClipTriangle(
     Triangle* t, std::vector<TransformedVertex>* v_buffer,
     IndexOrder order) const {
+  ASSERT_MSG(t != nullptr, "Clipper::ClipTriangle Error : point is null");
+  ASSERT_MSG(v_buffer != nullptr,
+             "Clipper::ClipTriangle Error : vertex buffer is null");
   std::vector<std::unique_ptr<Triangle>> t_buffer;
   t_buffer.push_back(std::make_unique<Triangle>(*t));
   t->set_is_outof_frustum(true);
@@ -91,6 +107,12 @@ void ho_renderer::Clipper::ShrinkLine(
     const std::array<CoordinateState, 2>& index_states,
     const std::array<std::uint32_t, 2>& i_buffer,
     Frustum::PlanePosition position) const {
+  ASSERT_MSG(l != nullptr, "Clipper::ClipLine Error : point is null");
+  ASSERT_MSG(v_buffer != nullptr,
+             "Clipper::ClipLine Error : vertex buffer is null");
+  if (l == nullptr || v_buffer == nullptr) {
+    return;
+  }
   int inside_buf_index = (index_states[0] == kINSIDE) ? 0 : 1;
   int inside_index = i_buffer[inside_buf_index];
   int outside_index = i_buffer[(inside_buf_index + 1) % 2];
@@ -124,6 +146,11 @@ void ho_renderer::Clipper::ShrinkLine(
 std::vector<std::unique_ptr<Triangle>> Clipper::ClipBufferedTriangle(
     std::vector<std::unique_ptr<Triangle>> t_buffer,
     std::vector<TransformedVertex>* v_buffer, IndexOrder order) const {
+  ASSERT_MSG(v_buffer != nullptr,
+             "Clipper::ClipBufferedTriangle Error : vertex buffer is null");
+  if (v_buffer == nullptr) {
+    return std::move(t_buffer);
+  }
   std::array<Frustum::PlanePosition, 6> positions = {
       Frustum::PlanePosition::kLeft,   Frustum::PlanePosition::kRight,
       Frustum::PlanePosition::kBottom, Frustum::PlanePosition::kTop,
@@ -156,8 +183,8 @@ std::vector<std::unique_ptr<Triangle>> Clipper::ClipBufferedTriangle(
           t_buffer[i]->set_is_outof_frustum(true);
           break;
         case 1:
-          ShrinkTriangle(t_buffer[i].get(), v_buffer, order, index_states, i_buffer,
-                         *itr);
+          ShrinkTriangle(t_buffer[i].get(), v_buffer, order, index_states,
+                         i_buffer, *itr);
           t_buffer[i]->set_is_outof_frustum(false);
           break;
         case 2:
@@ -184,6 +211,12 @@ void Clipper::ShrinkTriangle(Triangle* t,
                              const std::array<CoordinateState, 3>& index_states,
                              const std::array<std::uint32_t, 3>& i_buffer,
                              Frustum::PlanePosition position) const {
+  ASSERT_MSG(t != nullptr, "Clipper::ShrinkTriangle Error : triangle is null");
+  ASSERT_MSG(v_buffer != nullptr,
+             "Clipper::ShrinkTriangle Error : vertex buffer is null");
+  if (t == nullptr || v_buffer == nullptr) {
+    return;
+  }
   int inside_buf_index =
       (index_states[0] == kINSIDE) ? 0 : ((index_states[1] == kINSIDE) ? 1 : 2);
   int inside_index = i_buffer[inside_buf_index];
@@ -237,6 +270,12 @@ std::unique_ptr<Triangle> Clipper::DivideTriangle(
     const std::array<CoordinateState, 3>& index_states,
     const std::array<std::uint32_t, 3>& i_buffer,
     Frustum::PlanePosition position) const {
+  ASSERT_MSG(t != nullptr, "Clipper::ShrinkTriangle Error : triangle is null");
+  ASSERT_MSG(v_buffer != nullptr,
+             "Clipper::ShrinkTriangle Error : vertex buffer is null");
+  if (t == nullptr || v_buffer == nullptr) {
+    return nullptr;
+  }
   int outside_buf_index = (index_states[0] == kOUTSIDE)
                               ? 0
                               : ((index_states[1] == kOUTSIDE) ? 1 : 2);

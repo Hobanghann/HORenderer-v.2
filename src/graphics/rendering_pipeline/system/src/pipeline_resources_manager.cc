@@ -3,6 +3,8 @@
 #include <cassert>
 #include <string>
 
+#include "tools/include/debug.h"
+
 namespace ho_renderer {
 PipelineResourcesManager::PipelineResourcesManager() = default;
 PipelineResourcesManager::~PipelineResourcesManager() = default;
@@ -54,6 +56,9 @@ template <typename T>
 PipelineResourcesManager &PipelineResourcesManager::ReturnBuffer(
     std::vector<std::unique_ptr<std::vector<T>>> &buffers,
     std::vector<bool> &usage_flags, std::vector<T> *buffer) {
+  ASSERT_MSG(
+      buffer != nullptr,
+      "PipelineResourcesManager::ReturnBuffer Error : returned buffer is null");
   for (size_t i = 0; i < buffers.size(); ++i) {
     if (buffers[i].get() == buffer) {
       buffer->clear();
@@ -62,6 +67,9 @@ PipelineResourcesManager &PipelineResourcesManager::ReturnBuffer(
     }
   }
   // exception : Returned buffer not found in manager
+  ASSERT_MSG(false,
+             "PipelineResourcesManager::ReturnBuffer Error : returned buffer "
+             "dosen't exist in the pipeline resource manager");
   return *this;
 }
 }  // namespace ho_renderer
