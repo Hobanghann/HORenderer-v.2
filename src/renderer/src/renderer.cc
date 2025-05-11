@@ -116,7 +116,7 @@ int Renderer::CreateCameraObjects() {
           // Since the view space is defined in a right-handed coord system,
           // the default local axis is the camera's local axis rotated by 180
           // degrees around the yaw axis.
-          .set_world_coord(Vector3(0.f, 200.f, 500.f))
+          .set_world_coord(Vector3(0.f, 150.f, 500.f))
           .set_world_forward(-Vector3::kUnitZ)
           .set_world_right(-Vector3::kUnitX)
           .set_world_up(Vector3::kUnitY)

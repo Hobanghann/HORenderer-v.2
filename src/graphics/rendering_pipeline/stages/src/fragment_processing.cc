@@ -66,7 +66,7 @@ Fragment& FragmentProcessing::Shading(Fragment& frag,
       }
       switch (settings.rendering_mode()) {
         case kWireFrame:
-          frag.set_color(diffuse_color);
+          frag.set_color(LinearRGB::kBLACK);
           return frag;
           break;
         case kFill:

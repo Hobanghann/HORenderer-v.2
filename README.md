@@ -1,120 +1,81 @@
 ```plaintext
-## 🔨Build Instructions
-Use CMake to build the project.  
-Currently, this project supports only Windows and Visual Studio.
+## 🧑‍💻 About This Project
+HORenderer is a software renderer developed from scratch in C++ without relying on any external rendering libraries.
+This project was initiated to gain a deep understanding of the graphics pipeline, and implements all major stages—from vertex transformation to rasterization and fragment shading—manually.
+
+Currently, the renderer operates on a single thread, supports only non-PBR rendering, and loads models exclusively in the .obj format.
+The ultimate goal of this project is to evolve it into a hardware-accelerated or hybrid game engine.
+
+HORenderer는 외부 렌더링 라이브러리에 의존하지 않고, C++로 처음부터 직접 구현한 소프트웨어 렌더러입니다.
+이 프로젝트는 그래픽스 파이프라인의 동작 원리를 깊이 이해하기 위해 시작되었으며, 정점 변환부터 래스터화, 프래그먼트 셰이딩 등 모든 렌더링 파이프라인의 주요 단계를 직접 구현했습니다.
+
+현재 프로젝트는 싱글 스레드로 구현되어 있으며, non-PBR 렌더링, .obj 포멧만을 지원합니다.
+궁극적으로는 이 프로젝트를 기반으로 하드웨어 렌더링 또는 하이브리드 게임 엔진으로 발전시키는 것을 목표로 하고 있습니다.
+
+## 🔨 Build & Run Instructions
+[Prerequisites]
+- Windows 10 or later
+- Visual Studio 2022
+- CMake 3.20+
+- C++17
+
+[Build Steps]
+From the root of the project source tree, you can generate a Visual Studio solution using CMake.
+
+프로젝트의 최상위 소스 트리에서 cmake를 통해 Visual Studio 솔루션을 생성할 수 있습니다.
+
+## 📸 Screenshots
+
+| WireFrame Mode | Fill Mode - Flat Shading  | Fill Mode - Phong Shading | Texture Mapping Mode |
+|--------------|---------------|------------------|----------------|
+| ![wire](screenshots/wireframe.png) | ![flat](screenshots/fill_flat.png) | ![phong](screenshots/fill_phong.png) | ![texture](screenshots/texture_mapping.png) |
 
 
 ## 🔀 Work Flow
-Initialize ── Preupdate data ── Update data ── Run rendering pipeline ── Postupdate data ── Quit
-		    └────────────────────────────Loop──────────────────────────────┘
-
-
+Initialize ── Preupdate── Update── Run rendering pipeline ── Postupdate ── Quit
+		  └─────────────────Loop────────────────┘
 
 ## 📂 Project Structure
 <src> 
-│
-├── <app>
-│    ├── debug.h
-│    ├── resource script
-│    └── main.cc 
-│
-├── <math>
-│    ├── Vector2
-│    ├── Vector3
-│    ├── Vector4
-│    ├── Matrix2x2                     
-│    ├── Matrix3x3
-│    ├── Matrix4x4
-│    ├── Quaternion
-│    ├── LinearTransform 
-│    ├── AffineTransform   
-│    ├── QuaternionTransform             
-│    ├── Plane
-│    ├── Frustum
-│    └── EulerAngle
-│
-├── <asset>
-│    ├── CameraObject
-│    ├── GameObject
-│    ├── Transform
-│    ├── Mesh
-│    ├── MeshGenerator
-│    ├── MeshManager
-│    ├── Vertex
-│    ├── SphereBoundingVolume 
-│    └── AAB (Axis Aligned Box) BoundingVolume      
-│            
-├── <rendering_pipeline> 
-│    ├── /pipeline
-│    │    ├── RenderingPipeline
-│    │    ├── PipelineSettings
-│    │    └── ResourcesManager
-│    │
-│    ├── /pipeline_object
-│    │    ├── ColorBuffer         
-│    │    ├── DepthBuffer
-│    │    ├── FrameBuffer
-│    │    ├── Primitive
-│    │    ├── Point
-│    │    ├── Line
-│    │    ├── Triangle
-│    │    ├── Fragment
-│    │    ├── RenderObjectStates
-│    │    └── EdgeFunction
-│    │
-│    ├── /stages
-│    │    ├── VertexSpecification
-│    │    ├── VertexProcessing
-│    │    ├── VertexPostProcessing
-│    │    ├── Rasterization 
-│    │    ├── FragmentProcessing
-│    │    └── PerSampleProcessing
-│    │     
-│    └── /pipeline_components
-│         ├── VertexSpecifyingShader
-│         ├── VertexShader
-│         ├── FrustumCullingShader
-│         ├── PrimitiveAssemblyShader
-│         ├── ClippingShader
-│         ├── PerspectiveDivideShader
-│         ├── FaceCullingShader
-│         ├── ViewportTransformShader
-│         ├── RasterizingShader       
-│         ├── FragmentShader
-│         ├── ScissorTestingShader
-│         ├── DepthTestingShader
-│         └── FrameWritingShader
-│
-├── <engine>
-│        ├── Timer
-│        │  
-│        ├── /input
-│        │      ├── InputReceiver
-│        │      ├── InputReceiver
-│        │      ├── InputListener
-│        │      └── InputManager
-│        │  
-│        ├── /color
-│        │      ├── LinearRGB
-│        │      └── SRGB
-│        │
-│        ├── /light
-│        │     ├── Light
-│        │     ├── AmbientLight
-│        │     ├── DirectionalLight
-│        │     └── PointLight
-│        │
-│        └── /scene
-│              ├── Scene
-│              └── SceneManager
-│
-├── <renderer>
-│       ├── Renderer
-│       │
-│       └── RendererSettings
-│
-└── <windows>
-      └── WindowsApp
+  │
+  ├── <app>
+  │
+  ├── <core>
+  │      ├── <input>
+  │      │  
+  │      ├── <math>
+  │      │
+  │      └── <time>
+  │
+  ├── <graphics>
+  │        ├── <color>
+  │        │
+  │        ├── <rendering_pipeline>
+  │        │             ├── <pipeline_components>
+  │        │                     │
+  │        │             ├── <pipeline_objects>
+  │        │                     │
+  │        │             ├── <stages>
+  │        │                     │
+  │        │             └── <system>
+  │        │
+  │        └── <resource>
+  │            
+  ├── <renderer> 
+  │
+  ├── <scene>
+  │       ├── <camera>
+  │       │  
+  │       ├── <light>
+  │       │  
+  │       ├── <object>
+  │       │  
+  │       └── <system>
+  │
+  ├── <tools>
+  │
+  └── <windows>
+
 
 
 
@@ -126,7 +87,7 @@ Initialize ── Preupdate data ── Update data ── Run rendering pipelin
 -Clip space : Left-handed Y-up Coordinate System.
 
 [💾 Index Buffer Layout]
--Store indices in a clockwise order.
+-The renderer supports both counter clockwise, clockwise order.
 
 [🧮 Method for Defining a Transform]
 -Scale transform : Matrix
@@ -144,35 +105,41 @@ Initialize ── Preupdate data ── Update data ── Run rendering pipelin
 -Triangle Rasterization : Barycentric Algorithm / Edge function Half-testing, Incremental Approch
 -Backface Culling: Triple Product
 -Interpolation : Linear Interpolation / Perspective-Correct Interpolation / Sphere Linearly Interpolation(Slerp)
--Lighting : diffuse lighting - Rembrandt lighting, specular lighting - Blinn-phong lighting
+
+[🌓 Lighting]
+- Supports ambient light, directional light, and point lights.
+- Diffuse Lighting: Based on a Rembrandt-style lighting model.
+- Specular Lighting: Implemented using the Blinn-Phong lighting model.
+- Lighting Calculations: All attributes are computed in view space.
+- TBN Matrix: Constructed per-fragment using vertex normal, tangent, and handedness.
 
 
 ## 🎮 Key Guide
 [Renderer]
--F1 : Wireframe mode
--F2 : Fill mode
--F3 : Texture mapping mode
--F4 : Sphere bounding volume / Aligned axis box bounding volume
--F5 : Affine interpolation / Perspective correct interpolation
--F6 : On / Off backface culling mode
--F7 : On / Off Diffuse lighting
--F8 : On / Off Specular lighting
--F9 : 30 FPS mode
--F10 : 60 FPS mode
--F11 : Variable FPS mode
+-F1 : 30 FPS mode
+-F2 : 60 FPS mode
+-F3 :  Variable FPS mode
+-Num1 : Wireframe mode
+-Num2 : Fill mode
+-Num3 : Texture mapping mode
+-Num4 : Change shading mode(Flat, Phong)
+-Num5 : Change mesh's bounding volume(Sphere, AABB)
+-Num6 : Change interpolation(Linear, Perspective correction)
+-Num7 : On/Off Backface culling
+-Num8 : On/Off Ambient lighting
+-Num9 : On/Off Diffuse lighting
+-Num0 : On/Off Specular lighting
 
 [Main Game Object]
--Q : Rotate the main object in the positive roll direction.
--E : Rotate the main object in the negative roll direction.
--W : Rotate the main object in the positive pitch direction.
--S : Rotate the main object in the negative pitch direction.
--A : Rotate the main object in the positive yaw direction.
--D : Rotate the main object in the negative yaw direction.
+-Mouse Right Button + Mouse Move : Rotate object
 
 [Camera]
--UP : Rotate the camera object in the positive pitch direction.
--DOWN : Rotate the camera object in the negative roll direction.
--LEFT : Rotate the camera object in the positive roll direction.
--RIGHT : Rotate the camera object in the negative roll direction.
+-Mouse Right Button + Mouse Move : Rotate camera view
+-W : Move forward
+-S : Move backward
+-A : Move left
+-D : Move Right
 
-
+##📁 Assets License / Attribution
+Mug : https://www.cgtrader.com/free-3d-models/food/beverage/lowpoly-mug-for-free
+Nier2B : 

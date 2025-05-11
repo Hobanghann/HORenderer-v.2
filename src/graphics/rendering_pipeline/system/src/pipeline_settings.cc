@@ -21,7 +21,7 @@ PipelineSettings::PipelineSettings(int viewport_width, int viewport_height)
       primitive_type_(kTriangle),
       bounding_volume_mode_(kAABB),
       interpolation_mode_(kPerspectiveCorrection),
-      rendering_mode_(kFill),
+      rendering_mode_(kTextureMapping),
       shading_mode_(kFlat),
       is_using_backface_culling_(true),
       is_using_ambient_lighting_(true),
