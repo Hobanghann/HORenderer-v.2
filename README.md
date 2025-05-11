@@ -27,16 +27,16 @@ From the root of the project source tree, you can generate a Visual Studio solut
 ## 📸 Screenshots
 
 [Wireframe Mode] 
-![wire](screenshots/wireframe.png)
+![Image](https://github.com/user-attachments/assets/7fef0c2d-caa8-4cf7-81ce-eb9ca5149c92)
 
 [Flat Shading]
-![flat](screenshots/fill_flat.png)
+![Image](https://github.com/user-attachments/assets/f371fde9-ec2a-44a9-b680-29bb633236db)
 
 [Phong Shading]  
-![phong](screenshots/fill_phong.png)
+![Image](https://github.com/user-attachments/assets/972a2a57-7d0e-43b2-a3c5-e5301c339d46)
 
 [Texture Mapping]  
-![texture](screenshots/texture_mapping.png)
+![Image](https://github.com/user-attachments/assets/3a756c4d-1895-4a4b-acf0-d7640cad6385)
 
 
 ## 🔀 Work Flow
