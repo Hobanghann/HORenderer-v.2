@@ -26,10 +26,17 @@ From the root of the project source tree, you can generate a Visual Studio solut
 
 ## 📸 Screenshots
 
-| Wireframe Mode        | Fill Mode - Flat Shading | Fill Mode - Phong Shading | Texture Mapping Mode     |
-|------------------------|---------------------------|----------------------------|---------------------------|
-| ![wire](screenshots/wireframe.png) | ![flat](screenshots/fill_flat.png) | ![phong](screenshots/fill_phong.png) | ![texture](screenshots/texture_mapping.png) |
+[Wireframe Mode] 
+![wire](screenshots/wireframe.png)
 
+[Flat Shading]
+![flat](screenshots/fill_flat.png)
+
+[Phong Shading]  
+![phong](screenshots/fill_phong.png)
+
+[Texture Mapping]  
+![texture](screenshots/texture_mapping.png)
 
 
 ## 🔀 Work Flow
