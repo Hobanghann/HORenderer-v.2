@@ -61,11 +61,11 @@ Initialize ── Preupdate── Update── Run rendering pipeline ── Pos
   │        │
   │        ├── <rendering_pipeline>
   │        │             ├── <pipeline_components>
-  │        │                     │
+  │        │             │
   │        │             ├── <pipeline_objects>
-  │        │                     │
+  │        │             │
   │        │             ├── <stages>
-  │        │                     │
+  │        │             │
   │        │             └── <system>
   │        │
   │        └── <resource>
