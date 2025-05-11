@@ -1,4 +1,3 @@
-```plaintext
 ## 🧑‍💻 About This Project
 HORenderer is a software renderer developed from scratch in C++ without relying on any external rendering libraries.
 This project was initiated to gain a deep understanding of the graphics pipeline, and implements all major stages—from vertex transformation to rasterization and fragment shading—manually.
@@ -26,24 +25,26 @@ From the root of the project source tree, you can generate a Visual Studio solut
 
 ## 📸 Screenshots
 
-[Wireframe Mode] 
+### Wireframe Mode  
 ![Image](https://github.com/user-attachments/assets/7fef0c2d-caa8-4cf7-81ce-eb9ca5149c92)
 
-[Flat Shading]
+### Flat Shading  
 ![Image](https://github.com/user-attachments/assets/f371fde9-ec2a-44a9-b680-29bb633236db)
 
-[Phong Shading]  
+### Phong Shading  
 ![Image](https://github.com/user-attachments/assets/972a2a57-7d0e-43b2-a3c5-e5301c339d46)
 
-[Texture Mapping]  
+### Texture Mapping  
 ![Image](https://github.com/user-attachments/assets/3a756c4d-1895-4a4b-acf0-d7640cad6385)
 
 
 ## 🔀 Work Flow
+```plaintext
 Initialize ── Preupdate── Update── Run rendering pipeline ── Postupdate ── Quit
 		  └─────────────────Loop────────────────┘
-
+```
 ## 📂 Project Structure
+```plaintext
 <src> 
   │
   ├── <app>
@@ -86,7 +87,7 @@ Initialize ── Preupdate── Update── Run rendering pipeline ── Pos
 
 
 
-
+```
 ## 📜Mathematical Rules and Algorithms Used in the Renderer
 [🌐 Coordinate System]
 -Local space : Left-handed Y-up Coordinate System.
@@ -123,6 +124,7 @@ Initialize ── Preupdate── Update── Run rendering pipeline ── Pos
 
 
 ## 🎮 Key Guide
+```plaintext
 [Renderer]
 -F1 : 30 FPS mode
 -F2 : 60 FPS mode
@@ -147,7 +149,6 @@ Initialize ── Preupdate── Update── Run rendering pipeline ── Pos
 -S : Move backward
 -A : Move left
 -D : Move Right
-
+```
 ##📁 Assets License / Attribution
 Mug : https://www.cgtrader.com/free-3d-models/food/beverage/lowpoly-mug-for-free
-Nier2B : 
