@@ -86,15 +86,14 @@ void Renderer::InjectExternalDepthBuffer(float* depth_buffer) {
 long long Renderer::GetFPS() { return FPS_; }
 
 int Renderer::LoadModels() {
-  std::unique_ptr<Model> model;
-  resource_manager_.AddModel(std::move(ModelLoader().Load("Sphere",
-  "./resource/Sphere/sphere.obj")));
-  resource_manager_.AddModel(std::move(ModelLoader().Load("Cube",
-  "./resource/Cube/cube.obj"))); 
-  resource_manager_.AddModel(std::move(ModelLoader().Load("Triangle",
-  "./resource/Triangle/triangle.obj")));
-  resource_manager_.AddModel(std::move(ModelLoader().Load("Cone",
-  "./resource/Cone/cone.obj")));
+  resource_manager_.AddModel(
+      std::move(ModelLoader().Load("Sphere", "./resource/Sphere/sphere.obj")));
+  resource_manager_.AddModel(
+      std::move(ModelLoader().Load("Cube", "./resource/Cube/cube.obj")));
+  resource_manager_.AddModel(std::move(
+      ModelLoader().Load("Triangle", "./resource/Triangle/triangle.obj")));
+  resource_manager_.AddModel(
+      std::move(ModelLoader().Load("Cone", "./resource/Cone/cone.obj")));
   resource_manager_.AddModel(
       std::move(ModelLoader().Load("Nier2B", "./resource/Nier2B/Nier2B.obj")));
   resource_manager_.AddModel(
@@ -146,7 +145,7 @@ int Renderer::CreateGameObjects() {
           // must be explicitly defined so that SRGB's static members are
           // initialized first before kBOX. Solution: Convert SRGB's static
           // members to non-static members.
-          .set_model(resource_manager_.GetModel("Mug"))
+          .set_model(resource_manager_.GetModel("Backpack"))
           .set_rotate_velocity(MathUtils::kPi * 0.025f)
           .Build());
   scene_manager_.GetMainScene()->GetGameObject("Main Object")->Active();

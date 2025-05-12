@@ -124,31 +124,30 @@ Initialize ── Preupdate── Update── Run rendering pipeline ── Pos
 
 
 ## 🎮 Key Guide
-```plaintext
 [Renderer]
--F1 : 30 FPS mode
--F2 : 60 FPS mode
--F3 :  Variable FPS mode
--Num1 : Wireframe mode
--Num2 : Fill mode
--Num3 : Texture mapping mode
--Num4 : Change shading mode(Flat, Phong)
--Num5 : Change mesh's bounding volume(Sphere, AABB)
--Num6 : Change interpolation(Linear, Perspective correction)
--Num7 : On/Off Backface culling
--Num8 : On/Off Ambient lighting
--Num9 : On/Off Diffuse lighting
--Num0 : On/Off Specular lighting
+- F1 : 30 FPS mode
+- F2 : 60 FPS mode
+- F3 :  Variable FPS mode
+- Num1 : Wireframe mode
+- Num2 : Fill mode
+- Num3 : Texture mapping mode
+- Num4 : Change shading mode(Flat, Phong)
+- Num5 : Change mesh's bounding volume(Sphere, AABB)
+- Num6 : Change interpolation(Linear, Perspective correction)
+- Num7 : On/Off Backface culling
+- Num8 : On/Off Ambient lighting
+- Num9 : On/Off Diffuse lighting
+- Num0 : On/Off Specular lighting
 
 [Main Game Object]
--Mouse Right Button + Mouse Move : Rotate object
+- Mouse Right Button + Mouse Move : Rotate object
 
 [Camera]
--Mouse Right Button + Mouse Move : Rotate camera view
--W : Move forward
--S : Move backward
--A : Move left
--D : Move Right
-```
-##📁 Assets License / Attribution
-Mug : https://www.cgtrader.com/free-3d-models/food/beverage/lowpoly-mug-for-free
+- Mouse Right Button + Mouse Move : Rotate camera view
+- W : Move forward
+- S : Move backward
+- A : Move left
+- D : Move Right
+
+## 📁 Assets License / Attribution
+- Mug : https://www.cgtrader.com/free-3d-models/food/beverage/lowpoly-mug-for-free
