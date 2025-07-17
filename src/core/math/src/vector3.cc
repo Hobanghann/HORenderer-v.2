@@ -153,7 +153,8 @@ void Vector3::Normalize() {
 Vector3 Vector3::GetNormalized() const {
   float inv_mag = MathUtils::FastInvSqrtf(GetSqrdMagnitude());
   if (MathUtils::IsFloatNaN(inv_mag)) {
-    return Vector3::kZero;
+    return Vector3(MathUtils::kFloatNaN, MathUtils::kFloatNaN,
+                   MathUtils::kFloatNaN);
   }
   return inv_mag * *this;
 }

@@ -13,88 +13,79 @@ class InterpolationUtils {
   InterpolationUtils(const InterpolationUtils&) = delete;
   InterpolationUtils& operator=(const InterpolationUtils&) = delete;
   ~InterpolationUtils() = delete;
-  static Vector2 GetPixelBarycentric(const Vector2& target_pixel,
-                                     const Vector2& pixel1,
-                                     const Vector2& pixel2);
-  static Vector3 GetPixelBarycentric(const Vector2& target_pixel,
-                                     const Vector2& pixel1,
-                                     const Vector2& pixel2,
-                                     const Vector2& pixel3);
-  static Vector2 GetNDCBarycentric(const Vector3& target_ndc,
-                                   const Vector3& ndc1, const Vector3& ndc2);
-  static Vector3 GetNDCBarycentric(const Vector3& target_ndc,
-                                   const Vector3& ndc1, const Vector3& ndc2,
-                                   const Vector3& ndc3);
-  static Vector2 GetClipCoordinateBarycentric(const Vector4& target_coord,
-                                              const Vector4& coord1,
-                                              const Vector4& coord2);
-  static Vector3 GetClipCoordinateBarycentric(const Vector4& target_coord,
-                                              const Vector4& coord1,
-                                              const Vector4& coord2,
-                                              const Vector4& coord3);
-  static float InterpolateAffineLine(float attribute1, float attribute2,
-                                     const Vector2& ndc_barycentric);
-  static Vector2 InterpolateAffineLine(const Vector2& attribute1,
-                                       const Vector2& attribute2,
-                                       const Vector2& ndc_barycentric);
-  static Vector3 InterpolateAffineLine(const Vector3& attribute1,
-                                       const Vector3& attribute2,
-                                       const Vector2& ndc_barycentric);
-  static Vector4 InterpolateAffineLine(const Vector4& attribute1,
-                                       const Vector4& attribute2,
-                                       const Vector2& ndc_barycentric);
-  static float InterpolateAffineTriangle(float attribute1, float attribute2,
-                                         float attribute3,
-                                         const Vector3& ndc_barycentric);
-  static Vector2 InterpolateAffineTriangle(const Vector2& attribute1,
-                                           const Vector2& attribute2,
-                                           const Vector2& attribute3,
-                                           const Vector3& ndc_barycentric);
-  static Vector3 InterpolateAffineTriangle(const Vector3& attribute1,
-                                           const Vector3& attribute2,
-                                           const Vector3& attribute3,
-                                           const Vector3& ndc_barycentric);
-  static Vector4 InterpolateAffineTriangle(const Vector4& attribute1,
-                                           const Vector4& attribute2,
-                                           const Vector4& attribute3,
-                                           const Vector3& ndc_barycentric);
-  static float InterpolatePerspectiveCorrectLine(float attribute1,
-                                                 float attribute2,
-                                                 const Vector2& ndc_barycentric,
-                                                 const Vector2& inv_w,
-                                                 float interpolated_w);
-  static Vector2 InterpolatePerspectiveCorrectLine(
-      const Vector2& attribute1, const Vector2& attribute2,
-      const Vector2& ndc_barycentric, const Vector2& inv_w,
-      float interpolated_w);
-  static Vector3 InterpolatePerspectiveCorrectLine(
-      const Vector3& attribute1, const Vector3& attribute2,
-      const Vector2& ndc_barycentric, const Vector2& inv_w,
-      float interpolated_w);
-  static Vector4 InterpolatePerspectiveCorrectLine(
-      const Vector4& attribute1, const Vector4& attribute2,
-      const Vector2& ndc_barycentric, const Vector2& inv_w,
-      float interpolated_w);
-  static float InterpolatePerspectiveCorrectTriangle(
-      float attribute1, float attribute2, float attribute3,
-      const Vector3& ndc_barycentric, const Vector3& inv_w,
-      float interpolated_w);
-  static Vector2 InterpolatePerspectiveCorrectTriangle(
-      const Vector2& attribute1, const Vector2& attribute2,
-      const Vector2& attribute3, const Vector3& ndc_barycentric,
-      const Vector3& inv_w, float interpolated_w);
-  static Vector3 InterpolatePerspectiveCorrectTriangle(
-      const Vector3& attribute1, const Vector3& attribute2,
-      const Vector3& attribute3, const Vector3& ndc_barycentric,
-      const Vector3& inv_w, float interpolated_w);
-  static Vector4 InterpolatePerspectiveCorrectTriangle(
-      const Vector4& attribute1, const Vector4& attribute2,
-      const Vector4& attribute3, const Vector3& ndc_barycentric,
-      const Vector3& inv_w, float interpolated_w);
-  static float InterpolateWPerspectiveCorrectLine(
-      const Vector2& inv_w, const Vector2& ndc_barycentric);
-  static float InterpolateWPerspectiveCorrectTriangle(
-      const Vector3& inv_w, const Vector3& ndc_barycentric);
+  static Vector2 GetBarycentric(const Vector2& target, const Vector2& v1,
+                                const Vector2& v2);
+  static Vector3 GetBarycentric(const Vector2& target, const Vector2& v1,
+                                const Vector2& v2, const Vector2& v3);
+  static Vector2 GetBarycentric(const Vector3& target, const Vector3& v1,
+                                const Vector3& v2);
+  static Vector3 GetBarycentric(const Vector3& target, const Vector3& v1,
+                                const Vector3& v2, const Vector3& v3);
+  static Vector2 GetBarycentric(const Vector4& target, const Vector4& v1,
+                                const Vector4& v2);
+  static Vector3 GetBarycentric(const Vector4& target, const Vector4& v1,
+                                const Vector4& v2, const Vector4& v3);
+  static float LerpInLine(float attribute1, float attribute2,
+                          const Vector2& barycentric);
+  static Vector2 LerpInLine(const Vector2& attribute1,
+                            const Vector2& attribute2,
+                            const Vector2& barycentric);
+  static Vector3 LerpInLine(const Vector3& attribute1,
+                            const Vector3& attribute2,
+                            const Vector2& barycentric);
+  static Vector4 LerpInLine(const Vector4& attribute1,
+                            const Vector4& attribute2,
+                            const Vector2& barycentric);
+  static float LerpInTriangle(float attribute1, float attribute2,
+                              float attribute3, const Vector3& barycentric);
+  static Vector2 LerpInTriangle(const Vector2& attribute1,
+                                const Vector2& attribute2,
+                                const Vector2& attribute3,
+                                const Vector3& barycentric);
+  static Vector3 LerpInTriangle(const Vector3& attribute1,
+                                const Vector3& attribute2,
+                                const Vector3& attribute3,
+                                const Vector3& barycentric);
+  static Vector4 LerpInTriangle(const Vector4& attribute1,
+                                const Vector4& attribute2,
+                                const Vector4& attribute3,
+                                const Vector3& barycentric);
+  static float PlerpInLine(float attribute1, float attribute2,
+                           const Vector2& barycentric, const Vector2& inv_w,
+                           float interpolated_w);
+  static Vector2 PlerpInLine(const Vector2& attribute1,
+                             const Vector2& attribute2,
+                             const Vector2& barycentric, const Vector2& inv_w,
+                             float interpolated_w);
+  static Vector3 PlerpInLine(const Vector3& attribute1,
+                             const Vector3& attribute2,
+                             const Vector2& barycentric, const Vector2& inv_w,
+                             float interpolated_w);
+  static Vector4 PlerpInLine(const Vector4& attribute1,
+                             const Vector4& attribute2,
+                             const Vector2& barycentric, const Vector2& inv_w,
+                             float interpolated_w);
+  static float PlerpInTriangle(float attribute1, float attribute2,
+                               float attribute3, const Vector3& barycentric,
+                               const Vector3& inv_w, float interpolated_w);
+  static Vector2 PlerpInTriangle(const Vector2& attribute1,
+                                 const Vector2& attribute2,
+                                 const Vector2& attribute3,
+                                 const Vector3& barycentric,
+                                 const Vector3& inv_w, float interpolated_w);
+  static Vector3 PlerpInTriangle(const Vector3& attribute1,
+                                 const Vector3& attribute2,
+                                 const Vector3& attribute3,
+                                 const Vector3& barycentric,
+                                 const Vector3& inv_w, float interpolated_w);
+  static Vector4 PlerpInTriangle(const Vector4& attribute1,
+                                 const Vector4& attribute2,
+                                 const Vector4& attribute3,
+                                 const Vector3& barycentric,
+                                 const Vector3& inv_w, float interpolated_w);
+  static float PlerpInLine_W(const Vector2& inv_w, const Vector2& barycentric);
+  static float PlerpInTriangle_W(const Vector3& inv_w,
+                                 const Vector3& barycentric);
 
   // Spherical linear interpolation
   // 1-scalar is used with q1, scalar is used with q2

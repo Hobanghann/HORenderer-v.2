@@ -27,7 +27,6 @@ class Camera : public InputListener {
   float far_distance() const;
   bool is_property_changed() const;
 
-  Camera& set_name(const std::string& name);
   Camera& set_transform(const Transform& transform);
   Camera& set_fov(float fov);
   Camera& set_aspect_ratio(float viewport_width, float viewport_height);

@@ -7,31 +7,30 @@
 #include "core/math/include/vector4.h"
 
 namespace ho_renderer {
-// barycentric start from pixel2 to pixel1
-Vector2 InterpolationUtils::GetPixelBarycentric(const Vector2& target_pixel,
-                                                const Vector2& pixel1,
-                                                const Vector2& pixel2) {
+// barycentric start from v2 to v1
+Vector2 InterpolationUtils::GetBarycentric(const Vector2& target,
+                                           const Vector2& v1,
+                                           const Vector2& v2) {
   float denominator;
   float numerator;
-  if (MathUtils::IsNotEqual(pixel1.x(), pixel2.x())) {
-    denominator = pixel1.x() - pixel2.x();
-    numerator = (target_pixel.x() - pixel2.x());
-  } else if (MathUtils::IsNotEqual(pixel1.y(), pixel2.y())) {
-    denominator = pixel1.y() - pixel2.y();
-    numerator = (target_pixel.y() - pixel2.y());
+  if (MathUtils::IsNotEqual(v1.x(), v2.x())) {
+    denominator = v1.x() - v2.x();
+    numerator = (target.x() - v2.x());
+  } else if (MathUtils::IsNotEqual(v1.y(), v2.y())) {
+    denominator = v1.y() - v2.y();
+    numerator = (target.y() - v2.y());
   } else {
     return Vector2(MathUtils::kFloatNaN, MathUtils::kFloatNaN);
   }
   float lambda1 = numerator / denominator;
   return {lambda1, 1.f - lambda1};
 }
-Vector3 InterpolationUtils::GetPixelBarycentric(const Vector2& target_pixel,
-                                                const Vector2& pixel1,
-                                                const Vector2& pixel2,
-                                                const Vector2& pixel3) {
-  Vector2 a = pixel1 - pixel3;
-  Vector2 b = pixel2 - pixel3;
-  Vector2 c = target_pixel - pixel3;
+Vector3 InterpolationUtils::GetBarycentric(const Vector2& target,
+                                           const Vector2& v1, const Vector2& v2,
+                                           const Vector2& v3) {
+  Vector2 a = v1 - v3;
+  Vector2 b = v2 - v3;
+  Vector2 c = target - v3;
   float a_dot_a = a.Dot(a);
   float b_dot_b = b.Dot(b);
   float a_dot_b = a.Dot(b);
@@ -47,33 +46,32 @@ Vector3 InterpolationUtils::GetPixelBarycentric(const Vector2& target_pixel,
   float lambda2 = ((c_dot_a * a_dot_b) - (c_dot_b * a_dot_a)) * inv_denominator;
   return {lambda1, lambda2, 1.f - lambda1 - lambda2};
 }
-Vector2 InterpolationUtils::GetNDCBarycentric(const Vector3& target_ndc,
-                                              const Vector3& ndc1,
-                                              const Vector3& ndc2) {
+Vector2 InterpolationUtils::GetBarycentric(const Vector3& target,
+                                           const Vector3& v1,
+                                           const Vector3& v2) {
   float denominator;
   float numerator;
-  if (MathUtils::IsNotEqual(ndc1.x(), ndc2.x())) {
-    denominator = ndc1.x() - ndc2.x();
-    numerator = (target_ndc.x() - ndc2.x());
-  } else if (MathUtils::IsNotEqual(ndc1.y(), ndc2.y())) {
-    denominator = ndc1.y() - ndc2.y();
-    numerator = (target_ndc.y() - ndc2.y());
-  } else if (MathUtils::IsNotEqual(ndc1.z(), ndc2.z())) {
-    denominator = ndc1.z() - ndc2.z();
-    numerator = (target_ndc.z() - ndc2.z());
+  if (MathUtils::IsNotEqual(v1.x(), v2.x())) {
+    denominator = v1.x() - v2.x();
+    numerator = (target.x() - v2.x());
+  } else if (MathUtils::IsNotEqual(v1.y(), v2.y())) {
+    denominator = v1.y() - v2.y();
+    numerator = (target.y() - v2.y());
+  } else if (MathUtils::IsNotEqual(v1.z(), v2.z())) {
+    denominator = v1.z() - v2.z();
+    numerator = (target.z() - v2.z());
   } else {
     return Vector2(MathUtils::kFloatNaN, MathUtils::kFloatNaN);
   }
   float lambda1 = numerator / denominator;
   return {lambda1, 1.f - lambda1};
 }
-Vector3 InterpolationUtils::GetNDCBarycentric(const Vector3& target_ndc,
-                                              const Vector3& ndc1,
-                                              const Vector3& ndc2,
-                                              const Vector3& ndc3) {
-  Vector3 a = ndc1 - ndc3;
-  Vector3 b = ndc2 - ndc3;
-  Vector3 c = target_ndc - ndc3;
+Vector3 InterpolationUtils::GetBarycentric(const Vector3& target,
+                                           const Vector3& v1, const Vector3& v2,
+                                           const Vector3& v3) {
+  Vector3 a = v1 - v3;
+  Vector3 b = v2 - v3;
+  Vector3 c = target - v3;
   float a_dot_a = a.Dot(a);
   float b_dot_b = b.Dot(b);
   float a_dot_b = a.Dot(b);
@@ -89,34 +87,35 @@ Vector3 InterpolationUtils::GetNDCBarycentric(const Vector3& target_ndc,
   float lambda2 = ((c_dot_a * a_dot_b) - (c_dot_b * a_dot_a)) * inv_denominator;
   return {lambda1, lambda2, 1.f - lambda1 - lambda2};
 }
-Vector2 InterpolationUtils::GetClipCoordinateBarycentric(
-    const Vector4& target_coord, const Vector4& coord1, const Vector4& coord2) {
+Vector2 InterpolationUtils::GetBarycentric(const Vector4& target,
+                                           const Vector4& v1,
+                                           const Vector4& v2) {
   float denominator;
   float numerator;
-  if (MathUtils::IsNotEqual(coord1.x(), coord2.x())) {
-    denominator = coord1.x() - coord2.x();
-    numerator = (target_coord.x() - coord2.x());
-  } else if (MathUtils::IsNotEqual(coord1.y(), coord2.y())) {
-    denominator = coord1.y() - coord2.y();
-    numerator = (target_coord.y() - coord2.y());
-  } else if (MathUtils::IsNotEqual(coord1.z(), coord2.z())) {
-    denominator = coord1.z() - coord2.z();
-    numerator = (target_coord.z() - coord2.z());
-  } else if (MathUtils::IsNotEqual(coord1.w(), coord2.w())) {
-    denominator = coord1.w() - coord2.w();
-    numerator = (target_coord.w() - coord2.w());
+  if (MathUtils::IsNotEqual(v1.x(), v2.x())) {
+    denominator = v1.x() - v2.x();
+    numerator = (target.x() - v2.x());
+  } else if (MathUtils::IsNotEqual(v1.y(), v2.y())) {
+    denominator = v1.y() - v2.y();
+    numerator = (target.y() - v2.y());
+  } else if (MathUtils::IsNotEqual(v1.z(), v2.z())) {
+    denominator = v1.z() - v2.z();
+    numerator = (target.z() - v2.z());
+  } else if (MathUtils::IsNotEqual(v1.w(), v2.w())) {
+    denominator = v1.w() - v2.w();
+    numerator = (target.w() - v2.w());
   } else {
     return Vector2(MathUtils::kFloatNaN, MathUtils::kFloatNaN);
   }
   float lambda1 = numerator / denominator;
   return {lambda1, 1.f - lambda1};
 }
-Vector3 InterpolationUtils::GetClipCoordinateBarycentric(
-    const Vector4& target_coord, const Vector4& coord1, const Vector4& coord2,
-    const Vector4& coord3) {
-  Vector4 a = coord1 - coord3;
-  Vector4 b = coord2 - coord3;
-  Vector4 c = target_coord - coord3;
+Vector3 InterpolationUtils::GetBarycentric(const Vector4& target,
+                                           const Vector4& v1, const Vector4& v2,
+                                           const Vector4& v3) {
+  Vector4 a = v1 - v3;
+  Vector4 b = v2 - v3;
+  Vector4 c = target - v3;
   float a_dot_a = a.Dot(a);
   float b_dot_b = b.Dot(b);
   float a_dot_b = a.Dot(b);
@@ -133,118 +132,130 @@ Vector3 InterpolationUtils::GetClipCoordinateBarycentric(
   return {lambda1, lambda2, 1.f - lambda1 - lambda2};
 }
 
-float InterpolationUtils::InterpolateAffineLine(
-    float attribute1, float attribute2, const Vector2& ndc_barycentric) {
-  return ndc_barycentric.x() * attribute1 + ndc_barycentric.y() * attribute2;
+float InterpolationUtils::LerpInLine(float attribute1, float attribute2,
+                                     const Vector2& barycentric) {
+  return barycentric.x() * attribute1 + barycentric.y() * attribute2;
 }
-Vector2 ho_renderer::InterpolationUtils::InterpolateAffineLine(
+Vector2 ho_renderer::InterpolationUtils::LerpInLine(
     const Vector2& attribute1, const Vector2& attribute2,
-    const Vector2& ndc_barycentric) {
-  return ndc_barycentric.x() * attribute1 + ndc_barycentric.y() * attribute2;
+    const Vector2& barycentric) {
+  return barycentric.x() * attribute1 + barycentric.y() * attribute2;
 }
-Vector3 ho_renderer::InterpolationUtils::InterpolateAffineLine(
+Vector3 ho_renderer::InterpolationUtils::LerpInLine(
     const Vector3& attribute1, const Vector3& attribute2,
-    const Vector2& ndc_barycentric) {
-  return ndc_barycentric.x() * attribute1 + ndc_barycentric.y() * attribute2;
+    const Vector2& barycentric) {
+  return barycentric.x() * attribute1 + barycentric.y() * attribute2;
 }
-Vector4 ho_renderer::InterpolationUtils::InterpolateAffineLine(
+Vector4 ho_renderer::InterpolationUtils::LerpInLine(
     const Vector4& attribute1, const Vector4& attribute2,
-    const Vector2& ndc_barycentric) {
-  return ndc_barycentric.x() * attribute1 + ndc_barycentric.y() * attribute2;
+    const Vector2& barycentric) {
+  return barycentric.x() * attribute1 + barycentric.y() * attribute2;
 }
-float InterpolationUtils::InterpolateAffineTriangle(
-    float attribute1, float attribute2, float attribute3,
-    const Vector3& ndc_barycentric) {
-  return ndc_barycentric.x() * attribute1 + ndc_barycentric.y() * attribute2 +
-         ndc_barycentric.z() * attribute3;
+float InterpolationUtils::LerpInTriangle(float attribute1, float attribute2,
+                                         float attribute3,
+                                         const Vector3& barycentric) {
+  return barycentric.x() * attribute1 + barycentric.y() * attribute2 +
+         barycentric.z() * attribute3;
 }
-Vector2 InterpolationUtils::InterpolateAffineTriangle(
-    const Vector2& attribute1, const Vector2& attribute2,
-    const Vector2& attribute3, const Vector3& ndc_barycentric) {
-  return ndc_barycentric.x() * attribute1 + ndc_barycentric.y() * attribute2 +
-         ndc_barycentric.z() * attribute3;
+Vector2 InterpolationUtils::LerpInTriangle(const Vector2& attribute1,
+                                           const Vector2& attribute2,
+                                           const Vector2& attribute3,
+                                           const Vector3& barycentric) {
+  return barycentric.x() * attribute1 + barycentric.y() * attribute2 +
+         barycentric.z() * attribute3;
 }
-Vector3 InterpolationUtils::InterpolateAffineTriangle(
-    const Vector3& attribute1, const Vector3& attribute2,
-    const Vector3& attribute3, const Vector3& ndc_barycentric) {
-  return ndc_barycentric.x() * attribute1 + ndc_barycentric.y() * attribute2 +
-         ndc_barycentric.z() * attribute3;
+Vector3 InterpolationUtils::LerpInTriangle(const Vector3& attribute1,
+                                           const Vector3& attribute2,
+                                           const Vector3& attribute3,
+                                           const Vector3& barycentric) {
+  return barycentric.x() * attribute1 + barycentric.y() * attribute2 +
+         barycentric.z() * attribute3;
 }
-Vector4 InterpolationUtils::InterpolateAffineTriangle(
-    const Vector4& attribute1, const Vector4& attribute2,
-    const Vector4& attribute3, const Vector3& ndc_barycentric) {
-  return ndc_barycentric.x() * attribute1 + ndc_barycentric.y() * attribute2 +
-         ndc_barycentric.z() * attribute3;
+Vector4 InterpolationUtils::LerpInTriangle(const Vector4& attribute1,
+                                           const Vector4& attribute2,
+                                           const Vector4& attribute3,
+                                           const Vector3& barycentric) {
+  return barycentric.x() * attribute1 + barycentric.y() * attribute2 +
+         barycentric.z() * attribute3;
 }
-float InterpolationUtils::InterpolatePerspectiveCorrectLine(
-    float attribute1, float attribute2, const Vector2& ndc_barycentric,
-    const Vector2& inv_w, float interpolated_w) {
-  return interpolated_w * (inv_w.x() * ndc_barycentric.x() * attribute1 +
-                           inv_w.y() * ndc_barycentric.y() * attribute2);
+float InterpolationUtils::PlerpInLine(float attribute1, float attribute2,
+                                      const Vector2& barycentric,
+                                      const Vector2& inv_w,
+                                      float interpolated_w) {
+  return interpolated_w * (inv_w.x() * barycentric.x() * attribute1 +
+                           inv_w.y() * barycentric.y() * attribute2);
 }
-Vector2 InterpolationUtils::InterpolatePerspectiveCorrectLine(
-    const Vector2& attribute1, const Vector2& attribute2,
-    const Vector2& ndc_barycentric, const Vector2& inv_w,
-    float interpolated_w) {
-  return interpolated_w * (inv_w.x() * ndc_barycentric.x() * attribute1 +
-                           inv_w.y() * ndc_barycentric.y() * attribute2);
+Vector2 InterpolationUtils::PlerpInLine(const Vector2& attribute1,
+                                        const Vector2& attribute2,
+                                        const Vector2& barycentric,
+                                        const Vector2& inv_w,
+                                        float interpolated_w) {
+  return interpolated_w * (inv_w.x() * barycentric.x() * attribute1 +
+                           inv_w.y() * barycentric.y() * attribute2);
 }
-Vector3 InterpolationUtils::InterpolatePerspectiveCorrectLine(
-    const Vector3& attribute1, const Vector3& attribute2,
-    const Vector2& ndc_barycentric, const Vector2& inv_w,
-    float interpolated_w) {
-  return interpolated_w * (inv_w.x() * ndc_barycentric.x() * attribute1 +
-                           inv_w.y() * ndc_barycentric.y() * attribute2);
+Vector3 InterpolationUtils::PlerpInLine(const Vector3& attribute1,
+                                        const Vector3& attribute2,
+                                        const Vector2& barycentric,
+                                        const Vector2& inv_w,
+                                        float interpolated_w) {
+  return interpolated_w * (inv_w.x() * barycentric.x() * attribute1 +
+                           inv_w.y() * barycentric.y() * attribute2);
 }
-Vector4 InterpolationUtils::InterpolatePerspectiveCorrectLine(
-    const Vector4& attribute1, const Vector4& attribute2,
-    const Vector2& ndc_barycentric, const Vector2& inv_w,
-    float interpolated_w) {
-  return interpolated_w * (inv_w.x() * ndc_barycentric.x() * attribute1 +
-                           inv_w.y() * ndc_barycentric.y() * attribute2);
+Vector4 InterpolationUtils::PlerpInLine(const Vector4& attribute1,
+                                        const Vector4& attribute2,
+                                        const Vector2& barycentric,
+                                        const Vector2& inv_w,
+                                        float interpolated_w) {
+  return interpolated_w * (inv_w.x() * barycentric.x() * attribute1 +
+                           inv_w.y() * barycentric.y() * attribute2);
 }
-float InterpolationUtils::InterpolatePerspectiveCorrectTriangle(
-    float attribute1, float attribute2, float attribute3,
-    const Vector3& ndc_barycentric, const Vector3& inv_w,
-    float interpolated_w) {
-  return interpolated_w * (inv_w.x() * ndc_barycentric.x() * attribute1 +
-                           inv_w.y() * ndc_barycentric.y() * attribute2 +
-                           inv_w.z() * ndc_barycentric.z() * attribute3);
+float InterpolationUtils::PlerpInTriangle(float attribute1, float attribute2,
+                                          float attribute3,
+                                          const Vector3& barycentric,
+                                          const Vector3& inv_w,
+                                          float interpolated_w) {
+  return interpolated_w * (inv_w.x() * barycentric.x() * attribute1 +
+                           inv_w.y() * barycentric.y() * attribute2 +
+                           inv_w.z() * barycentric.z() * attribute3);
 }
-Vector2 InterpolationUtils::InterpolatePerspectiveCorrectTriangle(
-    const Vector2& attribute1, const Vector2& attribute2,
-    const Vector2& attribute3, const Vector3& ndc_barycentric,
-    const Vector3& inv_w, float interpolated_w) {
-  return interpolated_w * (inv_w.x() * ndc_barycentric.x() * attribute1 +
-                           inv_w.y() * ndc_barycentric.y() * attribute2 +
-                           inv_w.z() * ndc_barycentric.z() * attribute3);
+Vector2 InterpolationUtils::PlerpInTriangle(const Vector2& attribute1,
+                                            const Vector2& attribute2,
+                                            const Vector2& attribute3,
+                                            const Vector3& barycentric,
+                                            const Vector3& inv_w,
+                                            float interpolated_w) {
+  return interpolated_w * (inv_w.x() * barycentric.x() * attribute1 +
+                           inv_w.y() * barycentric.y() * attribute2 +
+                           inv_w.z() * barycentric.z() * attribute3);
 }
-Vector3 InterpolationUtils::InterpolatePerspectiveCorrectTriangle(
-    const Vector3& attribute1, const Vector3& attribute2,
-    const Vector3& attribute3, const Vector3& ndc_barycentric,
-    const Vector3& inv_w, float interpolated_w) {
-  return interpolated_w * (inv_w.x() * ndc_barycentric.x() * attribute1 +
-                           inv_w.y() * ndc_barycentric.y() * attribute2 +
-                           inv_w.z() * ndc_barycentric.z() * attribute3);
+Vector3 InterpolationUtils::PlerpInTriangle(const Vector3& attribute1,
+                                            const Vector3& attribute2,
+                                            const Vector3& attribute3,
+                                            const Vector3& barycentric,
+                                            const Vector3& inv_w,
+                                            float interpolated_w) {
+  return interpolated_w * (inv_w.x() * barycentric.x() * attribute1 +
+                           inv_w.y() * barycentric.y() * attribute2 +
+                           inv_w.z() * barycentric.z() * attribute3);
 }
-Vector4 InterpolationUtils::InterpolatePerspectiveCorrectTriangle(
-    const Vector4& attribute1, const Vector4& attribute2,
-    const Vector4& attribute3, const Vector3& ndc_barycentric,
-    const Vector3& inv_w, float interpolated_w) {
-  return interpolated_w * (inv_w.x() * ndc_barycentric.x() * attribute1 +
-                           inv_w.y() * ndc_barycentric.y() * attribute2 +
-                           inv_w.z() * ndc_barycentric.z() * attribute3);
+Vector4 InterpolationUtils::PlerpInTriangle(const Vector4& attribute1,
+                                            const Vector4& attribute2,
+                                            const Vector4& attribute3,
+                                            const Vector3& barycentric,
+                                            const Vector3& inv_w,
+                                            float interpolated_w) {
+  return interpolated_w * (inv_w.x() * barycentric.x() * attribute1 +
+                           inv_w.y() * barycentric.y() * attribute2 +
+                           inv_w.z() * barycentric.z() * attribute3);
 }
-float InterpolationUtils::InterpolateWPerspectiveCorrectLine(
-    const Vector2& inv_w, const Vector2& ndc_barycentric) {
-  return 1.f /
-         (ndc_barycentric.x() * inv_w.x() + ndc_barycentric.y() * inv_w.y());
+float InterpolationUtils::PlerpInLine_W(const Vector2& inv_w,
+                                        const Vector2& barycentric) {
+  return 1.f / (barycentric.x() * inv_w.x() + barycentric.y() * inv_w.y());
 }
-float InterpolationUtils::InterpolateWPerspectiveCorrectTriangle(
-    const Vector3& inv_w, const Vector3& ndc_barycentric) {
-  return 1.f /
-         (ndc_barycentric.x() * inv_w.x() + ndc_barycentric.y() * inv_w.y() +
-          ndc_barycentric.z() * inv_w.z());
+float InterpolationUtils::PlerpInTriangle_W(const Vector3& inv_w,
+                                            const Vector3& barycentric) {
+  return 1.f / (barycentric.x() * inv_w.x() + barycentric.y() * inv_w.y() +
+                barycentric.z() * inv_w.z());
 }
 // Spherical linear interpolation
 Quaternion InterpolationUtils::SlerpHalfRotationQuaternion(

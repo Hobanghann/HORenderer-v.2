@@ -13,7 +13,7 @@ namespace ho_renderer {
 
 LightBuilder::LightBuilder()
     : name_("Unnamed Light"),
-      light_color_(LinearRGB::kWHITE),
+      light_color_(LinearRGB::kWhite),
       light_intensity_(0.f),
       light_vector_(Vector4::kZero),
       constant_attenuation_(0.f),
@@ -83,7 +83,7 @@ std::unique_ptr<PointLight> LightBuilder::BuildPointLight() const {
 
 void LightBuilder::Reset() {
   name_ = "Unnamed Light";
-  light_color_ = LinearRGB::kWHITE;
+  light_color_ = LinearRGB::kWhite;
   light_intensity_ = 0.f;
   light_vector_ = Vector4::kZero;
   constant_attenuation_ = 0.f;

@@ -74,18 +74,18 @@ class Rasterizer {
       const std::vector<TransformedVertex>* v_buffer, const Triangle* t,
       DepthBuffer* d_buffer);
 
-  TransformedVertex InterpolateAffineLine(const TransformedVertex& v1,
+  TransformedVertex LerpInLine(const TransformedVertex& v1,
                                           const TransformedVertex& v2,
                                           const Vector2& barycentric);
-  TransformedVertex InterpolateAffineTriangle(const TransformedVertex& v1,
+  TransformedVertex LerpInTriangle(const TransformedVertex& v1,
                                               const TransformedVertex& v2,
                                               const TransformedVertex& v3,
                                               const Vector3& barycentric);
-  TransformedVertex InterpolatePerspectiveCorrectLine(
+  TransformedVertex PlerpInLine(
       const TransformedVertex& v1, const TransformedVertex& v2,
       const Vector2& ndc_barycentric, const Vector2& inv_w,
       float interpolated_w);
-  TransformedVertex InterpolatePerspectiveCorrectTriangle(
+  TransformedVertex PlerpInTriangle(
       const TransformedVertex& v1, const TransformedVertex& v2,
       const TransformedVertex& v3, const Vector3& ndc_barycentric,
       const Vector3& inv_w, float interpolated_w);

@@ -23,13 +23,14 @@ PipelineSettings::PipelineSettings(int viewport_width, int viewport_height)
       interpolation_mode_(kPerspectiveCorrection),
       rendering_mode_(kTextureMapping),
       shading_mode_(kFlat),
+      texture_mapping_mode_(kNonPBR),
       is_using_backface_culling_(true),
       is_using_ambient_lighting_(true),
       is_using_diffuse_lighting_(true),
       is_using_specular_lighting_(true),
       default_ambient_color_(LinearRGB::kDARK_GRAY),
       default_diffuse_color_(LinearRGB::kGRAY),
-      default_specular_color_(LinearRGB::kWHITE),
+      default_specular_color_(LinearRGB::kWhite),
       default_specular_coefficient_(0.5f),
       default_specular_exponent_(8.f),
       default_opacity_(1.f) {
@@ -69,6 +70,9 @@ RenderingMode PipelineSettings::rendering_mode() const {
   return rendering_mode_;
 }
 ShadingMode PipelineSettings::shading_mode() const { return shading_mode_; }
+TextureMappingMode PipelineSettings::texture_mapping_mode() const {
+  return texture_mapping_mode_;
+}
 bool PipelineSettings::is_using_backface_culling() const {
   return is_using_backface_culling_;
 }
@@ -150,6 +154,11 @@ PipelineSettings& PipelineSettings::set_shading_mode(ShadingMode mode) {
   shading_mode_ = mode;
   return *this;
 }
+PipelineSettings& PipelineSettings::set_texture_mapping_mode(
+    TextureMappingMode mode) {
+  texture_mapping_mode_ = mode;
+  return *this;
+}
 PipelineSettings& PipelineSettings::set_is_using_backface_culling(bool arg) {
   is_using_backface_culling_ = arg;
   return *this;
@@ -197,46 +206,43 @@ PipelineSettings& PipelineSettings::set_default_opacity(float opacity) {
 
 void PipelineSettings::Update(InputReceiver& input_receiver, float delta_time) {
   if (input_receiver.IsPressed(Input::kKEY_NUM_1)) {
-    rendering_mode_ = RenderingMode::kWireFrame;
+    rendering_mode_ = static_cast<RenderingMode>((rendering_mode_ + 1) % 3);
     input_receiver.UpdateKeyStatus(Input::kKEY_NUM_1, false);
   }
   if (input_receiver.IsPressed(Input::kKEY_NUM_2)) {
-    rendering_mode_ = RenderingMode::kFill;
+    shading_mode_ = static_cast<ShadingMode>((shading_mode_ + 1) % 2);
     input_receiver.UpdateKeyStatus(Input::kKEY_NUM_2, false);
   }
   if (input_receiver.IsPressed(Input::kKEY_NUM_3)) {
-    rendering_mode_ = RenderingMode::kTextureMapping;
+    texture_mapping_mode_ =
+        static_cast<TextureMappingMode>((texture_mapping_mode_ + 1) % 2);
     input_receiver.UpdateKeyStatus(Input::kKEY_NUM_3, false);
   }
   if (input_receiver.IsPressed(Input::kKEY_NUM_4)) {
-    shading_mode_ = static_cast<ShadingMode>((shading_mode_ + 1) % 2);
+    bounding_volume_mode_ =
+        static_cast<BoundingVolumeMode>((bounding_volume_mode_ + 1) % 2);
     input_receiver.UpdateKeyStatus(Input::kKEY_NUM_4, false);
   }
   if (input_receiver.IsPressed(Input::kKEY_NUM_5)) {
-    bounding_volume_mode_ =
-        static_cast<BoundingVolumeMode>((bounding_volume_mode_ + 1) % 2);
+    interpolation_mode_ =
+        static_cast<InterpolationMode>((interpolation_mode_ + 1) % 2);
     input_receiver.UpdateKeyStatus(Input::kKEY_NUM_5, false);
   }
   if (input_receiver.IsPressed(Input::kKEY_NUM_6)) {
-    interpolation_mode_ =
-        static_cast<InterpolationMode>((interpolation_mode_ + 1) % 2);
+    is_using_backface_culling_ = !is_using_backface_culling_;
     input_receiver.UpdateKeyStatus(Input::kKEY_NUM_6, false);
   }
   if (input_receiver.IsPressed(Input::kKEY_NUM_7)) {
-    is_using_backface_culling_ = !is_using_backface_culling_;
+    is_using_ambient_lighting_ = !is_using_ambient_lighting_;
     input_receiver.UpdateKeyStatus(Input::kKEY_NUM_7, false);
   }
   if (input_receiver.IsPressed(Input::kKEY_NUM_8)) {
-    is_using_ambient_lighting_ = !is_using_ambient_lighting_;
+    is_using_diffuse_lighting_ = !is_using_diffuse_lighting_;
     input_receiver.UpdateKeyStatus(Input::kKEY_NUM_8, false);
   }
   if (input_receiver.IsPressed(Input::kKEY_NUM_9)) {
-    is_using_diffuse_lighting_ = !is_using_diffuse_lighting_;
-    input_receiver.UpdateKeyStatus(Input::kKEY_NUM_9, false);
-  }
-  if (input_receiver.IsPressed(Input::kKEY_NUM_0)) {
     is_using_specular_lighting_ = !is_using_specular_lighting_;
-    input_receiver.UpdateKeyStatus(Input::kKEY_NUM_0, false);
+    input_receiver.UpdateKeyStatus(Input::kKEY_NUM_9, false);
   }
 }
 }  // namespace ho_renderer

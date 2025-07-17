@@ -20,7 +20,7 @@ Fragment::Fragment(const Primitive* source, const Vector2& screen_coord,
       tangent_(tangent),
       handedness_(handedness),
       depth_(depth),
-      color_(LinearRGB::kBLACK) {
+      color_(LinearRGB::kBlack) {
   ASSERT_MSG(source_ != nullptr,
              "Fragment::Fragment Error : source primitive is null");
 }

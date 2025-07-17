@@ -15,7 +15,6 @@
 #include "scene/system/include/scene.h"
 #include "tools/include/debug.h"
 
-int cnt = 0;
 
 namespace ho_renderer {
 RenderingPipeline::RenderingPipeline(const int viewport_width,
@@ -37,8 +36,6 @@ PipelineSettings& RenderingPipeline::pipeline_settings() {
 FrameBuffer& RenderingPipeline::frame_buffer() { return frame_buffer_; }
 
 void RenderingPipeline::Run(const Scene* scene) {
-  printf("%d\n", cnt);
-  cnt++;
   ASSERT_MSG(scene != nullptr, "RenderingPipeline::Run Error : scene is null");
   if (scene == nullptr) {
     return;

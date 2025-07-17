@@ -29,15 +29,15 @@ bool MathUtils::IsEqual(float f1, float f2) { return fabs(f1 - f2) < kEpsion; }
 bool MathUtils::IsNotEqual(float f1, float f2) { return !(IsEqual(f1, f2)); }
 bool MathUtils::IsGreater(float f1, float f2) { return (f1 - f2) > kEpsion; }
 bool MathUtils::IsGreaterEqual(float f1, float f2) {
-  return (f1 - f2) >= -kEpsion;
+  return !((f1 - f2) < kEpsion);
 }
 bool MathUtils::IsLess(float f1, float f2) { return (f2 - f1) > kEpsion; }
 bool MathUtils::IsLessEqual(float f1, float f2) {
-  return (f2 - f1) >= -kEpsion;
+  return !((f2 - f1) < kEpsion);
 }
 float MathUtils::Abs(float f) { return std::abs(f); }
 int MathUtils::Abs(const int i) { return std::abs(i); }
-bool MathUtils::IsFloatNaN(float f) { return isnan(f); }
+bool MathUtils::IsFloatNaN(float f) { return std::isnan(f); }
 float MathUtils::Powf(float base, float exp) { return powf(base, exp); }
 float MathUtils::FastPow(float base, int exp) {
   float result = 1.0f;
@@ -75,9 +75,11 @@ float MathUtils::FastInvSqrtf(float f) {
   // 0.5*X0*(3-(Y*X0)*X0) but retains better accuracy (namely InvSqrt(1) = 1
   // exactly).
   ASSERT_MSG(
-      f != 0,
+      MathUtils::IsNotEqual(f, MathUtils::kEpsion),
       "FastInvSqrtf error: argument must not be zero (division by zero)");
-
+  if (MathUtils::IsEqual(f, MathUtils::kEpsion)) {
+    return MathUtils::kFloatNaN;
+  }
   const __m128 fOneHalf = _mm_set_ss(0.5f);
   __m128 Y0, X0, X1, X2, FOver2;
   float temp;
@@ -99,12 +101,12 @@ float MathUtils::FastInvSqrtf(float f) {
   _mm_store_ss(&temp, X2);
   return temp;
 }
-float MathUtils::Sinf(float radian) { return sinf(radian); }
-float MathUtils::Cosf(float radian) { return cosf(radian); }
-float MathUtils::Tanf(float radian) { return tanf(radian); }
-float MathUtils::Asinf(float radian) { return asinf(radian); }
-float MathUtils::Acosf(float radian) { return acosf(radian); }
-float MathUtils::Atanf(float radian) { return atanf(radian); }
+float MathUtils::Sinf(float radian) { return std::sinf(radian); }
+float MathUtils::Cosf(float radian) { return std::cosf(radian); }
+float MathUtils::Tanf(float radian) { return std::tanf(radian); }
+float MathUtils::Asinf(float radian) { return std::asinf(radian); }
+float MathUtils::Acosf(float radian) { return std::acosf(radian); }
+float MathUtils::Atanf(float radian) { return std::atanf(radian); }
 void MathUtils::SinCosf(float& out_sin, float& out_cos, float radian) {
   // Copied from UE4 Source Code
   // Map Value to y in [-pi,pi], x = 2*pi*quotient + remainder.
@@ -161,8 +163,8 @@ float MathUtils::Minf(float f1, float f2, float f3) {
 float MathUtils::Clamp(float min, float max, float value) {
   return value < min ? min : value > max ? max : value;
 }
-const Vector3& MathUtils::Clamp(const Vector3& min, const Vector3& max,
-                                const Vector3& value) {
+Vector3 MathUtils::Clamp(const Vector3& min, const Vector3& max,
+                         const Vector3& value) {
   return Vector3(Clamp(min.x(), max.x(), value.x()),
                  Clamp(min.y(), max.y(), value.y()),
                  Clamp(min.z(), max.z(), value.z()));

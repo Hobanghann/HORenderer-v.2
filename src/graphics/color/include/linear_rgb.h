@@ -3,12 +3,14 @@
 
 #include <cstdint>
 
+#include "core/math/include/vector4.h"
+
 namespace ho_renderer {
 class SRGB;
 class LinearRGB {
  public:
-  static const LinearRGB kWHITE;
-  static const LinearRGB kBLACK;
+  static const LinearRGB kWhite;
+  static const LinearRGB kBlack;
   static const LinearRGB kRED;
   static const LinearRGB kGREEN;
   static const LinearRGB kBLUE;
@@ -37,6 +39,7 @@ class LinearRGB {
   LinearRGB(float red, float green, float blue, float alpha = 1.f);
   explicit LinearRGB(const SRGB&);
   explicit LinearRGB(const std::uint32_t argb32);
+  explicit LinearRGB(const Vector4& v);
   LinearRGB& operator=(const LinearRGB&);
   ~LinearRGB();
 
@@ -64,13 +67,14 @@ class LinearRGB {
   float GetLuminance(float r_weight, float g_weight, float b_weight) const;
   std::uint32_t ToRGBA32() const;
   std::uint32_t ToBGRA32() const;
+  Vector4 ToVector4() const;
 
  private:
   static constexpr float kMAX32 = 255.9999;
   static constexpr float kINVERSE_MAX32 = 1.f / 255.f;
   static constexpr std::uint32_t kRED_MASK = 0x000000FF;
-    static constexpr std::uint32_t kGREEN_MASK = 0x0000FF00;
-    static constexpr std::uint32_t kBLUE_MASK = 0x00FF0000;
+  static constexpr std::uint32_t kGREEN_MASK = 0x0000FF00;
+  static constexpr std::uint32_t kBLUE_MASK = 0x00FF0000;
   static constexpr std::uint32_t kALPHA_MASK = 0xFF000000;
 
   float red_;

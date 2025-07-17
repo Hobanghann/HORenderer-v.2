@@ -1,5 +1,7 @@
 #include "graphics/rendering_pipeline/stages/include/fragment_processing.h"
 
+#include "core/math/include/interpolation_utils.h"
+#include "core/math/include/math_utils.h"
 #include "graphics/rendering_pipeline/pipeline_objects/include/line.h"
 #include "graphics/rendering_pipeline/pipeline_objects/include/point.h"
 #include "graphics/rendering_pipeline/pipeline_objects/include/primitive.h"
@@ -66,7 +68,7 @@ Fragment& FragmentProcessing::Shading(Fragment& frag,
       }
       switch (settings.rendering_mode()) {
         case kWireFrame:
-          frag.set_color(LinearRGB::kBLACK);
+          frag.set_color(LinearRGB::kBlack);
           return frag;
           break;
         case kFill:
@@ -82,14 +84,34 @@ Fragment& FragmentProcessing::Shading(Fragment& frag,
                 material->GetTexture(Diffuse)->GetTexel(uv.x(), uv.y());
           }
           if (material->GetTexture(Specular) != nullptr) {
-            specular_color =
-                material->GetTexture(Specular)->GetTexel(uv.x(), uv.y());
+            switch (settings.texture_mapping_mode()) {
+              case kNonPBR:
+                specular_color =
+                    material->GetTexture(Specular)->GetTexel(uv.x(), uv.y());
+                break;
+              case kPBRApproximation:
+                float metallic = material->GetTexture(Specular)
+                                     ->GetTexel(uv.x(), uv.y())
+                                     .red();
+                specular_color = LinearRGB::kWhite * metallic;
+                break;
+            }
           }
           if (material->GetTexture(SpecularHighlight) != nullptr) {
-            exponent = material->GetTexture(SpecularHighlight)
-                           ->GetTexel(uv.x(), uv.y())
-                           .red() *
-                       1.f;
+            switch (settings.texture_mapping_mode()) {
+              case kNonPBR:
+                exponent = material->GetTexture(SpecularHighlight)
+                               ->GetTexel(uv.x(), uv.y())
+                               .red() *
+                           1000.f;
+                break;
+              case kPBRApproximation:
+                float roughness = material->GetTexture(SpecularHighlight)
+                                      ->GetTexel(uv.x(), uv.y())
+                                      .red();
+                exponent = (1.f - roughness) * (1.f - roughness) * 1000.f;
+                break;
+            }
           }
           if (material->GetTexture(Alpha) != nullptr) {
             opacity =

@@ -22,7 +22,14 @@ Camera::Camera(const std::string& name, const Transform& transform, float fov,
       near_distance_(near_distance),
       far_distance_(far_distance),
       rotate_velocity_(rotate_velocity),
-      move_velocity_(move_velocity) {}
+      move_velocity_(move_velocity) {
+  ASSERT_MSG(fov_ != 0, "Camera::Camera Error : fov must not be zero");
+  ASSERT_MSG(aspect_ratio_ != 0,
+             "Camera::Camera Error : aspect_ratio must not be zero");
+  ASSERT_MSG(MathUtils::IsLessEqual(near_distance_, far_distance_),
+             "Camera::Camera Error : near_distance must be bigger than "
+             "far_distance");
+}
 Camera& Camera::operator=(const Camera& camera_object) = default;
 Camera::~Camera() = default;
 
@@ -35,10 +42,6 @@ float Camera::near_distance() const { return near_distance_; }
 float Camera::far_distance() const { return far_distance_; }
 bool Camera::is_property_changed() const { return is_property_changed_; }
 
-Camera& Camera::set_name(const std::string& name) {
-  name_ = name;
-  return *this;
-}
 Camera& Camera::set_transform(const Transform& transform) {
   transform_ = transform;
   return *this;
@@ -50,6 +53,12 @@ Camera& Camera::set_fov(float fov) {
   return *this;
 }
 Camera& Camera::set_aspect_ratio(float viewport_width, float viewport_height) {
+  ASSERT_MSG(MathUtils::IsGreaterEqual(viewport_width, 0.f),
+             "Camera::set_aspect_ratio Error : viewport_width must not be "
+             "bigger than zero");
+  ASSERT_MSG(MathUtils::IsGreaterEqual(viewport_height, 0.f),
+             "Camera::set_aspect_ratio Error : viewport_height must not be "
+             "bigger than zero");
   aspect_ratio_ = viewport_width / viewport_height;
   return *this;
 }

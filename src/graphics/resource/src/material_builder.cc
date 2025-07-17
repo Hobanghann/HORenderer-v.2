@@ -16,7 +16,7 @@ MaterialBuilder::MaterialBuilder()
     : name_("Unnamed Material"),
       ambient_color_(LinearRGB::kDARK_GRAY),
       diffuse_color_(LinearRGB::kGRAY),
-      specular_color_(LinearRGB::kWHITE),
+      specular_color_(LinearRGB::kWhite),
       specular_coefficient_(1.f),
       specular_exponent_(2.f),
       opaque_(1.f),
@@ -75,7 +75,7 @@ void MaterialBuilder::Reset() {
   name_ = "Unnamed Material";
   ambient_color_ = LinearRGB::kDARK_GRAY;
   diffuse_color_ = LinearRGB::kGRAY;
-  specular_color_ = LinearRGB::kWHITE;
+  specular_color_ = LinearRGB::kWhite;
   specular_coefficient_ = 1.f;
   specular_exponent_ = 2.f;
   opaque_ = 1.f;

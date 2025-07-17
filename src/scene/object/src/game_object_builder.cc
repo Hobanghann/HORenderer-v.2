@@ -46,7 +46,7 @@ GameObjectBuilder& GameObjectBuilder::set_world_up(const Vector3& up) {
   return *this;
 }
 
-GameObjectBuilder& GameObjectBuilder::set_world_scale(const float scale) {
+GameObjectBuilder& GameObjectBuilder::set_world_scale(float scale) {
   world_scale_ = scale;
   return *this;
 }
@@ -56,8 +56,7 @@ GameObjectBuilder& GameObjectBuilder::set_model(const Model* model) {
   return *this;
 }
 
-GameObjectBuilder& GameObjectBuilder::set_rotate_velocity(
-    const float velocity) {
+GameObjectBuilder& GameObjectBuilder::set_rotate_velocity(float velocity) {
   rotate_velocity_ = velocity;
   return *this;
 }

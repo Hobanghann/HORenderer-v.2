@@ -28,6 +28,7 @@ class PipelineSettings : public InputListener {
   InterpolationMode interpolation_mode() const;
   RenderingMode rendering_mode() const;
   ShadingMode shading_mode() const;
+  TextureMappingMode texture_mapping_mode() const;
   bool is_using_backface_culling() const;
   bool is_using_ambient_lighting() const;
   bool is_using_diffuse_lighting() const;
@@ -51,6 +52,7 @@ class PipelineSettings : public InputListener {
   PipelineSettings& set_interpolation_mode(InterpolationMode mode);
   PipelineSettings& set_rendering_mode(RenderingMode mode);
   PipelineSettings& set_shading_mode(ShadingMode mode);
+  PipelineSettings& set_texture_mapping_mode(TextureMappingMode mode);
   PipelineSettings& set_is_using_backface_culling(bool arg);
   PipelineSettings& set_is_using_ambient_lighting(bool arg);
   PipelineSettings& set_is_using_diffuse_lighting(bool arg);
@@ -77,6 +79,7 @@ class PipelineSettings : public InputListener {
   InterpolationMode interpolation_mode_;
   RenderingMode rendering_mode_;
   ShadingMode shading_mode_;
+  TextureMappingMode texture_mapping_mode_;
   bool is_using_backface_culling_;
   bool is_using_ambient_lighting_;
   bool is_using_diffuse_lighting_;

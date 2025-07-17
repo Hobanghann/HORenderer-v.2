@@ -7,6 +7,7 @@ enum PrimitiveType { kPoint = 0, kLine, kTriangle };
 enum BoundingVolumeMode { kSphere = 0, kAABB };
 enum InterpolationMode { kAffine = 0, kPerspectiveCorrection };
 enum RenderingMode { kWireFrame = 0, kFill, kTextureMapping };
+enum TextureMappingMode { kNonPBR = 0, kPBRApproximation };
 enum ShadingMode { kFlat = 0, kPhong };
 enum FrustumCullingResult { kInside, kIntersect, kOutside };
 }  // namespace ho_renderer

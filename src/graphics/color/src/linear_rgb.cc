@@ -8,8 +8,8 @@
 
 namespace ho_renderer {
 
-const LinearRGB LinearRGB::kWHITE = LinearRGB(1.0f, 1.0f, 1.0f, 1.0f);
-const LinearRGB LinearRGB::kBLACK = LinearRGB(0.0f, 0.0f, 0.0f, 1.0f);
+const LinearRGB LinearRGB::kWhite = LinearRGB(1.0f, 1.0f, 1.0f, 1.0f);
+const LinearRGB LinearRGB::kBlack = LinearRGB(0.0f, 0.0f, 0.0f, 1.0f);
 const LinearRGB LinearRGB::kRED = LinearRGB(1.0f, 0.0f, 0.0f, 1.0f);
 const LinearRGB LinearRGB::kGREEN = LinearRGB(0.0f, 1.0f, 0.0f, 1.0f);
 const LinearRGB LinearRGB::kBLUE = LinearRGB(0.0f, 0.0f, 1.0f, 1.0f);
@@ -56,6 +56,8 @@ LinearRGB::LinearRGB(const std::uint32_t argb32) {
   blue_ = static_cast<float>(b_bit) * kINVERSE_MAX32;
   alpha_ = static_cast<float>(a_bit) * kINVERSE_MAX32;
 }
+LinearRGB::LinearRGB(const Vector4& v)
+    : red_(v.x()), green_(v.y()), blue_(v.z()), alpha_(v.w()) {}
 LinearRGB& LinearRGB::operator=(const LinearRGB&) = default;
 LinearRGB::~LinearRGB() = default;
 
@@ -187,5 +189,9 @@ std::uint32_t LinearRGB::ToBGRA32() const {
   std::uint32_t b_bit =
       static_cast<std::uint32_t>(MathUtils::Clamp(0.f, 1.f, blue_) * kMAX32);
   return a_bit | r_bit | g_bit | b_bit;
+}
+
+Vector4 LinearRGB::ToVector4() const {
+  return Vector4(red_, blue_, green_, alpha_);
 }
 }  // namespace ho_renderer

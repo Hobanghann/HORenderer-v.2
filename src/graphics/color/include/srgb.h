@@ -5,13 +5,15 @@
 
 #include <cstdint>
 
+#include "core/math/include/vector4.h"
+
 namespace ho_renderer {
 class LinearRGB;
 class SRGB {
  public:
   static constexpr float kGAMMA = 2.2f;
-  static const SRGB kWHITE;
-  static const SRGB kBLACK;
+  static const SRGB kWhite;
+  static const SRGB kBlack;
   static const SRGB kRED;
   static const SRGB kGREEN;
   static const SRGB kBLUE;
@@ -31,6 +33,7 @@ class SRGB {
   SRGB(float red, float green, float blue, float alpha = 1.f);
   explicit SRGB(const LinearRGB&);
   explicit SRGB(const std::uint32_t argb32);
+  explicit SRGB(const Vector4& v);
   SRGB& operator=(const SRGB&);
   ~SRGB();
 
@@ -49,6 +52,7 @@ class SRGB {
 
   std::uint32_t ToRGBA32() const;
   std::uint32_t ToBGRA32() const;
+  Vector4 ToVector4() const;
 
  private:
   static constexpr float kINVERSE_GAMMA = 1.f / kGAMMA;

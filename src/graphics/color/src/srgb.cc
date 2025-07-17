@@ -6,8 +6,8 @@
 #include "graphics/color/include/linear_rgb.h"
 
 namespace ho_renderer {
-const SRGB SRGB::kWHITE = SRGB(1.0f, 1.0f, 1.0f, 1.0f);
-const SRGB SRGB::kBLACK = SRGB(0.0f, 0.0f, 0.0f, 1.0f);
+const SRGB SRGB::kWhite = SRGB(1.0f, 1.0f, 1.0f, 1.0f);
+const SRGB SRGB::kBlack = SRGB(0.0f, 0.0f, 0.0f, 1.0f);
 const SRGB SRGB::kRED = SRGB(1.0f, 0.0f, 0.0f, 1.0f);
 const SRGB SRGB::kGREEN = SRGB(0.0f, 1.0f, 0.0f, 1.0f);
 const SRGB SRGB::kBLUE = SRGB(0.0f, 0.0f, 1.0f, 1.0f);
@@ -42,6 +42,8 @@ SRGB::SRGB(const std::uint32_t argb32) {
   blue_ = static_cast<float>(b_bit) * kINVERSE_MAX32;
   alpha_ = static_cast<float>(a_bit) * kINVERSE_MAX32;
 }
+SRGB::SRGB(const Vector4& v)
+    : red_(v.x()), green_(v.y()), blue_(v.z()), alpha_(v.w()) {}
 SRGB& SRGB::operator=(const SRGB&) = default;
 SRGB::~SRGB() = default;
 
@@ -97,4 +99,6 @@ std::uint32_t SRGB::ToBGRA32() const {
   std::uint32_t b_bit = static_cast<std::uint32_t>(blue_ * kMAX32);
   return a_bit | r_bit | g_bit | b_bit;
 }
+
+Vector4 SRGB::ToVector4() const { return Vector4(red_, blue_, green_, alpha_); }
 }  // namespace ho_renderer

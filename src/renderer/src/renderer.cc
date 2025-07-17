@@ -94,10 +94,13 @@ int Renderer::LoadModels() {
       ModelLoader().Load("Triangle", "./resource/Triangle/triangle.obj")));
   resource_manager_.AddModel(
       std::move(ModelLoader().Load("Cone", "./resource/Cone/cone.obj")));
-  resource_manager_.AddModel(
-      std::move(ModelLoader().Load("Nier2B", "./resource/Nier2B/Nier2B.obj")));
+  resource_manager_.AddModel(std::move(ModelLoader().Load(
+      "CreepCreature", "./resource/CreepCreature/CreepCreature.obj")));
   resource_manager_.AddModel(
       std::move(ModelLoader().Load("Mug", "./resource/Mug/Mug.obj")));
+  resource_manager_.AddModel(
+      std::move(ModelLoader().Load("Nier2B", "./resource/Nier2B/Nier2b.obj")));
+
   return 0;
 }
 
@@ -115,7 +118,7 @@ int Renderer::CreateCameraObjects() {
           // Since the view space is defined in a right-handed coord system,
           // the default local axis is the camera's local axis rotated by 180
           // degrees around the yaw axis.
-          .set_world_coord(Vector3(0.f, 150.f, 500.f))
+          .set_world_coord(Vector3(0.f, 300.f, 500.f))
           .set_world_forward(-Vector3::kUnitZ)
           .set_world_right(-Vector3::kUnitX)
           .set_world_up(Vector3::kUnitY)
@@ -137,7 +140,7 @@ int Renderer::CreateGameObjects() {
           .set_world_forward(Vector3::kUnitZ)
           .set_world_right(Vector3::kUnitX)
           .set_world_up(Vector3::kUnitY)
-          .set_world_scale(80.f)
+          .set_world_scale(30.f)
           // Problem: The static member kBOX is initialized using SRGB's static
           // members. However, the initialization order of static members is
           // undefined. If kBOX is initialized first before SRGB's static
@@ -145,7 +148,7 @@ int Renderer::CreateGameObjects() {
           // must be explicitly defined so that SRGB's static members are
           // initialized first before kBOX. Solution: Convert SRGB's static
           // members to non-static members.
-          .set_model(resource_manager_.GetModel("Backpack"))
+          .set_model(resource_manager_.GetModel("Nier2B"))
           .set_rotate_velocity(MathUtils::kPi * 0.025f)
           .Build());
   scene_manager_.GetMainScene()->GetGameObject("Main Object")->Active();
@@ -158,13 +161,13 @@ int Renderer::CreateLights() {
 
   scene_manager_.GetMainScene()->AddDirectionalLight(
       std::make_unique<DirectionalLight>("Main Directional Light",
-                                         LinearRGB::kWHITE, 0.5f,
+                                         LinearRGB::kWhite, 0.5f,
                                          Vector4(0.f, 0.f, -1.f, 0.f)));
   scene_manager_.GetMainScene()->SetMainDirectionalLight(
       "Main Directional Light");
 
   scene_manager_.GetMainScene()->AddPointLight(std::make_unique<PointLight>(
-      "Main Point Light", LinearRGB::kWHITE, 0.5f,
+      "Main Point Light", LinearRGB::kWhite, 0.5f,
       Vector4(0.f, 300.f, -500.f, 1.f), 1.f, 0.007f, 0.0002f));
   return 0;
 }

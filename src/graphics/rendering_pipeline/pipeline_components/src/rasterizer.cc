@@ -84,7 +84,7 @@ std::vector<Fragment>* Rasterizer::RasterizeLineAffine(
 
   while (true) {
     const Vector2 target_coord = Vector2(start_x, start_y);
-    const Vector2 barycentric = InterpolationUtils::GetPixelBarycentric(
+    const Vector2 barycentric = InterpolationUtils::GetBarycentric(
         target_coord, atr.screen_coord1, atr.screen_coord2);
     // degenerate case
     if (MathUtils::IsFloatNaN(barycentric.x()) &&
@@ -153,7 +153,7 @@ std::vector<Fragment>* Rasterizer::RasterizeLinePerspective(
   while (true) {
     // create fragment
     const Vector2& target_coord = Vector2(start_x, start_y);
-    const Vector2& barycentric = InterpolationUtils::GetPixelBarycentric(
+    const Vector2& barycentric = InterpolationUtils::GetBarycentric(
         target_coord, atr.screen_coord1, atr.screen_coord2);
     // degenerate case
     if (MathUtils::IsFloatNaN(barycentric.x()) &&
@@ -217,7 +217,7 @@ std::vector<Fragment>* Rasterizer::RasterizeTriangleAffine(
   for (int y = b.min.y(); y < b.max.y(); y++) {
     for (int x = b.min.x(); x < b.max.x(); x++) {
       const Vector2& target_coord = Vector2(x, y);
-      const Vector3& barycentric = InterpolationUtils::GetPixelBarycentric(
+      const Vector3& barycentric = InterpolationUtils::GetBarycentric(
           target_coord, atr.screen_coord1, atr.screen_coord2,
           atr.screen_coord3);
       // degenerate case
@@ -386,7 +386,7 @@ std::vector<Fragment>* Rasterizer::RasterizeTrianglePerspective(
   for (int y = b.min.y(); y < b.max.y(); y++) {
     for (int x = b.min.x(); x < b.max.x(); x++) {
       const Vector2& target_coord = Vector2(x, y);
-      const Vector3& barycentric = InterpolationUtils::GetPixelBarycentric(
+      const Vector3& barycentric = InterpolationUtils::GetBarycentric(
           target_coord, atr.screen_coord1, atr.screen_coord2,
           atr.screen_coord3);
       // degenerate case
@@ -523,27 +523,31 @@ Rasterizer::RasterizeWireTrianglePerspective(
   return output_f_buffer;
 }
 
-TransformedVertex Rasterizer::InterpolateAffineLine(
-    const TransformedVertex& v1, const TransformedVertex& v2,
-    const Vector2& barycentric) {
+TransformedVertex Rasterizer::LerpInLine(const TransformedVertex& v1,
+                                         const TransformedVertex& v2,
+                                         const Vector2& barycentric) {
   return barycentric.x() * v1 + barycentric.y() * v2;
 }
-TransformedVertex Rasterizer::InterpolateAffineTriangle(
-    const TransformedVertex& v1, const TransformedVertex& v2,
-    const TransformedVertex& v3, const Vector3& barycentric) {
+TransformedVertex Rasterizer::LerpInTriangle(const TransformedVertex& v1,
+                                             const TransformedVertex& v2,
+                                             const TransformedVertex& v3,
+                                             const Vector3& barycentric) {
   return barycentric.x() * v1 + barycentric.y() * v2 + barycentric.z() * v3;
 }
-TransformedVertex Rasterizer::InterpolatePerspectiveCorrectLine(
-    const TransformedVertex& v1, const TransformedVertex& v2,
-    const Vector2& ndc_barycentric, const Vector2& inv_w,
-    float interpolated_w) {
+TransformedVertex Rasterizer::PlerpInLine(const TransformedVertex& v1,
+                                          const TransformedVertex& v2,
+                                          const Vector2& ndc_barycentric,
+                                          const Vector2& inv_w,
+                                          float interpolated_w) {
   return interpolated_w * (inv_w.x() * ndc_barycentric.x() * v1 +
                            inv_w.y() * ndc_barycentric.y() * v2);
 }
-TransformedVertex Rasterizer::InterpolatePerspectiveCorrectTriangle(
-    const TransformedVertex& v1, const TransformedVertex& v2,
-    const TransformedVertex& v3, const Vector3& ndc_barycentric,
-    const Vector3& inv_w, float interpolated_w) {
+TransformedVertex Rasterizer::PlerpInTriangle(const TransformedVertex& v1,
+                                              const TransformedVertex& v2,
+                                              const TransformedVertex& v3,
+                                              const Vector3& ndc_barycentric,
+                                              const Vector3& inv_w,
+                                              float interpolated_w) {
   return interpolated_w * (inv_w.x() * ndc_barycentric.x() * v1 +
                            inv_w.y() * ndc_barycentric.y() * v2 +
                            inv_w.z() * ndc_barycentric.z() * v3);
@@ -626,12 +630,11 @@ std::optional<Fragment> Rasterizer::LoadFragmentAffine(
   if (d_buffer == nullptr || p == nullptr) {
     return std::nullopt;
   }
-  float depth = InterpolationUtils::InterpolateAffineLine(
-      atr.depth1, atr.depth2, barycentric);
+  float depth =
+      InterpolationUtils::LerpInLine(atr.depth1, atr.depth2, barycentric);
   if (d_buffer->GetDepth(target_coord.x(), target_coord.y()) > depth) {
     d_buffer->SetDepth(target_coord.x(), target_coord.y(), depth);
-    TransformedVertex frag_vertex =
-        InterpolateAffineLine(atr.v1, atr.v2, barycentric);
+    TransformedVertex frag_vertex = LerpInLine(atr.v1, atr.v2, barycentric);
     return std::make_optional<Fragment>(
         p, target_coord, frag_vertex.view_coord(), frag_vertex.texture_coord(),
         frag_vertex.normal_vector(), frag_vertex.tangent_vector(),
@@ -650,12 +653,12 @@ std::optional<Fragment> Rasterizer::LoadFragmentAffine(
   if (d_buffer == nullptr || p == nullptr) {
     return std::nullopt;
   }
-  float depth = InterpolationUtils::InterpolateAffineTriangle(
-      atr.depth1, atr.depth2, atr.depth3, barycentric);
+  float depth = InterpolationUtils::LerpInTriangle(atr.depth1, atr.depth2,
+                                                   atr.depth3, barycentric);
   if (d_buffer->GetDepth(target_coord.x(), target_coord.y()) > depth) {
     d_buffer->SetDepth(target_coord.x(), target_coord.y(), depth);
     TransformedVertex frag_vertex =
-        InterpolateAffineTriangle(atr.v1, atr.v2, atr.v3, barycentric);
+        LerpInTriangle(atr.v1, atr.v2, atr.v3, barycentric);
     return std::make_optional<Fragment>(
         p, target_coord, frag_vertex.view_coord(), frag_vertex.texture_coord(),
         frag_vertex.normal_vector(), frag_vertex.tangent_vector(),
@@ -675,14 +678,13 @@ std::optional<Fragment> Rasterizer::LoadFragmentPerspective(
   if (d_buffer == nullptr || p == nullptr) {
     return std::nullopt;
   }
-  float depth = InterpolationUtils::InterpolateAffineLine(
-      atr.depth1, atr.depth2, barycentric);
+  float depth =
+      InterpolationUtils::LerpInLine(atr.depth1, atr.depth2, barycentric);
   if (d_buffer->GetDepth(target_coord.x(), target_coord.y()) > depth) {
     d_buffer->SetDepth(target_coord.x(), target_coord.y(), depth);
     float interpolated_w =
-        InterpolationUtils::InterpolateWPerspectiveCorrectLine(
-            atr.inv_w.ToVector2(), barycentric);
-    TransformedVertex frag_vertex = InterpolatePerspectiveCorrectLine(
+        InterpolationUtils::PlerpInLine_W(atr.inv_w.ToVector2(), barycentric);
+    TransformedVertex frag_vertex = PlerpInLine(
         atr.v1, atr.v2, barycentric, atr.inv_w.ToVector2(), interpolated_w);
     return std::make_optional<Fragment>(
         p, target_coord, frag_vertex.view_coord(), frag_vertex.texture_coord(),
@@ -703,14 +705,13 @@ std::optional<Fragment> Rasterizer::LoadFragmentPerspective(
   if (d_buffer == nullptr || p == nullptr) {
     return std::nullopt;
   }
-  float depth = InterpolationUtils::InterpolateAffineTriangle(
-      atr.depth1, atr.depth2, atr.depth3, barycentric);
+  float depth = InterpolationUtils::LerpInTriangle(atr.depth1, atr.depth2,
+                                                   atr.depth3, barycentric);
   if (d_buffer->GetDepth(target_coord.x(), target_coord.y()) > depth) {
     d_buffer->SetDepth(target_coord.x(), target_coord.y(), depth);
     float interpolated_w =
-        InterpolationUtils::InterpolateWPerspectiveCorrectTriangle(atr.inv_w,
-                                                                   barycentric);
-    TransformedVertex frag_vertex = InterpolatePerspectiveCorrectTriangle(
+        InterpolationUtils::PlerpInTriangle_W(atr.inv_w, barycentric);
+    TransformedVertex frag_vertex = PlerpInTriangle(
         atr.v1, atr.v2, atr.v3, barycentric, atr.inv_w, interpolated_w);
     return std::make_optional<Fragment>(
         p, target_coord, frag_vertex.view_coord(), frag_vertex.texture_coord(),

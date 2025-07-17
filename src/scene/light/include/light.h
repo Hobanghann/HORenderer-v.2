@@ -19,7 +19,6 @@ class Light {
   const LinearRGB& light_color() const;
   float light_intensity() const;
 
-  Light& set_name(const std::string& name);
   Light& set_light_color(const LinearRGB& color);
   Light& set_light_intensity(float intensity);
 

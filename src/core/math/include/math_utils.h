@@ -44,7 +44,8 @@ class MathUtils {
   static float Minf(float f1, float f2);
   static float Minf(float f1, float f2, float f3);
   static float Clamp(float min, float max, float value);
-  static const Vector3& Clamp(const Vector3& min, const Vector3& max, const Vector3& value);
+  static Vector3 Clamp(const Vector3& min, const Vector3& max,
+                       const Vector3& value);
   static float DegreeToRadian(const float degree);
   static float GetSquaredDistance(const Vector2& vector1,
                                   const Vector2& vector2);

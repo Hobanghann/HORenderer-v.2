@@ -88,12 +88,13 @@ std::unique_ptr<Camera> CameraBuilder::Build() const {
              "CameraBuilder::Build Error : viewport_width must not be zero");
   ASSERT_MSG(MathUtils::IsNotEqual(viewport_height_, 0.f),
              "CameraBuilder::Build Error : viewport_height must not be zero");
-  ASSERT_MSG(MathUtils::IsNotEqual(far_distance_, 0.f),
-             "CameraBuilder::Build Error : far_distance must not be zero");
+  ASSERT_MSG(MathUtils::IsLessEqual(near_distance_, far_distance_),
+             "Camera::Camera Error : near_distance must be bigger than "
+             "far_distance");
   if (MathUtils::IsEqual(fov_, 0.f) ||
       MathUtils::IsEqual(viewport_width_, 0.f) ||
       MathUtils::IsEqual(viewport_height_, 0.f) ||
-      MathUtils::IsEqual(far_distance_, 0.f)) {
+      MathUtils::IsGreaterEqual(near_distance_, far_distance_)) {
     return nullptr;
   }
   return std::make_unique<Camera>(
