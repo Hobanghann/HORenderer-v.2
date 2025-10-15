@@ -13,7 +13,7 @@
 #include "core/math/include/math_utils.h"
 #include "graphics/resource/include/material_builder.h"
 #include "graphics/resource/include/vertex.h"
-#include "lib/include/stb_image_impl.h"
+#include "lib/stb-src/stb_image.h"
 #include "scene/object/include/transform.h"
 #include "tools/include/debug.h"
 
