@@ -86,21 +86,8 @@ void Renderer::InjectExternalDepthBuffer(float* depth_buffer) {
 long long Renderer::GetFPS() { return FPS_; }
 
 int Renderer::LoadModels() {
-  resource_manager_.AddModel(
-      std::move(ModelLoader().Load("Sphere", "./resource/Sphere/sphere.obj")));
-  resource_manager_.AddModel(
-      std::move(ModelLoader().Load("Cube", "./resource/Cube/cube.obj")));
-  resource_manager_.AddModel(std::move(
-      ModelLoader().Load("Triangle", "./resource/Triangle/triangle.obj")));
-  resource_manager_.AddModel(
-      std::move(ModelLoader().Load("Cone", "./resource/Cone/cone.obj")));
-  resource_manager_.AddModel(std::move(ModelLoader().Load(
-      "CreepCreature", "./resource/CreepCreature/CreepCreature.obj")));
-  resource_manager_.AddModel(
-      std::move(ModelLoader().Load("Mug", "./resource/Mug/Mug.obj")));
-  resource_manager_.AddModel(
-      std::move(ModelLoader().Load("Nier2B", "./resource/Nier2B/Nier2b.obj")));
-
+    resource_manager_.AddModel(
+      std::move(ModelLoader().Load("Mug", "./resource/Mug/Mug.obj")));  
   return 0;
 }
 
@@ -118,7 +105,7 @@ int Renderer::CreateCameraObjects() {
           // Since the view space is defined in a right-handed coord system,
           // the default local axis is the camera's local axis rotated by 180
           // degrees around the yaw axis.
-          .set_world_coord(Vector3(0.f, 300.f, 500.f))
+          .set_world_coord(Vector3(0.f, 100.f, 300.f))
           .set_world_forward(-Vector3::kUnitZ)
           .set_world_right(-Vector3::kUnitX)
           .set_world_up(Vector3::kUnitY)
@@ -148,7 +135,7 @@ int Renderer::CreateGameObjects() {
           // must be explicitly defined so that SRGB's static members are
           // initialized first before kBOX. Solution: Convert SRGB's static
           // members to non-static members.
-          .set_model(resource_manager_.GetModel("Nier2B"))
+          .set_model(resource_manager_.GetModel("Mug"))
           .set_rotate_velocity(MathUtils::kPi * 0.025f)
           .Build());
   scene_manager_.GetMainScene()->GetGameObject("Main Object")->Active();
