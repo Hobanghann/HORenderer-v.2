@@ -26,16 +26,16 @@ From the root of the project source tree, you can generate a Visual Studio solut
 ## 📸 Screenshots
 
 ### Wireframe Mode  
-![Image](https://github.com/user-attachments/assets/7fef0c2d-caa8-4cf7-81ce-eb9ca5149c92)
+![Image](https://github.com/user-attachments/assets/2f3e94d4-6abf-438e-a9da-a1867370cbc6)
 
 ### Flat Shading  
-![Image](https://github.com/user-attachments/assets/f371fde9-ec2a-44a9-b680-29bb633236db)
+![Image](https://github.com/user-attachments/assets/380aaa78-d604-4ab2-b25e-9e1a963ec937)
 
 ### Phong Shading  
-![Image](https://github.com/user-attachments/assets/972a2a57-7d0e-43b2-a3c5-e5301c339d46)
+![Image](https://github.com/user-attachments/assets/6b6f130a-bbc2-44a5-a8fe-cee29c3b6933)
 
 ### Texture Mapping  
-![Image](https://github.com/user-attachments/assets/3a756c4d-1895-4a4b-acf0-d7640cad6385)
+![Image](https://github.com/user-attachments/assets/8871873b-1c89-4712-99c4-54e3dbca26b9)
 
 
 ## 🔀 Work Flow
@@ -128,16 +128,14 @@ Initialize ── Preupdate── Update── Run rendering pipeline ── Pos
 - F1 : 30 FPS mode
 - F2 : 60 FPS mode
 - F3 :  Variable FPS mode
-- Num1 : Wireframe mode
-- Num2 : Fill mode
-- Num3 : Texture mapping mode
-- Num4 : Change shading mode(Flat, Phong)
-- Num5 : Change mesh's bounding volume(Sphere, AABB)
-- Num6 : Change interpolation(Linear, Perspective correction)
-- Num7 : On/Off Backface culling
-- Num8 : On/Off Ambient lighting
-- Num9 : On/Off Diffuse lighting
-- Num0 : On/Off Specular lighting
+- Num1 : Wireframe mode / Fill mode / Texture mapping mode
+- Num2 : Change shading mode(Flat, Phong)
+- Num3 : Change mesh's bounding volume(Sphere, AABB)
+- Num4 : Change interpolation(Linear, Perspective correction)
+- Num5 : On/Off Backface culling
+- Num6 : On/Off Ambient lighting
+- Num7 : On/Off Diffuse lighting
+- Num8 : On/Off Specular lighting
 
 [Main Game Object]
 - Mouse Right Button + Mouse Move : Rotate object
@@ -150,4 +148,5 @@ Initialize ── Preupdate── Update── Run rendering pipeline ── Pos
 - D : Move Right
 
 ## 📁 Assets License / Attribution
+
 - Mug : https://www.cgtrader.com/free-3d-models/food/beverage/lowpoly-mug-for-free
